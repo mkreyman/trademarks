@@ -29,7 +29,16 @@ use Mix.Config
 #
 #     import_config "#{Mix.env}.exs"
 
-config :trademarks, user_agent: "Elixir elixir@test.com"
-config :trademarks, trademarks_url: "https://bulkdata.uspto.gov/data/trademark/dailyxml/applications/"
-config :trademarks, temp_page: System.get_env("TMPDIR") <> "trademark_applications.html"
-config :trademarks, temp_file: System.get_env("TMPDIR") <> "trademark_applications.zip"
+# config :trademarks,
+#   user_agent: "Elixir elixir@test.com",
+#   trademarks_url: "https://bulkdata.uspto.gov/data/trademark/dailyxml/applications/",
+#   temp_dir: System.get_env("TMPDIR"),
+#   temp_page: System.get_env("TMPDIR") <> "trademark_applications.html",
+#   temp_file: System.get_env("TMPDIR") <> "trademark_applications.zip"
+
+config :trademarks,
+  user_agent: "Elixir elixir@test.com",
+  trademarks_url: "https://bulkdata.uspto.gov/data/trademark/dailyxml/applications/",
+  temp_dir: "./tmp/",
+  temp_page: "./tmp/trademark_applications.html",
+  temp_file: "./tmp/trademark_applications.zip"

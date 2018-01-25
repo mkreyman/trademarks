@@ -22,6 +22,7 @@ defmodule Trademarks.Mixfile do
   defp deps do
     [
       {:httpoison, "~> 1.0.0"},
+      {:poison, "~> 3.1"},
       # {:sweet_xml, "~> 0.6.5"},
       # {:floki, "~> 0.19.2"},
       {:sweet_xml, git: "https://github.com/kbrw/sweet_xml"},
