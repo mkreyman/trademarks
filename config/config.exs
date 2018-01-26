@@ -33,12 +33,12 @@ use Mix.Config
 #   user_agent: "Elixir elixir@test.com",
 #   trademarks_url: "https://bulkdata.uspto.gov/data/trademark/dailyxml/applications/",
 #   temp_dir: System.get_env("TMPDIR"),
-#   temp_page: System.get_env("TMPDIR") <> "trademark_applications.html",
-#   temp_file: System.get_env("TMPDIR") <> "trademark_applications.zip"
+#   temp_page: System.get_env("TMPDIR") <> "trademarks.html",
+#   temp_file: System.get_env("TMPDIR") <> "trademarks.zip"
 
 config :trademarks,
   user_agent: "Elixir elixir@test.com",
   trademarks_url: "https://bulkdata.uspto.gov/data/trademark/dailyxml/applications/",
   temp_dir: "./tmp/",
-  temp_page: "./tmp/trademark_applications.html",
-  temp_file: "./tmp/trademark_applications.zip"
+  temp_page: "./tmp/trademarks.html",
+  temp_file: "./tmp/trademarks.zip"
