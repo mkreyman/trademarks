@@ -36,9 +36,17 @@ use Mix.Config
 #   temp_page: System.get_env("TMPDIR") <> "trademarks.html",
 #   temp_file: System.get_env("TMPDIR") <> "trademarks.zip"
 
+# General application configuration
+config :trademarks,
+  ecto_repos: [Trademarks.Repo]
+
 config :trademarks,
   user_agent: "Elixir elixir@test.com",
   trademarks_url: "https://bulkdata.uspto.gov/data/trademark/dailyxml/applications/",
   temp_dir: "./tmp/",
   temp_page: "./tmp/trademarks.html",
   temp_file: "./tmp/trademarks.zip"
+
+# Import environment specific config. This must remain at the bottom
+# of this file so it overrides the configuration defined above.
+import_config "#{Mix.env}.exs"

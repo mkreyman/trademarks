@@ -6,8 +6,10 @@ defmodule Trademarks.Application do
   use Application
 
   def start(_type, _args) do
+    import Supervisor.Spec
     # List all child processes to be supervised
     children = [
+      supervisor(Trademarks.Repo, [])
       # Starts a worker by calling: Trademarks.Worker.start_link(arg)
       # {Trademarks.Worker, arg},
     ]
