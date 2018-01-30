@@ -6,7 +6,7 @@ defmodule Trademarks.CaseFileOwner do
   schema "case_file_owners" do
     belongs_to :case_file, Trademarks.CaseFile, type: :binary_id
     field :party_name, :string
-    has_many :addresses, Trademarks.Address
+    has_many :addresses, Trademarks.CaseFileOwner.Address, on_delete: :delete_all
 
     timestamps
   end
@@ -17,5 +17,6 @@ defmodule Trademarks.CaseFileOwner do
     data
     |> cast(params, @fields)
     |> validate_required([:party_name])
+    |> foreign_key_constraint(:case_file_id, message: "Select a valid case file")
   end
 end

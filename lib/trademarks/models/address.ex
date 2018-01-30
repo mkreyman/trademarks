@@ -1,4 +1,4 @@
-defmodule Trademarks.Address do
+defmodule Trademarks.CaseFileOwner.Address do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -19,5 +19,6 @@ defmodule Trademarks.Address do
   def changeset(data, params \\ %{}) do
     data
     |> cast(params, @fields)
+    |> foreign_key_constraint(:case_file_owner_id, message: "Select a valid case file owner")
   end
 end

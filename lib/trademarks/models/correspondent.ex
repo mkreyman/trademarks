@@ -18,5 +18,6 @@ defmodule Trademarks.Correspondent do
   def changeset(data, params \\ %{}) do
     data
     |> cast(params, @fields)
+    |> foreign_key_constraint(:case_file_id, message: "Select a valid case file")
   end
 end

@@ -18,10 +18,10 @@ defmodule Trademarks.CaseFile do
     field :mark_identification, :string
     field :attorney_name,       :string
     field :renewal_date,        :date
-    has_many :case_file_statements,       CaseFileStatement
-    has_many :case_file_event_statements, CaseFileEventStatement
-    has_many :case_file_owners,           CaseFileOwner
-    has_one  :correspondent,              Correspondent
+    has_many :case_file_statements, CaseFileStatement, on_delete: :delete_all
+    has_many :case_file_event_statements, CaseFileEventStatement, on_delete: :delete_all
+    has_many :case_file_owners, CaseFileOwner, on_delete: :delete_all
+    has_one  :correspondent, Correspondent, on_delete: :delete_all
 
     timestamps
   end
