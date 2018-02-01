@@ -9,6 +9,7 @@ defmodule Trademarks.CaseFileOwner do
     belongs_to :case_file, CaseFile, type: :binary_id
     field :party_name, :string
     field :address_1, :string
+    field :address_2, :string
     field :city, :string
     field :state, :string
     field :postcode, :string
@@ -16,12 +17,11 @@ defmodule Trademarks.CaseFileOwner do
     timestamps()
   end
 
-  @fields ~w(party_name address_1 city state postcode)
+  @fields ~w(party_name address_1 address_2 city state postcode)
 
   def changeset(data, params \\ %{}) do
     data
     |> cast(params, @fields)
-    |> validate_required([:party_name])
     |> foreign_key_constraint(:case_file_id, message: "Select a valid case file")
   end
 end

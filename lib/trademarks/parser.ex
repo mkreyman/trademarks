@@ -2,15 +2,13 @@ defmodule Trademarks.Parser do
   require Logger
   import SweetXml
 
-  alias Trademarks.ActionKey
-
   @temp_dir Application.get_env(:trademarks, :temp_dir)
 
   def start(zip_file) do
     with {:ok, xml_file}           <- extract(zip_file),
          %File.Stream{} = doc      <- File.stream!(xml_file) do
-      started = :os.system_time(:seconds)
-      Logger.info "Parsing #{xml_file} ..."
+      # started = :os.system_time(:seconds)
+      # Logger.info "Parsing #{xml_file} ..."
       stream =
         stream_tags(doc, [:"action-keys"]) |>
         Stream.map(fn {_, doc} -> doc |>
@@ -45,14 +43,15 @@ defmodule Trademarks.Parser do
                case_file_owners: [
                  ~x[./case-file-owners/case-file-owner]l,
                  party_name: ~x[./party-name/text()]s,
-                 address_1: ~x[./address-1/text()]s,
+                 address_1: ~x[./address-1/text()]so,
+                 address_2: ~x[./address-2/text()]so,
                  city: ~x[./city/text()]s,
                  state: ~x[./state/text()]s,
-                 postcode: ~x[./postcode/text()]s
+                 postcode: ~x[./postcode/text()]so
           ]]) end)
 
-      finished = :os.system_time(:seconds)
-      Logger.info "Parsing done in #{finished - started} secs"
+      # finished = :os.system_time(:seconds)
+      # Logger.info "Parsing done in #{finished - started} secs"
       {:ok, stream}
     else
       _ -> {:error, :parsing_error}

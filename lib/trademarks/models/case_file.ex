@@ -42,7 +42,6 @@ defmodule Trademarks.CaseFile do
     params = DateFormatter.format(params)
     data
     |> cast(params, @fields)
-    |> validate_required([:mark_identification])
     |> validate_date_format(params)
     |> cast_assoc(:case_file_statements)
     |> cast_assoc(:case_file_event_statements)

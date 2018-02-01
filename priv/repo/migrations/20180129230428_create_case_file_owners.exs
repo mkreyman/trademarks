@@ -7,6 +7,7 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileOwners do
       add :case_file_id, references(:case_files, type: :uuid, null: false)
       add :party_name, :text
       add :address_1, :text
+      add :address_2, :text
       add :city, :text
       add :state, :text
       add :postcode, :text
