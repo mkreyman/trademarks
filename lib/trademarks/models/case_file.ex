@@ -74,15 +74,12 @@ defmodule Trademarks.CaseFile do
     |> Map.update(:renewal_date, params[:renewal_date], &to_date(&1))
   end
 
+  defp to_date(string) when byte_size(string) == 0, do: nil
   defp to_date(string) do
-    if byte_size(string) == 0 do
-      nil
-    else
-      ~r"(\d{4})(\d{2})(\d{2})"
-      |> Regex.run(string)
-      |> Enum.take(-3)
-      |> Enum.join("-")
-      |> Date.from_iso8601!()
-    end
+    ~r"(\d{4})(\d{2})(\d{2})"
+    |> Regex.run(string)
+    |> Enum.take(-3)
+    |> Enum.join("-")
+    |> Date.from_iso8601!()
   end
 end
