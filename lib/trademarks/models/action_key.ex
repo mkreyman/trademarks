@@ -50,7 +50,6 @@ defmodule Trademarks.ActionKey do
 
   def process(stream) do
     stream
-    |> Stream.map()
     |> Enum.map(&create(&1))
   end
 end

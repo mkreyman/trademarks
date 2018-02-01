@@ -41,8 +41,8 @@ defmodule Trademarks.CaseFile do
     params = format_dates(params)
     data
     |> cast(params, @fields)
-    # |> validate_required([:mark_identification])
-    # |> validate_date_format(params)
+    |> validate_required([:mark_identification])
+    |> validate_date_format(params)
   end
 
   defp validate_date_format(cs, params) do

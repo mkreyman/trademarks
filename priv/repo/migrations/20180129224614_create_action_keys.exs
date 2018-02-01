@@ -8,5 +8,6 @@ defmodule Trademarks.Repo.Migrations.CreateActionKeys do
 
       timestamps
     end
+    create unique_index(:action_keys, :action_key_code)
   end
 end
