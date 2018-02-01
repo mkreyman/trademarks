@@ -2,6 +2,8 @@ defmodule Trademarks.Parser do
   require Logger
   import SweetXml
 
+  alias Trademarks.ActionKey
+
   @temp_dir Application.get_env(:trademarks, :temp_dir)
 
   def start(zip_file) do
@@ -9,18 +11,18 @@ defmodule Trademarks.Parser do
          %File.Stream{} = doc      <- File.stream!(xml_file) do
       started = :os.system_time(:seconds)
       Logger.info "Parsing #{xml_file} ..."
-      data =
+      stream =
         stream_tags(doc, [:"action-keys"]) |>
         Stream.map(fn {_, doc} -> doc |>
-          xmap(action_key: ~x[./action-key/text()]s,
+          xmap(action_key_code: ~x[./action-key/text()]s,
                case_files: [~x[./case-file]l,
                serial_number: ~x[./serial-number/text()]s,
                registration_number: ~x[./registration-number/text()]s,
                filing_date: ~x[./case-file-header/filing-date/text()]s,
-               registration_date: ~x[./case-file-header/registration-date/text()]s,
+               registration_date: ~x[./case-file-header/registration-date/text()]so,
                mark_identification: ~x[./case-file-header/mark-identification/text()]s,
                attorney_name: ~x[./case-file-header/attorney-name/text()]s,
-               renewal_date: ~x[./case-file-header/renewal-date/text()]s,
+               renewal_date: ~x[./case-file-header/renewal-date/text()]so,
                case_file_statements: [
                  ~x[./case-file-statements/case-file-statement]l,
                  type_code: ~x[./type-code/text()]s,
@@ -47,13 +49,11 @@ defmodule Trademarks.Parser do
                  city: ~x[./city/text()]s,
                  state: ~x[./state/text()]s,
                  postcode: ~x[./postcode/text()]s
-          ]]) end) |>
-          Poison.encode!()
+          ]]) end)
 
       finished = :os.system_time(:seconds)
       Logger.info "Parsing done in #{finished - started} secs"
-
-      File.write("#{@temp_dir}parsed.json", data, [:binary])
+      {:ok, stream}
     else
       _ -> {:error, :parsing_error}
     end
