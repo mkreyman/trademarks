@@ -8,7 +8,7 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileStatements do
       add :type_code, :text
       add :description, :text
 
-      timestamps
+      timestamps()
     end
 
     create index(:case_file_statements, [:case_file_id])

@@ -6,7 +6,7 @@ defmodule Trademarks.Repo.Migrations.CreateActionKeys do
       add :id, :uuid, primary_key: true
       add :action_key_code, :text
 
-      timestamps
+      timestamps()
     end
     create unique_index(:action_keys, :action_key_code)
   end

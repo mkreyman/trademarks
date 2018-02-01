@@ -7,8 +7,9 @@ defmodule Trademarks.CaseFile do
     CaseFileStatement,
     CaseFileEventStatement,
     CaseFileOwner,
-    Correspondent
-    }
+    Correspondent,
+    Utils.DateFormatter
+  }
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "case_files" do
@@ -25,7 +26,7 @@ defmodule Trademarks.CaseFile do
     has_many :case_file_owners, CaseFileOwner, on_delete: :delete_all
     has_one  :correspondent, Correspondent, on_delete: :delete_all
 
-    timestamps
+    timestamps()
   end
 
   @fields ~w(serial_number
@@ -38,11 +39,15 @@ defmodule Trademarks.CaseFile do
             )
 
   def changeset(data, params \\ %{}) do
-    params = format_dates(params)
+    params = DateFormatter.format(params)
     data
     |> cast(params, @fields)
     |> validate_required([:mark_identification])
     |> validate_date_format(params)
+    |> cast_assoc(:case_file_statements)
+    |> cast_assoc(:case_file_event_statements)
+    |> cast_assoc(:case_file_owners)
+    |> cast_assoc(:correspondent)
   end
 
   defp validate_date_format(cs, params) do
@@ -51,35 +56,10 @@ defmodule Trademarks.CaseFile do
       params[:registration_date],
       params[:renewal_date]
     ]
-    if Enum.any?(dates, fn(date)-> is_date(date) end) == false do
+    if Enum.any?(dates, fn(date)-> DateFormatter.is_date(date) end) == false do
       add_error(cs, :case_files, "Invalid date format")
     else
       cs
     end
-  end
-
-  defp is_date(date) do
-    try do
-      %Date{} = date
-      true
-    rescue
-      MatchError -> false
-    end
-  end
-
-  defp format_dates(params) do
-    params
-    |> Map.update(:filing_date, params[:filing_date], &to_date(&1))
-    |> Map.update(:registration_date, params[:registration_date], &to_date(&1))
-    |> Map.update(:renewal_date, params[:renewal_date], &to_date(&1))
-  end
-
-  defp to_date(string) when byte_size(string) == 0, do: nil
-  defp to_date(string) do
-    ~r"(\d{4})(\d{2})(\d{2})"
-    |> Regex.run(string)
-    |> Enum.take(-3)
-    |> Enum.join("-")
-    |> Date.from_iso8601!()
   end
 end

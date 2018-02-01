@@ -10,7 +10,7 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileEventStatements do
       add :description, :text
       add :date, :date
 
-      timestamps
+      timestamps()
     end
 
     create index(:case_file_event_statements, [:case_file_id])

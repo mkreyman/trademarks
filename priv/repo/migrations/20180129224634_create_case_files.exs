@@ -13,7 +13,9 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFiles do
       add :attorney_name, :text
       add :renewal_date, :date
 
-      timestamps
+      timestamps()
     end
+
+    create index(:case_files, [:action_key_id])
   end
 end

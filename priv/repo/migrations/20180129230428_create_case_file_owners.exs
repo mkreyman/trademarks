@@ -6,8 +6,12 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileOwners do
       add :id, :uuid, primary_key: true
       add :case_file_id, references(:case_files, type: :uuid, null: false)
       add :party_name, :text
+      add :address_1, :text
+      add :city, :text
+      add :state, :text
+      add :postcode, :text
 
-      timestamps
+      timestamps()
     end
 
     create index(:case_file_owners, [:case_file_id])
