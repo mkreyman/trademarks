@@ -7,13 +7,12 @@ defmodule Trademarks.Parser do
   def start(zip_file) do
     with {:ok, xml_file}           <- extract(zip_file),
          %File.Stream{} = doc      <- File.stream!(xml_file) do
-      # started = :os.system_time(:seconds)
-      # Logger.info "Parsing #{xml_file} ..."
+      started = :os.system_time(:seconds)
+      Logger.info "Parsing #{xml_file} ..."
       stream =
-        stream_tags(doc, [:"action-keys"]) |>
+        stream_tags(doc, [:"case-files"]) |>
         Stream.map(fn {_, doc} -> doc |>
-          xmap(action_key_code: ~x[./action-key/text()]s,
-               case_files: [~x[./case-file]l,
+          xmap(case_files: [~x[./case-file]l,
                serial_number: ~x[./serial-number/text()]s,
                registration_number: ~x[./registration-number/text()]s,
                filing_date: ~x[./case-file-header/filing-date/text()]s,
@@ -49,12 +48,14 @@ defmodule Trademarks.Parser do
                  state: ~x[./state/text()]s,
                  postcode: ~x[./postcode/text()]so
           ]]) end)
+      # json = Poison.encode!(stream)
+      # File.write("#{@temp_dir}parsed.json", json, [:binary])
 
-      # finished = :os.system_time(:seconds)
-      # Logger.info "Parsing done in #{finished - started} secs"
+      finished = :os.system_time(:seconds)
+      Logger.info "Parsing done in #{finished - started} secs"
       {:ok, stream}
-    else
-      _ -> {:error, :parsing_error}
+    # else
+    #   _ -> {:error, zip_file}
     end
   end
 

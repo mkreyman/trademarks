@@ -3,7 +3,6 @@ defmodule Trademarks.CaseFile do
   import Ecto.Changeset
 
   alias Trademarks.{
-    ActionKey,
     CaseFileStatement,
     CaseFileEventStatement,
     CaseFileOwner,
@@ -13,7 +12,6 @@ defmodule Trademarks.CaseFile do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "case_files" do
-    belongs_to :action_key, ActionKey, type: :binary_id
     field :serial_number,       :string
     field :registration_number, :string
     field :filing_date,         :date
@@ -47,6 +45,7 @@ defmodule Trademarks.CaseFile do
     |> cast_assoc(:case_file_event_statements)
     |> cast_assoc(:case_file_owners)
     |> cast_assoc(:correspondent)
+    |> validate_all()
   end
 
   defp validate_date_format(cs, params) do
@@ -56,7 +55,15 @@ defmodule Trademarks.CaseFile do
       params[:renewal_date]
     ]
     if Enum.any?(dates, fn(date)-> DateFormatter.is_date(date) end) == false do
-      add_error(cs, :case_files, "Invalid date format")
+      add_error(cs, :case_files, "case_file")
+    else
+      cs
+    end
+  end
+
+  defp validate_all(cs) do
+    if cs.valid? == false do
+      add_error(cs, :case_files, "Invalid changeset: #{IO.inspect(cs.errors)}")
     else
       cs
     end

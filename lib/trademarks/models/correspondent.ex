@@ -21,5 +21,14 @@ defmodule Trademarks.Correspondent do
     data
     |> cast(params, @fields)
     |> foreign_key_constraint(:case_file_id, message: "Select a valid case file")
+    |> validate_all()
+  end
+
+  defp validate_all(cs) do
+    if cs.valid? == false do
+      add_error(cs, :correspondents, "Invalid correspondent")
+    else
+      cs
+    end
   end
 end

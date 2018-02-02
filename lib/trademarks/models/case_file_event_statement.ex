@@ -23,11 +23,20 @@ defmodule Trademarks.CaseFileEventStatement do
     |> cast(params, @fields)
     |> foreign_key_constraint(:case_file_id, message: "Select a valid case file")
     |> validate_date_format(params)
+    |> validate_all()
   end
 
   defp validate_date_format(cs, params) do
     if DateFormatter.is_date(params[:date]) == false do
       add_error(cs, :case_file_event_statements, "Invalid date format")
+    else
+      cs
+    end
+  end
+
+  defp validate_all(cs) do
+    if cs.valid? == false do
+      add_error(cs, :case_file_event_statements, "Invalid case_file_event_statement")
     else
       cs
     end
