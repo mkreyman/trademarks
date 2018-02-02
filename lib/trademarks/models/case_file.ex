@@ -1,6 +1,8 @@
 defmodule Trademarks.CaseFile do
+  require Logger
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   alias Trademarks.{
     CaseFile,
@@ -42,22 +44,36 @@ defmodule Trademarks.CaseFile do
     params = DateFormatter.format(params)
     data
     |> cast(params, @fields)
+    |> validate_required([:serial_number])
     |> validate_date_format(params)
-    |> cast_assoc(:case_file_statements)
-    |> cast_assoc(:case_file_event_statements)
-    |> cast_assoc(:case_file_owners)
-    |> cast_assoc(:correspondent)
-    |> validate_all()
+    |> put_assoc(:case_file_statements)
+    |> put_assoc(:case_file_event_statements)
+    |> put_assoc(:case_file_owners)
+    |> put_assoc(:correspondent)
   end
 
   def process(stream) do
+    started = :os.system_time(:seconds)
+    Logger.info "Started processing ..."
+
+    # subset = 1000
     stream
+    # |> Stream.take(subset)
     |> Enum.map(&create(&1))
+
+    finished = :os.system_time(:seconds)
+    number_of_records = Trademarks.Repo.one(from cf in "case_files", select: count(cf.id))
+    Logger.info "Processed #{number_of_records} case files in #{finished - started} secs"
   end
 
   def create(params) do
-    changeset(%CaseFile{}, params)
-    |> Repo.insert_or_update()
+    cs = changeset(%CaseFile{}, params)
+    case cs.valid? do
+      true ->
+        Repo.insert(cs)
+      _ ->
+        Logger.error "Invalid changeset: #{Poison.encode!(params)}"
+    end
   end
 
   defp validate_date_format(cs, params) do
@@ -68,14 +84,6 @@ defmodule Trademarks.CaseFile do
     ]
     if Enum.any?(dates, fn(date)-> DateFormatter.is_date(date) end) == false do
       add_error(cs, :case_files, "case_file")
-    else
-      cs
-    end
-  end
-
-  defp validate_all(cs) do
-    if cs.valid? == false do
-      add_error(cs, :case_files, "Invalid changeset: #{IO.inspect(cs.errors)}")
     else
       cs
     end
