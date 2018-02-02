@@ -7,8 +7,6 @@ defmodule Trademarks.Parser do
   def start(zip_file) do
     with {:ok, xml_file}           <- extract(zip_file),
          %File.Stream{} = doc      <- File.stream!(xml_file) do
-      # started = :os.system_time(:seconds)
-      # Logger.info "Parsing #{xml_file} ..."
       stream =
         stream_tags(doc, [:"case-file"]) |>
         Stream.map(fn {_, doc} -> doc |>
@@ -48,11 +46,6 @@ defmodule Trademarks.Parser do
               state: ~x[./state/text()]s,
               postcode: ~x[./postcode/text()]so
           ]]) end)
-        # |> Poison.encode!()
-        # File.write("#{@temp_dir}parsed.json", stream, [:binary])
-
-      # finished = :os.system_time(:seconds)
-      # Logger.info "Parsing done in #{finished - started} secs"
       {:ok, stream}
     else
       _ -> {:error, zip_file}

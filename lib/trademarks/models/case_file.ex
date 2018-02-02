@@ -3,11 +3,13 @@ defmodule Trademarks.CaseFile do
   import Ecto.Changeset
 
   alias Trademarks.{
+    CaseFile,
     CaseFileStatement,
     CaseFileEventStatement,
     CaseFileOwner,
     Correspondent,
-    Utils.DateFormatter
+    Utils.DateFormatter,
+    Repo
   }
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -46,6 +48,16 @@ defmodule Trademarks.CaseFile do
     |> cast_assoc(:case_file_owners)
     |> cast_assoc(:correspondent)
     |> validate_all()
+  end
+
+  def process(stream) do
+    stream
+    |> Enum.map(&create(&1))
+  end
+
+  def create(params) do
+    changeset(%CaseFile{}, params)
+    |> Repo.insert_or_update()
   end
 
   defp validate_date_format(cs, params) do
