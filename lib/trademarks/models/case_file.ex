@@ -46,10 +46,10 @@ defmodule Trademarks.CaseFile do
     |> cast(params, @fields)
     |> validate_required([:serial_number])
     |> validate_date_format(params)
-    |> put_assoc(:case_file_statements)
-    |> put_assoc(:case_file_event_statements)
-    |> put_assoc(:case_file_owners)
-    |> put_assoc(:correspondent)
+    |> cast_assoc(:case_file_statements)
+    |> cast_assoc(:case_file_event_statements)
+    |> cast_assoc(:case_file_owners)
+    |> cast_assoc(:correspondent)
   end
 
   def process(stream) do
