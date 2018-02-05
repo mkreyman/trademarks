@@ -9,10 +9,11 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFiles do
       add :filing_date, :date
       add :registration_date, :date
       add :mark_identification, :text
-      add :attorney_name, :text
       add :renewal_date, :date
 
       timestamps()
     end
+
+    create unique_index(:case_files, [:serial_number])
   end
 end
