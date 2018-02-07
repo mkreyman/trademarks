@@ -14,8 +14,8 @@ defmodule Trademarks.Attorney do
 
   @fields ~w(name)
 
-  def changeset(data, params \\ %{}) do
-    data
+  def changeset(struct, params \\ %{}) do
+    struct
     |> cast(params, @fields)
     |> unique_constraint(:name)
   end

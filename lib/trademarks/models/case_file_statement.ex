@@ -15,8 +15,8 @@ defmodule Trademarks.CaseFileStatement do
 
   @fields ~w(type_code description)
 
-  def changeset(data, params \\ %{}) do
-    data
+  def changeset(struct, params \\ %{}) do
+    struct
     |> cast(params, @fields)
     |> foreign_key_constraint(:case_file_id, message: "Select a valid case file")
   end

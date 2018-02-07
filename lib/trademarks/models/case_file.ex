@@ -40,9 +40,9 @@ defmodule Trademarks.CaseFile do
              renewal_date
             )
 
-  def changeset(data, params \\ %{}) do
+  def changeset(struct, params \\ %{}) do
     params = DateFormatter.format(params)
-    data
+    struct
     |> cast(params, @fields)
     |> validate_required([:serial_number])
     |> unique_constraint(:serial_number)
@@ -74,7 +74,7 @@ defmodule Trademarks.CaseFile do
     cs = changeset(%CaseFile{}, params)
     case cs.valid? do
       true ->
-        Repo.insert(cs, on_conflict: :nothing)
+        Repo.insert(cs)
       _ ->
         Logger.error "Invalid changeset: #{Poison.encode!(params)}"
     end

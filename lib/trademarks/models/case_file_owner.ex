@@ -19,8 +19,8 @@ defmodule Trademarks.CaseFileOwner do
 
   @fields ~w(party_name address_1 address_2 city state postcode)
 
-  def changeset(data, params \\ %{}) do
-    data
+  def changeset(struct, params \\ %{}) do
+    struct
     |> cast(params, @fields)
     |> foreign_key_constraint(:case_file_id, message: "Select a valid case file")
   end
