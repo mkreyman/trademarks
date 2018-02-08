@@ -12,5 +12,6 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileStatements do
     end
 
     create index(:case_file_statements, [:case_file_id])
+    create unique_index(:case_file_statements, [:type_code, :description])
   end
 end

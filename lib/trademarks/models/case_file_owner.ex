@@ -17,11 +17,12 @@ defmodule Trademarks.CaseFileOwner do
     timestamps()
   end
 
-  @fields ~w(party_name address_1 address_2 city state postcode)
+  @fields ~w(party_name address_1 address_2 city state postcode)a
 
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, @fields)
     |> foreign_key_constraint(:case_file_id, message: "Select a valid case file")
+    |> unique_constraint(:party_name, name: :case_file_owners_party_name_address_1_city_state_postcode_index)
   end
 end

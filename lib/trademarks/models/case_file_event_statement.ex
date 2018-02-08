@@ -15,13 +15,14 @@ defmodule Trademarks.CaseFileEventStatement do
     timestamps()
   end
 
-  @fields ~w(code type description date)
+  @fields ~w(code type description date)a
 
   def changeset(struct, params \\ %{}) do
     params = DateFormatter.format(params)
     struct
     |> cast(params, @fields)
     |> foreign_key_constraint(:case_file_id, message: "Select a valid case file")
+    |> unique_constraint(:description, name: :case_file_event_statements_code_description_date_index)
     |> validate_date_format(params)
   end
 

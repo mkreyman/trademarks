@@ -23,11 +23,11 @@ defmodule Trademarks.CaseFile do
     field :registration_date,   :date
     field :mark_identification, :string
     field :renewal_date,        :date
-    many_to_many :attorneys, Attorney, join_through: "case_files_attorneys"
-    has_many :case_file_statements, CaseFileStatement, on_delete: :delete_all
-    has_many :case_file_event_statements, CaseFileEventStatement, on_delete: :delete_all
-    has_many :case_file_owners, CaseFileOwner, on_delete: :delete_all
-    has_one  :correspondent, Correspondent, on_delete: :delete_all
+    many_to_many :attorneys, Attorney, join_through: "case_files_attorneys", on_replace: :delete
+    has_many :case_file_statements, CaseFileStatement, on_replace: :nilify
+    has_many :case_file_event_statements, CaseFileEventStatement, on_replace: :nilify
+    has_many :case_file_owners, CaseFileOwner, on_replace: :nilify
+    has_one  :correspondent, Correspondent, on_replace: :nilify
 
     timestamps()
   end
@@ -37,8 +37,7 @@ defmodule Trademarks.CaseFile do
              filing_date
              registration_date
              mark_identification
-             renewal_date
-            )
+             renewal_date)a
 
   def changeset(struct, params \\ %{}) do
     params = DateFormatter.format(params)

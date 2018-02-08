@@ -13,11 +13,12 @@ defmodule Trademarks.CaseFileStatement do
     timestamps()
   end
 
-  @fields ~w(type_code description)
+  @fields ~w(type_code description)a
 
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, @fields)
     |> foreign_key_constraint(:case_file_id, message: "Select a valid case file")
+    |> unique_constraint(:description, name: :case_file_statements_type_code_description_index)
   end
 end

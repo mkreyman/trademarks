@@ -15,11 +15,12 @@ defmodule Trademarks.Correspondent do
     timestamps()
   end
 
-  @fields ~w(address_1 address_2 address_3 address_4)
+  @fields ~w(address_1 address_2 address_3 address_4)a
 
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, @fields)
     |> foreign_key_constraint(:case_file_id, message: "Select a valid case file")
+    |> unique_constraint(:address_1, name: :correspondents_address_1_address_2_address_3_address_4_index)
   end
 end

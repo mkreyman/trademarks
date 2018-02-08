@@ -14,5 +14,6 @@ defmodule Trademarks.Repo.Migrations.CreateCorrespondents do
     end
 
     create index(:correspondents, [:case_file_id])
+    create unique_index(:correspondents, [:address_1, :address_2, :address_3, :address_4])
   end
 end

@@ -16,5 +16,6 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileOwners do
     end
 
     create index(:case_file_owners, [:case_file_id])
+    create unique_index(:case_file_owners, [:party_name, :address_1, :city, :state, :postcode])
   end
 end
