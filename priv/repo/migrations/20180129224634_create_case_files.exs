@@ -10,7 +10,10 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFiles do
       add :registration_date, :date
       add :mark_identification, :text
       add :renewal_date, :date
-
+      add :attorney, :text
+      add :case_file_statements, :text
+      add :case_file_event_statements, :text
+      add :correspondent, :text
       timestamps()
     end
 

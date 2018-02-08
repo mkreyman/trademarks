@@ -6,28 +6,24 @@ defmodule Trademarks.CaseFile do
 
   alias Trademarks.{
     CaseFile,
-    Attorney,
-    CaseFileStatement,
-    CaseFileEventStatement,
     CaseFileOwner,
-    Correspondent,
-    Utils.DateFormatter,
+    Utils.ParamsFormatter,
     Repo
   }
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "case_files" do
-    field :serial_number,       :string
+    field :serial_number, :string
     field :registration_number, :string
-    field :filing_date,         :date
-    field :registration_date,   :date
+    field :filing_date, :date
+    field :registration_date, :date
     field :mark_identification, :string
-    field :renewal_date,        :date
-    many_to_many :attorneys, Attorney, join_through: "case_files_attorneys", on_replace: :delete
-    has_many :case_file_statements, CaseFileStatement, on_replace: :nilify
-    has_many :case_file_event_statements, CaseFileEventStatement, on_replace: :nilify
-    has_many :case_file_owners, CaseFileOwner, on_replace: :nilify
-    has_one  :correspondent, Correspondent, on_replace: :nilify
+    field :renewal_date, :date
+    field :attorney, :string
+    field :case_file_statements, :string
+    field :case_file_event_statements, :string
+    field :correspondent, :string
+    many_to_many :case_file_owners, CaseFileOwner, join_through: "case_files_case_file_owners", on_replace: :delete
 
     timestamps()
   end
@@ -37,20 +33,20 @@ defmodule Trademarks.CaseFile do
              filing_date
              registration_date
              mark_identification
-             renewal_date)a
+             renewal_date
+             attorney
+             case_file_statements
+             case_file_event_statements
+             correspondent)a
 
   def changeset(struct, params \\ %{}) do
-    params = DateFormatter.format(params)
+    params = ParamsFormatter.format(params)
     struct
     |> cast(params, @fields)
     |> validate_required([:serial_number])
     |> unique_constraint(:serial_number)
     |> validate_date_format(params)
-    |> cast_assoc(:attorneys)
-    |> cast_assoc(:case_file_statements)
-    |> cast_assoc(:case_file_event_statements)
-    |> cast_assoc(:case_file_owners)
-    |> cast_assoc(:correspondent)
+    |> put_assoc(:case_file_owners, parse_case_file_owners(params))
   end
 
   def process(stream) do
@@ -66,26 +62,47 @@ defmodule Trademarks.CaseFile do
     finished = :os.system_time(:seconds)
     number_of_records_now = Trademarks.Repo.one(from cf in "case_files", select: count(cf.id))
     number_of_records = number_of_records_now - number_of_records_before
-    Logger.info "Processed #{number_of_records} case files in #{finished - started} secs"
+    Logger.info "There were #{number_of_records_before} existing case files. \nProcessed #{number_of_records} new case files in #{finished - started} secs"
   end
 
   def create(params) do
     cs = changeset(%CaseFile{}, params)
     case cs.valid? do
       true ->
-        Repo.insert(cs)
+        Repo.insert(cs, on_conflict: :replace_all, conflict_target: :serial_number)
       _ ->
-        Logger.error "Invalid changeset: #{Poison.encode!(params)}"
+        add_error(cs, :case_files, "case_file")
+        Logger.error "Given params: #{inspect(params)}"
+        Logger.error "Invalid changeset: #{inspect(cs.errors)}"
     end
   end
 
+  def parse_case_file_owners(params) do
+    params[:case_file_owners]
+    |> insert_and_get_all()
+  end
+
+  defp insert_and_get_all([]), do: []
+  defp insert_and_get_all(owners) do
+    party_names = Enum.map(owners, &(&1[:party_name]))
+    maps = Enum.map(owners, &(&1))
+    maps =
+      maps
+      |> Enum.map(fn row ->
+           row
+           |> Map.put(:inserted_at, DateTime.utc_now)
+           |> Map.put(:updated_at, DateTime.utc_now)
+         end)
+
+    Repo.insert_all(CaseFileOwner, maps, on_conflict: :nothing)
+    Repo.all(from o in CaseFileOwner, where: o.party_name in ^party_names)
+  end
+
   defp validate_date_format(cs, params) do
-    dates = [
-      params[:filing_date],
-      params[:registration_date],
-      params[:renewal_date]
-    ]
-    if Enum.any?(dates, fn(date)-> DateFormatter.is_date(date) end) == false do
+    dates = [params[:filing_date],
+             params[:registration_date],
+             params[:renewal_date]]
+    if Enum.any?(dates, fn(date)-> ParamsFormatter.is_date(date) end) == false do
       add_error(cs, :case_files, "case_file")
     else
       cs
