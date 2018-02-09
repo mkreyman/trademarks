@@ -46,7 +46,7 @@ defmodule Trademarks.CaseFile do
     |> validate_required([:serial_number])
     |> unique_constraint(:serial_number)
     |> validate_date_format(params)
-    |> put_assoc(:case_file_owners, parse_case_file_owners(params))
+    |> cast_assoc(:case_file_owners)
   end
 
   def process(stream) do
@@ -74,14 +74,20 @@ defmodule Trademarks.CaseFile do
 
   def create(params) do
     cs = changeset(%CaseFile{}, params)
-    case cs.valid? do
-      true ->
-        Repo.insert(cs, on_conflict: :replace_all, conflict_target: :serial_number)
-      _ ->
-        add_error(cs, :case_files, "case_file")
-        Logger.error "Given params: #{inspect(params)}"
-        Logger.error "Invalid changeset: #{inspect(cs.errors)}"
-    end
+    Repo.insert(cs, on_conflict: update_owners(params), conflict_target: :serial_number)
+  end
+
+  def update_owners(params) do
+    case_file = Repo.get_by(CaseFile, serial_number: params[:serial_number])
+                |> Repo.preload(:case_file_owners)
+
+    csmap = Enum.map(params[:case_file_owners], fn owner ->
+              CaseFileOwner.changeset(CaseFileOwner, owner)
+            end)
+
+    Ecto.Changeset.change(case_file)
+    |> Ecto.Changeset.put_assoc(:case_file_owners, csmap )
+    |> Repo.update!
   end
 
   def parse_case_file_owners(params) do
