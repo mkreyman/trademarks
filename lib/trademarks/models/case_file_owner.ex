@@ -23,7 +23,7 @@ defmodule Trademarks.CaseFileOwner do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, @fields)
-    |> unique_constraint(:party_name, name: :case_file_owners_party_name_address_1_city_state_postcode_index)
+    |> unique_constraint(:party_name)
   end
 
   def create(params) do

@@ -13,7 +13,6 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileOwners do
       timestamps()
     end
 
-    create unique_index(:case_file_owners,
-      [:party_name, :address_1, :city, :state, :postcode])
+    create unique_index(:case_file_owners, :party_name)
   end
 end

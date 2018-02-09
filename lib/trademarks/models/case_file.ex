@@ -51,7 +51,8 @@ defmodule Trademarks.CaseFile do
 
   def process(stream) do
     started = :os.system_time(:seconds)
-    number_of_records_before = Trademarks.Repo.one(from cf in "case_files", select: count(cf.id))
+    number_of_case_files_before = Trademarks.Repo.one(from cf in "case_files", select: count(cf.id))
+    number_of_case_file_owners_before = Trademarks.Repo.one(from cfo in "case_file_owners", select: count(cfo.id))
     Logger.info "Started processing ..."
 
     # subset = 30000
@@ -60,9 +61,15 @@ defmodule Trademarks.CaseFile do
     |> Enum.map(&create(&1))
 
     finished = :os.system_time(:seconds)
-    number_of_records_now = Trademarks.Repo.one(from cf in "case_files", select: count(cf.id))
-    number_of_records = number_of_records_now - number_of_records_before
-    Logger.info "There were #{number_of_records_before} existing case files. \nProcessed #{number_of_records} new case files in #{finished - started} secs"
+    number_of_case_files_now = Trademarks.Repo.one(from cf in "case_files", select: count(cf.id))
+    new_case_files = number_of_case_files_now - number_of_case_files_before
+    number_of_case_file_owners_now = Trademarks.Repo.one(from cfo in "case_file_owners", select: count(cfo.id))
+    new_case_file_owners = number_of_case_file_owners_now - number_of_case_file_owners_before
+    Logger.info """
+      There were #{number_of_case_files_before} existing case files and
+      #{number_of_case_file_owners_before} case file owners. Processed #{new_case_files} new case files
+      and #{new_case_file_owners} new case file owners in #{finished - started} secs\n
+      """
   end
 
   def create(params) do
@@ -95,7 +102,7 @@ defmodule Trademarks.CaseFile do
          end)
 
     Repo.insert_all(CaseFileOwner, maps, on_conflict: :nothing)
-    Repo.all(from o in CaseFileOwner, where: o.party_name in ^party_names)
+    Repo.all(from cfo in CaseFileOwner, where: cfo.party_name in ^party_names)
   end
 
   defp validate_date_format(cs, params) do
