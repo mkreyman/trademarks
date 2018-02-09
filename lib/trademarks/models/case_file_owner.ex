@@ -3,7 +3,7 @@ defmodule Trademarks.CaseFileOwner do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Trademarks.{CaseFileOwner, CaseFile, Repo}
+  alias Trademarks.{CaseFilesCaseFileOwner, CaseFileOwner, CaseFile, Repo}
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "case_file_owners" do
@@ -13,7 +13,7 @@ defmodule Trademarks.CaseFileOwner do
     field :city, :string
     field :state, :string
     field :postcode, :string
-    many_to_many :case_files, CaseFile, join_through: "case_files_case_file_owners", on_replace: :delete
+    many_to_many :case_files, CaseFile, join_through: CaseFilesCaseFileOwner, on_replace: :delete
 
     timestamps()
   end
