@@ -74,29 +74,10 @@ defmodule Trademarks.CaseFile do
   end
 
   def create(params) do
-    case_file =
-      case Repo.get_by(CaseFile, serial_number: params[:serial_number]) do
-        nil  -> %CaseFile{serial_number: params[:serial_number]}
-        case_file -> case_file
-      end
-      |> CaseFile.changeset(params)
-      |> Repo.insert_or_update
-      |> case do
-           {:ok, case_file}    -> case_file
-           {:error, changeset} -> {:error, changeset}
-         end
-
-    # case_file_changeset = changeset(%CaseFile{}, params)
-    # on_conflict = [set: [body: "updated"]]
-    # {:ok, case_file} = Repo.insert(case_file_changeset,
-    #                      on_conflict: :replace_all, conflict_target: :serial_number)
-
-    # {:ok, case_file} = Repo.insert_or_update(case_file_changeset)
-
+    {:ok, case_file} = first_or_updated_case_file(params)
     params[:case_file_owners]
-    |> Enum.map(&(CaseFileOwner.changeset(%CaseFileOwner{}, &1)))
-    |> Enum.map(&(Repo.insert(&1, on_conflict: :replace_all, conflict_target: :party_name)))
-    |> Enum.map(fn({:ok, owner}) -> owner end)
+    |> Enum.map(&first_or_updated_case_file_owner/1)
+    |> Enum.map(fn({:ok, case_file_owner}) -> case_file_owner end)
     |> Enum.map(fn(case_file_owner) ->
          cs = CaseFilesCaseFileOwner.changeset(
                 %CaseFilesCaseFileOwner{}, %{case_file_id: case_file.id,
@@ -110,45 +91,31 @@ defmodule Trademarks.CaseFile do
        end)
   end
 
-  # def update_owners(params) do
-  #   owners = Enum.map(params[:case_file_owners], &(parse_case_file_owners/1))
-  #   IEx.pry
-  #   case_file = find_or_create(params)
-  #               |> Repo.preload(:case_file_owners)
-  #               |> Ecto.Changeset.change()
-  #               |> Ecto.Changeset.put_assoc(:case_file_owners, Enum.map(owners, &change/1))
-  #               |> Repo.update!
-  # end
+  def first_or_updated_case_file(params) do
+    case Repo.get_by(CaseFile, serial_number: params[:serial_number]) do
+        nil  -> %CaseFile{serial_number: params[:serial_number]}
+        case_file -> case_file
+    end
+    |> CaseFile.changeset(params)
+    |> Repo.insert_or_update
+    |> case do
+         {:ok, case_file}    -> {:ok, case_file}
+         {:error, changeset} -> {:error, changeset}
+       end
+  end
 
-  # def find_or_create(case_file_params) do
-  #   query = (from cf in CaseFile,
-  #            where: cf.serial_number == ^case_file_params[:serial_number])
-  #   if !Repo.one(query)  do
-  #     Repo.insert(CaseFile.changeset(%CaseFile{}, case_file_params))
-  #   end
-  #   Repo.one(query)
-  # end
-
-  # def parse_case_file_owners(params) do
-  #   params[:case_file_owners]
-  #   |> insert_and_get_all()
-  # end
-
-  # defp insert_and_get_all([]), do: []
-  # defp insert_and_get_all(owners) do
-  #   party_names = Enum.map(owners, &(&1[:party_name]))
-  #   maps = Enum.map(owners, &(&1))
-  #   maps =
-  #     maps
-  #     |> Enum.map(fn row ->
-  #          row
-  #          |> Map.put(:inserted_at, DateTime.utc_now)
-  #          |> Map.put(:updated_at, DateTime.utc_now)
-  #        end)
-
-  #   Repo.insert_all(CaseFileOwner, maps, on_conflict: :nothing)
-  #   Repo.all(from cfo in CaseFileOwner, where: cfo.party_name in ^party_names)
-  # end
+  def first_or_updated_case_file_owner(params) do
+    case Repo.get_by(CaseFileOwner, party_name: params[:party_name]) do
+        nil  -> %CaseFileOwner{party_name: params[:party_name]}
+        case_file_owner -> case_file_owner
+    end
+    |> CaseFileOwner.changeset(params)
+    |> Repo.insert_or_update
+    |> case do
+         {:ok, case_file_owner} -> {:ok, case_file_owner}
+         {:error, changeset}    -> {:error, changeset}
+       end
+  end
 
   defp validate_date_format(cs, params) do
     dates = [params[:filing_date],
