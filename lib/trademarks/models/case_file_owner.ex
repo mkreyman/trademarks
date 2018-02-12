@@ -33,7 +33,9 @@ defmodule Trademarks.CaseFileOwner do
     #   true ->
     #     Repo.insert(cs, on_conflict: :nothing)
     #   _ ->
-    #     Logger.error "Given params: #{Poison.encode!(params)}"
+    #     Logger.error fn ->
+    #       "Given params: #{Poison.encode!(params)}"
+    #     end
     #     add_error(cs, :case_file_owners, "case_file_owner")
     # end
   end

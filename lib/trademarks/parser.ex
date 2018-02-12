@@ -61,7 +61,9 @@ defmodule Trademarks.Parser do
 
     case result do
       {:ok, [xml_file]} ->
-        Logger.info "Extracted #{zip_file} into #{xml_file}"
+        Logger.info fn ->
+          "Extracted #{zip_file} into #{xml_file}"
+        end
         {:ok, xml_file}
       _ ->
         {:error, zip_file}

@@ -66,11 +66,13 @@ defmodule Trademarks.CaseFile do
     new_case_files = number_of_case_files_now - number_of_case_files_before
     number_of_case_file_owners_now = Trademarks.Repo.one(from cfo in "case_file_owners", select: count(cfo.id))
     new_case_file_owners = number_of_case_file_owners_now - number_of_case_file_owners_before
-    Logger.info """
+    Logger.info fn ->
+      """
       There were #{number_of_case_files_before} existing case files and
       #{number_of_case_file_owners_before} case file owners. Processed #{new_case_files} new case files
       and #{new_case_file_owners} new case file owners in #{finished - started} secs\n
       """
+    end
   end
 
   def create(params) do
@@ -91,9 +93,13 @@ defmodule Trademarks.CaseFile do
            end)
     else
       {:error, changeset} ->
-        Logger.error "Invalid changeset: #{inspect(changeset)}"
+        Logger.error fn ->
+          "Invalid changeset: #{inspect(changeset)}"
+        end
       _ ->
-        Logger.error "Something went wrong with params: #{inspect(params)}"
+        Logger.error fn ->
+          "Something went wrong with params: #{inspect(params)}"
+        end
     end
   end
 

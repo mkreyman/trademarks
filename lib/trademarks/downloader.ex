@@ -39,13 +39,17 @@ defmodule Trademarks.Downloader do
   end
 
   def handle_response(%{status_code: 200, body: body}, output_filename) do
-    Logger.info "Successfully downloaded #{output_filename}"
+    Logger.info fn ->
+      "Successfully downloaded #{output_filename}"
+    end
     File.write!(output_filename, body)
     { :ok, output_filename }
   end
 
   def handle_response(%{status_code: status, body: _}, _) do
-    Logger.error "Error #{status} returned"
+    Logger.error fn ->
+      "Error #{status} returned"
+    end
     { :error, :download_failed }
   end
 end
