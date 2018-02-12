@@ -74,21 +74,27 @@ defmodule Trademarks.CaseFile do
   end
 
   def create(params) do
-    {:ok, case_file} = first_or_updated_case_file(params)
-    params[:case_file_owners]
-    |> Enum.map(&first_or_updated_case_file_owner/1)
-    |> Enum.map(fn({:ok, case_file_owner}) -> case_file_owner end)
-    |> Enum.map(fn(case_file_owner) ->
-         cs = CaseFilesCaseFileOwner.changeset(
-                %CaseFilesCaseFileOwner{}, %{case_file_id: case_file.id,
-                                             case_file_owner_id: case_file_owner.id}
-              )
-         Repo.insert(cs, on_conflict: :nothing)
-         # case Repo.insert(cs) do
-         #   {:ok, assoc} -> # Assoc was created!
-         #   {:error, changeset} -> # Handle the error
-         # end
-       end)
+    with {:ok, case_file} <- first_or_updated_case_file(params) do
+      params[:case_file_owners]
+        |> Enum.map(&first_or_updated_case_file_owner/1)
+        |> Enum.map(fn({:ok, case_file_owner}) -> case_file_owner end)
+        |> Enum.map(fn(case_file_owner) ->
+             cs = CaseFilesCaseFileOwner.changeset(
+                    %CaseFilesCaseFileOwner{}, %{case_file_id: case_file.id,
+                                                 case_file_owner_id: case_file_owner.id}
+                  )
+             Repo.insert(cs, on_conflict: :nothing)
+             # case Repo.insert(cs) do
+             #   {:ok, assoc} -> # Assoc was created!
+             #   {:error, changeset} -> # Handle the error
+             # end
+           end)
+    else
+      {:error, changeset} ->
+        Logger.error "Invalid changeset: #{inspect(changeset)}"
+      _ ->
+        Logger.error "Something went wrong with params: #{inspect(params)}"
+    end
   end
 
   def first_or_updated_case_file(params) do
@@ -120,7 +126,8 @@ defmodule Trademarks.CaseFile do
   defp validate_date_format(cs, params) do
     dates = [params[:filing_date],
              params[:registration_date],
-             params[:renewal_date]]
+             params[:renewal_date],
+             params[:date]]
     if Enum.any?(dates, fn(date)-> ParamsFormatter.is_date(date) end) == false do
       add_error(cs, :case_files, "case_file")
     else
