@@ -94,7 +94,11 @@ defmodule Trademarks.CaseFile do
     else
       {:error, changeset} ->
         Logger.error fn ->
-          "Invalid changeset: #{inspect(changeset)}"
+          """
+          Invalid changeset for case file serial number: #{inspect(params[:serial_number])},
+          params: #{inspect(params)},
+          changeset: #{inspect(changeset)}
+          """
         end
       _ ->
         Logger.error fn ->

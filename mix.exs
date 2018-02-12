@@ -15,7 +15,7 @@ defmodule Trademarks.Mixfile do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :ecto, :postgrex],
+      extra_applications: [:logger, :logger_file_backend, :ecto, :postgrex],
       mod: {Trademarks.Application, []}
     ]
   end
@@ -28,7 +28,8 @@ defmodule Trademarks.Mixfile do
       {:sweet_xml, "~> 0.6.5"},
       {:floki, "~> 0.19.2"},
       {:postgrex, "~> 0.13.4"},
-      {:ecto, "~> 2.2.8"}
+      {:ecto, "~> 2.2.8"},
+      {:logger_file_backend, "~> 0.0.10"}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
     ]
