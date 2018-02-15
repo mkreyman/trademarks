@@ -24,4 +24,5 @@ erl_crash.dump
 
 # Other files to ignore
 /tmp/
+/log/
 .DS_Store

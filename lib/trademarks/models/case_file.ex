@@ -86,10 +86,6 @@ defmodule Trademarks.CaseFile do
                                                  case_file_owner_id: case_file_owner.id}
                   )
              Repo.insert(cs, on_conflict: :nothing)
-             # case Repo.insert(cs) do
-             #   {:ok, assoc} -> # Assoc was created!
-             #   {:error, changeset} -> # Handle the error
-             # end
            end)
     else
       {:error, changeset} ->

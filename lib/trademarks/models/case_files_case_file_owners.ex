@@ -17,5 +17,6 @@ defmodule Trademarks.CaseFilesCaseFileOwner do
     |> validate_required([:case_file_id, :case_file_owner_id])
     |> foreign_key_constraint(:case_file_id)
     |> foreign_key_constraint(:case_file_owner_id)
+    |> unique_constraint(:case_file_id_case_file_owner_id_index)
   end
 end

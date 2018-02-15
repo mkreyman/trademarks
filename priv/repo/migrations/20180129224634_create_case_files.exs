@@ -18,5 +18,6 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFiles do
     end
 
     create unique_index(:case_files, [:serial_number])
+    create index(:case_files, [:mark_identification])
   end
 end
