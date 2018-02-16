@@ -1,6 +1,5 @@
 defmodule Trademarks.CaseFile do
   require Logger
-  require IEx
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
