@@ -74,7 +74,7 @@ defmodule Trademarks.CaseFile do
     end
   end
 
-  def create(params) do
+  defp create(params) do
     with {:ok, case_file} <- first_or_updated_case_file(params) do
       params[:case_file_owners]
         |> Enum.map(&first_or_updated_case_file_owner/1)
@@ -102,20 +102,7 @@ defmodule Trademarks.CaseFile do
     end
   end
 
-  def find(queryable \\ __MODULE__, params) do
-    term = params[:mark_identification]
-    query =
-      case params[:exact] do
-        true -> "#{term}"
-        _    -> "%#{term}%"
-      end
-    queryable
-    |> where([cf], ilike(cf.mark_identification, ^query))
-    |> order_by(desc: :filing_date)
-    |> preload(:case_file_owners)
-  end
-
-  def first_or_updated_case_file(params) do
+  defp first_or_updated_case_file(params) do
     case Repo.get_by(CaseFile, serial_number: params[:serial_number]) do
         nil  -> %CaseFile{serial_number: params[:serial_number]}
         case_file -> case_file
@@ -128,7 +115,7 @@ defmodule Trademarks.CaseFile do
        end
   end
 
-  def first_or_updated_case_file_owner(params) do
+  defp first_or_updated_case_file_owner(params) do
     case Repo.get_by(CaseFileOwner, party_name: params[:party_name]) do
         nil  -> %CaseFileOwner{party_name: params[:party_name]}
         case_file_owner -> case_file_owner

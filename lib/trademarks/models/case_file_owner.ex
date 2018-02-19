@@ -4,7 +4,13 @@ defmodule Trademarks.CaseFileOwner do
   import Ecto.Changeset
   import Ecto.Query
 
-  alias Trademarks.{CaseFilesCaseFileOwner, CaseFileOwner, CaseFile, Repo}
+  alias Trademarks.{
+    CaseFilesCaseFileOwner,
+    CaseFileOwner,
+    CaseFile,
+    CaseFileView,
+    Repo
+  }
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "case_file_owners" do
@@ -15,6 +21,9 @@ defmodule Trademarks.CaseFileOwner do
     field :state, :string
     field :postcode, :string
     many_to_many :case_files, CaseFile, join_through: CaseFilesCaseFileOwner, on_replace: :delete
+    many_to_many :case_file_views, CaseFileView,
+                 join_through: CaseFilesCaseFileOwner,
+                 join_keys: [case_file_owner_id: :id, case_file_id: :case_file_id]
 
     timestamps()
   end
@@ -50,6 +59,7 @@ defmodule Trademarks.CaseFileOwner do
       end
     queryable
     |> where([o], ilike(o.party_name, ^query))
-    |> preload(:case_files)
+    |> preload(:case_file_views)
+    |> Repo.all
   end
 end
