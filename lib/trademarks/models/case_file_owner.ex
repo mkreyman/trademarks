@@ -2,6 +2,7 @@ defmodule Trademarks.CaseFileOwner do
   require Logger
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   alias Trademarks.{CaseFilesCaseFileOwner, CaseFileOwner, CaseFile, Repo}
 
@@ -38,5 +39,17 @@ defmodule Trademarks.CaseFileOwner do
     #     end
     #     add_error(cs, :case_file_owners, "case_file_owner")
     # end
+  end
+
+  def find(queryable \\ __MODULE__, params) do
+    term = params[:party_name]
+    query =
+      case params[:exact] do
+        true -> "#{term}"
+        _    -> "%#{term}%"
+      end
+    queryable
+    |> where([o], ilike(o.party_name, ^query))
+    |> preload(:case_files)
   end
 end
