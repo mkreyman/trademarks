@@ -33,21 +33,12 @@ defmodule Trademarks.CaseFileOwner do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, @fields)
-    |> unique_constraint(:party_name)
+    |> unique_constraint(:all_fields_index)
   end
 
   def create(params) do
     cs = changeset(%CaseFileOwner{}, params)
     Repo.insert(cs, on_conflict: :nothing)
-    # case cs.valid? do
-    #   true ->
-    #     Repo.insert(cs, on_conflict: :nothing)
-    #   _ ->
-    #     Logger.error fn ->
-    #       "Given params: #{Poison.encode!(params)}"
-    #     end
-    #     add_error(cs, :case_file_owners, "case_file_owner")
-    # end
   end
 
   def find(queryable \\ __MODULE__, params) do

@@ -5,7 +5,11 @@ defmodule Trademarks.CaseFile do
   import Ecto.Query
 
   alias Trademarks.{
+    Attorney,
     CaseFile,
+    CaseFileStatement,
+    CaseFileEventStatement,
+    Correspondent,
     CaseFileOwner,
     CaseFilesCaseFileOwner,
     Utils.ParamsFormatter,
@@ -18,12 +22,12 @@ defmodule Trademarks.CaseFile do
     field :registration_number, :string
     field :filing_date, :date
     field :registration_date, :date
-    field :mark_identification, :string
+    field :trademark, :string
     field :renewal_date, :date
-    field :attorney, :string
-    field :case_file_statements, :string
-    field :case_file_event_statements, :string
-    field :correspondent, :string
+    has_many :attorneys, Attorney
+    has_many :case_file_statements, CaseFileStatement, on_delete: :delete_all
+    has_many :case_file_event_statements, CaseFileEventStatement, on_delete: :delete_all
+    has_many :correspondents, Correspondent
     many_to_many :case_file_owners, CaseFileOwner, join_through: CaseFilesCaseFileOwner, on_replace: :delete
 
     timestamps()
@@ -33,12 +37,8 @@ defmodule Trademarks.CaseFile do
              registration_number
              filing_date
              registration_date
-             mark_identification
-             renewal_date
-             attorney
-             case_file_statements
-             case_file_event_statements
-             correspondent)a
+             trademark
+             renewal_date)a
 
   def changeset(struct, params \\ %{}) do
     params = ParamsFormatter.format(params)

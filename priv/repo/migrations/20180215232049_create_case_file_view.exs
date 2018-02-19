@@ -9,9 +9,8 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileView do
              f.registration_number,
              f.filing_date,
              f.registration_date,
-             f.mark_identification as trademark,
-             f.renewal_date,
-             f.attorney
+             f.trademark,
+             f.renewal_date
       from case_files f;
     """
   end
