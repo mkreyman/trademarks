@@ -10,10 +10,14 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFiles do
       add :registration_date, :date
       add :trademark, :text
       add :renewal_date, :date
+      add :attorney_id, references(:attorneys, type: :uuid, null: false)
+      add :correspondent_id, references(:correspondents, type: :uuid, null: false)
       timestamps()
     end
 
     create unique_index(:case_files, [:serial_number])
     create index(:case_files, [:trademark])
+    create index(:case_files, [:attorney_id])
+    create index(:case_files, [:correspondent_id])
   end
 end

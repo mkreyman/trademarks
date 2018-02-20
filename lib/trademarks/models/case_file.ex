@@ -18,16 +18,16 @@ defmodule Trademarks.CaseFile do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "case_files" do
+    belongs_to :attorney, Attorney, type: :binary_id
+    belongs_to :correspondent, Correspondent, type: :binary_id
     field :serial_number, :string
     field :registration_number, :string
     field :filing_date, :date
     field :registration_date, :date
     field :trademark, :string
     field :renewal_date, :date
-    has_many :attorneys, Attorney
     has_many :case_file_statements, CaseFileStatement, on_delete: :delete_all
     has_many :case_file_event_statements, CaseFileEventStatement, on_delete: :delete_all
-    has_many :correspondents, Correspondent
     many_to_many :case_file_owners, CaseFileOwner, join_through: CaseFilesCaseFileOwner, on_replace: :delete
 
     timestamps()
@@ -45,7 +45,7 @@ defmodule Trademarks.CaseFile do
     struct
     |> cast(params, @fields)
     |> validate_required([:serial_number])
-    |> unique_constraint(:serial_number)
+    |> unique_constraint(:case_files_serial_number_index)
     |> validate_date_format(params)
   end
 
@@ -74,18 +74,47 @@ defmodule Trademarks.CaseFile do
     end
   end
 
+  def find(queryable \\ __MODULE__, params) do
+    term = params[:trademark]
+    query =
+      case params[:exact] do
+        true -> "#{term}"
+        _    -> "%#{term}%"
+      end
+    queryable
+    |> where([cf], ilike(cf.trademark, ^query))
+    |> order_by(desc: :filing_date)
+    |> preload(:attorney)
+    |> preload(:case_file_statements)
+    |> preload(:case_file_event_statements)
+    |> preload(:correspondent)
+    |> preload(:case_file_owners)
+    |> Repo.all
+  end
+
   defp create(params) do
-    with {:ok, case_file} <- first_or_updated_case_file(params) do
-      params[:case_file_owners]
-        |> Enum.map(&first_or_updated_case_file_owner/1)
-        |> Enum.map(fn({:ok, case_file_owner}) -> case_file_owner end)
-        |> Enum.map(fn(case_file_owner) ->
-             cs = CaseFilesCaseFileOwner.changeset(
-                    %CaseFilesCaseFileOwner{}, %{case_file_id: case_file.id,
-                                                 case_file_owner_id: case_file_owner.id}
-                  )
-             Repo.insert(cs, on_conflict: :nothing)
-           end)
+    with {:ok, case_file} <- create_or_update(params) do
+      case_file
+      |> Repo.preload([:attorney,
+                       :correspondent,
+                       :case_file_statements,
+                       :case_file_event_statements,
+                       :case_file_owners])
+      |> associate_owners(params)
+      |> CaseFile.changeset(params)
+      |> put_change(:attorney_id,
+                    Attorney.create_or_update(params))
+      |> put_change(:correspondent_id,
+                    Correspondent.create_or_update(params[:correspondent]))
+      |> put_change(:case_file_statements,
+                    CaseFileStatement.create_or_update_all(params[:case_file_statements],case_file))
+      |> put_change(:case_file_event_statements,
+                    CaseFileEventStatement.create_or_update_all(params[:case_file_event_statements], case_file))
+      |> Repo.insert_or_update
+      |> case do
+           {:ok, case_file}    -> {:ok, case_file}
+           {:error, changeset} -> {:error, changeset}
+         end
     else
       {:error, changeset} ->
         Logger.error fn ->
@@ -102,29 +131,30 @@ defmodule Trademarks.CaseFile do
     end
   end
 
-  defp first_or_updated_case_file(params) do
+  defp associate_owners(case_file, params) do
+    params[:case_file_owners]
+    |> Enum.map(&CaseFileOwner.create_or_update/1)
+    |> Enum.map(fn({:ok, case_file_owner}) -> case_file_owner end)
+    |> Enum.map(fn(case_file_owner) ->
+         cs = CaseFilesCaseFileOwner.changeset(
+                %CaseFilesCaseFileOwner{}, %{case_file_id: case_file.id,
+                                             case_file_owner_id: case_file_owner.id}
+              )
+         Repo.insert(cs, on_conflict: :nothing)
+       end)
+    case_file
+  end
+
+  defp create_or_update(params) do
     case Repo.get_by(CaseFile, serial_number: params[:serial_number]) do
-        nil  -> %CaseFile{serial_number: params[:serial_number]}
-        case_file -> case_file
+      nil  -> %CaseFile{serial_number: params[:serial_number]}
+      case_file -> case_file
     end
     |> CaseFile.changeset(params)
     |> Repo.insert_or_update
     |> case do
          {:ok, case_file}    -> {:ok, case_file}
          {:error, changeset} -> {:error, changeset}
-       end
-  end
-
-  defp first_or_updated_case_file_owner(params) do
-    case Repo.get_by(CaseFileOwner, party_name: params[:party_name]) do
-        nil  -> %CaseFileOwner{party_name: params[:party_name]}
-        case_file_owner -> case_file_owner
-    end
-    |> CaseFileOwner.changeset(params)
-    |> Repo.insert_or_update
-    |> case do
-         {:ok, case_file_owner} -> {:ok, case_file_owner}
-         {:error, changeset}    -> {:error, changeset}
        end
   end
 

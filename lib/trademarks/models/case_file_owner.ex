@@ -8,7 +8,6 @@ defmodule Trademarks.CaseFileOwner do
     CaseFilesCaseFileOwner,
     CaseFileOwner,
     CaseFile,
-    CaseFileView,
     Repo
   }
 
@@ -21,9 +20,6 @@ defmodule Trademarks.CaseFileOwner do
     field :state, :string
     field :postcode, :string
     many_to_many :case_files, CaseFile, join_through: CaseFilesCaseFileOwner, on_replace: :delete
-    many_to_many :case_file_views, CaseFileView,
-                 join_through: CaseFilesCaseFileOwner,
-                 join_keys: [case_file_owner_id: :id, case_file_id: :case_file_id]
 
     timestamps()
   end
@@ -36,9 +32,17 @@ defmodule Trademarks.CaseFileOwner do
     |> unique_constraint(:all_fields_index)
   end
 
-  def create(params) do
-    cs = changeset(%CaseFileOwner{}, params)
-    Repo.insert(cs, on_conflict: :nothing)
+  def create_or_update(params) do
+    case Repo.get_by(CaseFileOwner, party_name: params[:party_name]) do
+      nil  -> %CaseFileOwner{party_name: params[:party_name]}
+      case_file_owner -> case_file_owner
+    end
+    |> changeset(params)
+    |> Repo.insert_or_update
+    |> case do
+         {:ok, case_file_owner} -> {:ok, case_file_owner}
+         {:error, changeset}    -> {:error, changeset}
+       end
   end
 
   def find(queryable \\ __MODULE__, params) do
@@ -50,7 +54,7 @@ defmodule Trademarks.CaseFileOwner do
       end
     queryable
     |> where([o], ilike(o.party_name, ^query))
-    |> preload(:case_file_views)
+    |> preload(:case_files)
     |> Repo.all
   end
 end

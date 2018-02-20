@@ -4,13 +4,10 @@ defmodule Trademarks.Repo.Migrations.CreateAttorneys do
   def change do
     create table(:attorneys, primary_key: false) do
       add :id, :uuid, primary_key: true
-      add :case_file_id, references(:case_files, type: :uuid, null: false)
       add :name, :text
-
-      timestamps
+      timestamps()
     end
 
-    create unique_index(:attorneys, [:name])
-    create index(:attorneys, [:case_file_id])
+    create unique_index(:attorneys, :name)
   end
 end

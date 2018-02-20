@@ -4,16 +4,13 @@ defmodule Trademarks.Repo.Migrations.CreateCorrespondents do
   def change do
     create table(:correspondents, primary_key: false) do
       add :id, :uuid, primary_key: true
-      add :case_file_id, references(:case_files, type: :uuid, null: false)
       add :address_1, :text
       add :address_2, :text
       add :address_3, :text
       add :address_4, :text
-
       timestamps()
     end
 
-    create index(:correspondents, [:case_file_id])
     create unique_index(:correspondents,
                         [:address_1, :address_2, :address_3, :address_4],
                         name: :addresses_index)
