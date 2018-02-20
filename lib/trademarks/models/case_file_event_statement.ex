@@ -16,7 +16,6 @@ defmodule Trademarks.CaseFileEventStatement do
     field :type,        :string
     field :description, :string
     field :date,        :date
-    timestamps()
   end
 
   @fields ~w(code type description date)

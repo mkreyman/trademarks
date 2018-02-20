@@ -7,7 +7,6 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileStatements do
       add :case_file_id, references(:case_files, type: :uuid, null: false)
       add :type_code, :text
       add :description, :text
-      timestamps()
     end
 
     # The conventional way doesn't work because of long descriptions.

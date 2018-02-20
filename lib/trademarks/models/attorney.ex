@@ -1,7 +1,6 @@
 defmodule Trademarks.Attorney do
   use Ecto.Schema
   import Ecto.Changeset
-  import Ecto.Query
 
   alias Trademarks.{CaseFile, Attorney, Repo}
 
@@ -9,7 +8,6 @@ defmodule Trademarks.Attorney do
   schema "attorneys" do
     field :name, :string
     has_many :case_files, CaseFile
-    timestamps()
   end
 
   @fields ~w(name)
@@ -32,18 +30,5 @@ defmodule Trademarks.Attorney do
          {:ok, attorney} -> attorney.id
          {:error, changeset}    -> {:error, changeset}
        end
-  end
-
-  def find(queryable \\ __MODULE__, params) do
-    term = params[:attorney_name]
-    query =
-      case params[:exact] do
-        true -> "#{term}"
-        _    -> "%#{term}%"
-      end
-    queryable
-    |> where([a], ilike(a.name, ^query))
-    |> preload(:case_files)
-    |> Repo.all
   end
 end

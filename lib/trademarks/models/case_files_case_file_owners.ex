@@ -8,7 +8,6 @@ defmodule Trademarks.CaseFilesCaseFileOwner do
   schema "case_files_case_file_owners" do
     belongs_to :case_file, CaseFile, type: :binary_id, on_replace: :delete
     belongs_to :case_file_owner, CaseFileOwner, type: :binary_id, on_replace: :delete
-    timestamps()
   end
 
   def changeset(struct, params \\ %{}) do

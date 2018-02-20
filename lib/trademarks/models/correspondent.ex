@@ -11,7 +11,6 @@ defmodule Trademarks.Correspondent do
     field :address_3, :string
     field :address_4, :string
     has_many :case_files, CaseFile
-    timestamps()
   end
 
   @fields ~w(address_1 address_2 address_3 address_4)

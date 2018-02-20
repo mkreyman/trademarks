@@ -2,7 +2,6 @@ defmodule Trademarks.CaseFileOwner do
   require Logger
   use Ecto.Schema
   import Ecto.Changeset
-  import Ecto.Query
 
   alias Trademarks.{
     CaseFilesCaseFileOwner,
@@ -20,8 +19,8 @@ defmodule Trademarks.CaseFileOwner do
     field :state, :string
     field :postcode, :string
     many_to_many :case_files, CaseFile, join_through: CaseFilesCaseFileOwner, on_replace: :delete
-
-    timestamps()
+    has_one :attorney, through: [:case_files, :attorney]
+    has_one :correspondent, through: [:case_files, :correspondent]
   end
 
   @fields ~w(party_name address_1 address_2 city state postcode)a
@@ -43,18 +42,5 @@ defmodule Trademarks.CaseFileOwner do
          {:ok, case_file_owner} -> {:ok, case_file_owner}
          {:error, changeset}    -> {:error, changeset}
        end
-  end
-
-  def find(queryable \\ __MODULE__, params) do
-    term = params[:party_name]
-    query =
-      case params[:exact] do
-        true -> "#{term}"
-        _    -> "%#{term}%"
-      end
-    queryable
-    |> where([o], ilike(o.party_name, ^query))
-    |> preload(:case_files)
-    |> Repo.all
   end
 end

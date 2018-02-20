@@ -29,8 +29,6 @@ defmodule Trademarks.CaseFile do
     has_many :case_file_statements, CaseFileStatement, on_delete: :delete_all
     has_many :case_file_event_statements, CaseFileEventStatement, on_delete: :delete_all
     many_to_many :case_file_owners, CaseFileOwner, join_through: CaseFilesCaseFileOwner, on_replace: :delete
-
-    timestamps()
   end
 
   @fields ~w(serial_number
@@ -72,24 +70,6 @@ defmodule Trademarks.CaseFile do
       and #{new_case_file_owners} new case file owners in #{finished - started} secs\n
       """
     end
-  end
-
-  def find(queryable \\ __MODULE__, params) do
-    term = params[:trademark]
-    query =
-      case params[:exact] do
-        true -> "#{term}"
-        _    -> "%#{term}%"
-      end
-    queryable
-    |> where([cf], ilike(cf.trademark, ^query))
-    |> order_by(desc: :filing_date)
-    |> preload(:attorney)
-    |> preload(:case_file_statements)
-    |> preload(:case_file_event_statements)
-    |> preload(:correspondent)
-    |> preload(:case_file_owners)
-    |> Repo.all
   end
 
   defp create(params) do

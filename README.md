@@ -25,32 +25,34 @@ be found at [https://hexdocs.pm/trademarks](https://hexdocs.pm/trademarks).
 
 ```elixir
 alias Trademarks.{
-    Downloader,
-    Parser,
-    CaseFile,
-    CaseFileOwner,
-    Attorney,
-    CaseFileStatement,
-    CaseFileEventStatement,
-    Correspondent,
-    Repo}
+  Downloader,
+  Parser,
+  CaseFile,
+  CaseFileOwner,
+  CaseFileOwnerView,
+  Attorney,
+  Correspondent,
+  Repo,
+  Search
+}
 Downloader.start
 {:ok, stream} = Parser.start("./tmp/trademarks.zip")
+{:ok, stream} = Parser.start("./tmp/sample.zip")
 CaseFile.process(stream)
 Repo.all(CaseFile) |> Enum.count
 Repo.all(CaseFileOwner) |> Enum.count
 Repo.all(Attorney) |> Enum.count
 attorney = Repo.all(Attorney) |> Repo.preload(:case_files) |> Enum.at(0)
 attorney.case_files
-Repo.all(CaseFileStatement) |> Enum.count
-Repo.all(CaseFileEventStatement) |> Enum.count
 Repo.all(Correspondent) |> Enum.count
 params = %{party_name: "united"}
-CaseFileOwner.find(params)
+Search.by_owner(params)
 params2 = %{trademark: "diamond"}
 params3 = %{trademark: "prime", exact: true}
-CaseFile.find(params2)
-params4 = %{attorney_name: "Jim H. Salter"}
-Attorney.find(params4)
+Search.by_trademark(params2)
+params4 = %{attorney: "Jim H. Salter"}
+Search.by_attorney(params4)
+params5 = %{correspondent: "Salter"}
+Search.by_correspondent(params4)
 ```
 

@@ -9,7 +9,6 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileEventStatements do
       add :type, :text
       add :description, :text
       add :date, :date
-      timestamps()
     end
 
     # The conventional way doesn't work because of long descriptions.
