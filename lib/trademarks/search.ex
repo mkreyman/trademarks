@@ -6,7 +6,6 @@ defmodule Trademarks.Search do
     CaseFile,
     Correspondent,
     CaseFileOwner,
-    CaseFileOwnerView,
     Repo
   }
 
@@ -62,18 +61,6 @@ defmodule Trademarks.Search do
                                      :registration_date, :trademark, :renewal_date],
                         attorney: [:id, :name],
                         correspondent: [:id, :address_1, :address_2, :address_3, :address_4]]
-  end
-
-  def by_owner_view(params) do
-    term = params[:owner_name]
-    query =
-      case params[:exact] do
-        true -> "#{term}"
-        _    -> "%#{term}%"
-      end
-    CaseFileOwnerView
-    |> where([o], ilike(o.owner_name, ^query))
-    |> Repo.all
   end
 
   def by_correspondent(params) do

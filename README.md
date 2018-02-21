@@ -29,7 +29,6 @@ alias Trademarks.{
   Parser,
   CaseFile,
   CaseFileOwner,
-  CaseFileOwnerView,
   Attorney,
   Correspondent,
   Repo,
