@@ -10,6 +10,7 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileOwners do
       add :city, :text
       add :state, :text
       add :postcode, :text
+      timestamps()
     end
 
     create unique_index(:case_file_owners,

@@ -9,6 +9,7 @@ defmodule Trademarks.CaseFileStatement do
     belongs_to :case_file, CaseFile, type: :binary_id
     field :type_code,   :string
     field :description, :string
+    timestamps()
   end
 
   @fields ~w(type_code description)

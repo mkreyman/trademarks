@@ -12,6 +12,7 @@ defmodule Trademarks.Attorney do
     has_many :case_file_owners, through: [:case_files, :case_file_owners]
     has_many :case_file_statements, through: [:case_files, :case_file_statements]
     has_many :case_file_event_statements, through: [:case_files, :case_file_event_statements]
+    timestamps()
   end
 
   @fields ~w(name)
@@ -19,7 +20,6 @@ defmodule Trademarks.Attorney do
   def changeset(data, params \\ %{}) do
     data
     |> cast(params, @fields)
-    |> validate_required([:name])
     |> unique_constraint(:name)
   end
 
@@ -33,8 +33,8 @@ defmodule Trademarks.Attorney do
     |> changeset(params)
     |> Repo.insert_or_update
     |> case do
-         {:ok, attorney} -> attorney.id
-         {:error, changeset}    -> {:error, changeset}
+         {:ok, attorney}     -> attorney.id
+         {:error, changeset} -> {:error, changeset}
        end
   end
 end

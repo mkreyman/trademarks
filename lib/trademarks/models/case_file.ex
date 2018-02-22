@@ -26,10 +26,11 @@ defmodule Trademarks.CaseFile do
     field :registration_date, :date
     field :trademark, :string
     field :renewal_date, :date
-    has_many :case_file_statements, CaseFileStatement, on_delete: :delete_all
-    has_many :case_file_event_statements, CaseFileEventStatement, on_delete: :delete_all
+    has_many :case_file_statements, CaseFileStatement, on_replace: :delete
+    has_many :case_file_event_statements, CaseFileEventStatement, on_replace: :delete
     many_to_many :case_file_owners, CaseFileOwner, join_through: CaseFilesCaseFileOwner, on_replace: :delete
     has_many :linked, through: [:case_file_owners, :case_files]
+    timestamps()
   end
 
   @fields ~w(serial_number
@@ -43,8 +44,7 @@ defmodule Trademarks.CaseFile do
     params = ParamsFormatter.format(params)
     struct
     |> cast(params, @fields)
-    |> validate_required([:serial_number])
-    |> unique_constraint(:case_files_serial_number_index)
+    |> unique_constraint(:case_files_serial_number_trademark_index)
     |> validate_date_format(params)
   end
 
@@ -100,7 +100,8 @@ defmodule Trademarks.CaseFile do
       {:error, changeset} ->
         Logger.error fn ->
           """
-          Invalid changeset for case file serial number: #{inspect(params[:serial_number])},
+          Invalid changeset for serial number: #{inspect(params[:serial_number])}
+          and trademark: #{inspect(params[:trademark])},
           params: #{inspect(params)},
           changeset: #{inspect(changeset)}
           """
@@ -127,8 +128,10 @@ defmodule Trademarks.CaseFile do
   end
 
   defp create_or_update(params) do
-    case Repo.get_by(CaseFile, serial_number: params[:serial_number]) do
-      nil  -> %CaseFile{serial_number: params[:serial_number]}
+    case Repo.get_by(CaseFile, serial_number: params[:serial_number],
+                               trademark: params[:trademark]) do
+      nil  -> %CaseFile{serial_number: params[:serial_number],
+                        trademark: params[:trademark]}
       case_file -> case_file
     end
     |> CaseFile.changeset(params)

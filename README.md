@@ -45,11 +45,13 @@ Repo.all(Attorney) |> Enum.count
 owner = Repo.all(CaseFileOwner) |> Repo.preload(:case_files) |> Enum.at(0)
 owner.case_files
 Repo.all(Correspondent) |> Enum.count
-params = %{owner: "united", trademark: "diamond", attorney: "Veravanich", correspondent: "Salter"}
+params = %{owner: "united", trademark: "diamond", attorney: "Mark", correspondent: "Salter"}
 params2 = %{trademark: "prime", exact: true}
 Search.by_trademark(params)
 Search.by_owner(params)
 Search.by_attorney(params)
 Search.by_correspondent(params)
+Search.linked_trademarks(params)
+Search.linked_owners(params)
 ```
 
