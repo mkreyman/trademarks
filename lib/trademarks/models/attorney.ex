@@ -8,6 +8,10 @@ defmodule Trademarks.Attorney do
   schema "attorneys" do
     field :name, :string
     has_many :case_files, CaseFile
+    has_many :correspondents, through: [:case_files, :correspondent]
+    has_many :case_file_owners, through: [:case_files, :case_file_owners]
+    has_many :case_file_statements, through: [:case_files, :case_file_statements]
+    has_many :case_file_event_statements, through: [:case_files, :case_file_event_statements]
   end
 
   @fields ~w(name)
@@ -15,10 +19,12 @@ defmodule Trademarks.Attorney do
   def changeset(data, params \\ %{}) do
     data
     |> cast(params, @fields)
+    |> validate_required([:name])
     |> unique_constraint(:name)
   end
 
   def create_or_update(%{attorney: nil}), do: nil
+  def create_or_update(%{attorney: ""}), do: nil
   def create_or_update(params) do
     case Repo.get_by(Attorney, name: params[:attorney]) do
       nil  -> %Attorney{name: params[:attorney]}

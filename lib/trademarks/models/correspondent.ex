@@ -11,6 +11,10 @@ defmodule Trademarks.Correspondent do
     field :address_3, :string
     field :address_4, :string
     has_many :case_files, CaseFile
+    has_many :case_file_owners, through: [:case_files, :case_file_owners]
+    has_many :attorneys, through: [:case_files, :attorney]
+    has_many :case_file_statements, through: [:case_files, :case_file_statements]
+    has_many :case_file_event_statements, through: [:case_files, :case_file_event_statements]
   end
 
   @fields ~w(address_1 address_2 address_3 address_4)

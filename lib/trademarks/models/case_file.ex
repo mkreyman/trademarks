@@ -29,6 +29,7 @@ defmodule Trademarks.CaseFile do
     has_many :case_file_statements, CaseFileStatement, on_delete: :delete_all
     has_many :case_file_event_statements, CaseFileEventStatement, on_delete: :delete_all
     many_to_many :case_file_owners, CaseFileOwner, join_through: CaseFilesCaseFileOwner, on_replace: :delete
+    has_many :linked, through: [:case_file_owners, :case_files]
   end
 
   @fields ~w(serial_number

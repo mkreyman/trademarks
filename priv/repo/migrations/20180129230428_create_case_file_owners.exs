@@ -4,7 +4,7 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileOwners do
   def change do
     create table(:case_file_owners, primary_key: false) do
       add :id, :uuid, primary_key: true
-      add :party_name, :text
+      add :name, :text
       add :address_1, :text
       add :address_2, :text
       add :city, :text
@@ -13,7 +13,7 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileOwners do
     end
 
     create unique_index(:case_file_owners,
-                        [:party_name, :address_1, :address_2, :city, :state, :postcode],
+                        [:name, :address_1, :address_2, :city, :state, :postcode],
                         name: :all_fields_index)
   end
 end

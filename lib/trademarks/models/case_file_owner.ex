@@ -12,18 +12,21 @@ defmodule Trademarks.CaseFileOwner do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "case_file_owners" do
-    field :party_name, :string
+    field :name, :string
     field :address_1, :string
     field :address_2, :string
     field :city, :string
     field :state, :string
     field :postcode, :string
     many_to_many :case_files, CaseFile, join_through: CaseFilesCaseFileOwner, on_replace: :delete
-    has_one :attorney, through: [:case_files, :attorney]
-    has_one :correspondent, through: [:case_files, :correspondent]
+    has_many :attorneys, through: [:case_files, :attorney]
+    has_many :correspondents, through: [:case_files, :correspondent]
+    has_many :case_file_statements, through: [:case_files, :case_file_statements]
+    has_many :case_file_event_statements, through: [:case_files, :case_file_event_statements]
+    has_many :linked, through: [:case_files, :case_file_owners]
   end
 
-  @fields ~w(party_name address_1 address_2 city state postcode)a
+  @fields ~w(name address_1 address_2 city state postcode)a
 
   def changeset(struct, params \\ %{}) do
     struct
@@ -32,8 +35,8 @@ defmodule Trademarks.CaseFileOwner do
   end
 
   def create_or_update(params) do
-    case Repo.get_by(CaseFileOwner, party_name: params[:party_name]) do
-      nil  -> %CaseFileOwner{party_name: params[:party_name]}
+    case Repo.get_by(CaseFileOwner, name: params[:name]) do
+      nil  -> %CaseFileOwner{name: params[:name]}
       case_file_owner -> case_file_owner
     end
     |> changeset(params)
