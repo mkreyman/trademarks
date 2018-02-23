@@ -8,12 +8,6 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileOwners do
       add :nationality_country, :text
       add :nationality_state, :text
       add :party_name, :text
-      add :address_1, :text
-      add :address_2, :text
-      add :city, :text
-      add :state, :text
-      add :postcode, :text
-      add :country, :text
       timestamps()
     end
 

@@ -2,8 +2,11 @@ defmodule Trademarks.CaseFileOwner do
   require Logger
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   alias Trademarks.{
+    Address,
+    CaseFileOwnersAddress,
     CaseFilesCaseFileOwner,
     CaseFileOwner,
     CaseFile,
@@ -16,13 +19,8 @@ defmodule Trademarks.CaseFileOwner do
     field :nationality_country, :string
     field :nationality_state, :string
     field :party_name, :string
-    field :address_1, :string
-    field :address_2, :string
-    field :city, :string
-    field :state, :string
-    field :postcode, :string
-    field :country, :string
     many_to_many :case_files, CaseFile, join_through: CaseFilesCaseFileOwner, on_replace: :delete
+    many_to_many :addresses, Address, join_through: CaseFileOwnersAddress, on_replace: :delete
     has_many :attorneys, through: [:case_files, :attorney]
     has_many :correspondents, through: [:case_files, :correspondent]
     has_many :case_file_statements, through: [:case_files, :case_file_statements]
@@ -34,13 +32,7 @@ defmodule Trademarks.CaseFileOwner do
   @fields ~w(dba
              nationality_country
              nationality_state
-             party_name
-             address_1
-             address_2
-             city
-             state
-             postcode
-             country)a
+             party_name)a
 
   def changeset(struct, params \\ %{}) do
     struct
@@ -55,11 +47,32 @@ defmodule Trademarks.CaseFileOwner do
                              nationality_state: params[:nationality_state]}
       case_file_owner -> case_file_owner
     end
+    |> preload(:addresses)
+    |> associate_address(params)
     |> changeset(params)
     |> Repo.insert_or_update
     |> case do
          {:ok, case_file_owner} -> {:ok, case_file_owner}
          {:error, changeset}    -> {:error, changeset}
        end
+  end
+
+  defp associate_address(case_file_owner, params) do
+    address_params = %{
+      address_1: params[:address_1],
+      address_2: params[:address_2],
+      city: params[:city],
+      state: params[:state],
+      postcode: params[:postcode],
+      country: params[:country]
+    }
+    with {:ok, address} <- Address.create_or_update(address_params) do
+      cs = CaseFileOwnersAddress.changeset(
+             %CaseFileOwnersAddress{}, %{case_file_owner_id: case_file_owner.id,
+                                         address_id: address.id}
+           )
+      Repo.insert(cs, on_conflict: :nothing)
+    end
+    case_file_owner
   end
 end
