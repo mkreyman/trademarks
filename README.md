@@ -30,6 +30,7 @@ alias Trademarks.{
   CaseFile,
   CaseFileOwner,
   Attorney,
+  Address,
   Correspondent,
   Repo,
   Search

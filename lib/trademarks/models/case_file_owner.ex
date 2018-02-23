@@ -2,7 +2,6 @@ defmodule Trademarks.CaseFileOwner do
   require Logger
   use Ecto.Schema
   import Ecto.Changeset
-  import Ecto.Query
 
   alias Trademarks.{
     Address,
@@ -47,7 +46,7 @@ defmodule Trademarks.CaseFileOwner do
                              nationality_state: params[:nationality_state]}
       case_file_owner -> case_file_owner
     end
-    |> preload(:addresses)
+    |> Repo.preload(:addresses)
     |> associate_address(params)
     |> changeset(params)
     |> Repo.insert_or_update
