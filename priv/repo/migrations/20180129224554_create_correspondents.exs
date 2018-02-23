@@ -8,11 +8,12 @@ defmodule Trademarks.Repo.Migrations.CreateCorrespondents do
       add :address_2, :text
       add :address_3, :text
       add :address_4, :text
+      add :address_5, :text
       timestamps()
     end
 
     create unique_index(:correspondents,
-                        [:address_1, :address_2, :address_3, :address_4],
+                        [:address_1, :address_2, :address_3, :address_4, :address_5],
                         name: :addresses_index)
   end
 end

@@ -6,9 +6,9 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileEventStatements do
       add :id, :uuid, primary_key: true
       add :case_file_id, references(:case_files, type: :uuid, null: false)
       add :code, :text
-      add :type, :text
-      add :description, :text
       add :date, :date
+      add :description, :text
+      add :type, :text
       timestamps()
     end
 

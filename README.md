@@ -38,6 +38,7 @@ Downloader.start
 {:ok, stream} = Parser.start("./tmp/trademarks.zip")
 {:ok, stream} = Parser.start("./tmp/sample.zip")
 {:ok, stream} = Parser.start("./tmp/apc180211.zip")
+{:ok, stream} = Parser.start("./tmp/apc180131.zip")
 CaseFile.process(stream)
 Repo.all(CaseFile) |> Enum.count
 Repo.all(CaseFileOwner) |> Enum.count
@@ -45,7 +46,7 @@ Repo.all(Attorney) |> Enum.count
 owner = Repo.all(CaseFileOwner) |> Repo.preload(:case_files) |> Enum.at(0)
 owner.case_files
 Repo.all(Correspondent) |> Enum.count
-params = %{owner: "united", trademark: "diamond", attorney: "Mark", correspondent: "Salter"}
+params = %{owner: "CUTEX", trademark: "CLEANPULP", attorney: "Mark", correspondent: "Salter"}
 params2 = %{trademark: "prime", exact: true}
 Search.by_trademark(params)
 Search.by_owner(params)

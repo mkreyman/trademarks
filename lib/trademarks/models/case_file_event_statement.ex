@@ -13,13 +13,13 @@ defmodule Trademarks.CaseFileEventStatement do
   schema "case_file_event_statements" do
     belongs_to :case_file, CaseFile, type: :binary_id
     field :code,        :string
-    field :type,        :string
-    field :description, :string
     field :date,        :date
+    field :description, :string
+    field :type,        :string
     timestamps()
   end
 
-  @fields ~w(code type description date)
+  @fields ~w(code date description type)
 
   def changeset(struct, params \\ %{}) do
     params = ParamsFormatter.format(params)
@@ -39,14 +39,14 @@ defmodule Trademarks.CaseFileEventStatement do
     params = ParamsFormatter.format(params)
     case Repo.get_by(CaseFileEventStatement, case_file_id: case_file.id,
                                              code: params[:code],
-                                             type: params[:type],
+                                             date: params[:date],
                                              description: params[:description],
-                                             date: params[:date]) do
+                                             type: params[:type]) do
       nil  -> %CaseFileEventStatement{case_file_id: case_file.id,
                                       code: params[:code],
-                                      type: params[:type],
+                                      date: params[:date],
                                       description: params[:description],
-                                      date: params[:date]}
+                                      type: params[:type]}
       case_file_event_statement -> case_file_event_statement
     end
     |> changeset(params)

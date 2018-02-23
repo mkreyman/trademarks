@@ -7,12 +7,12 @@ defmodule Trademarks.CaseFileStatement do
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "case_file_statements" do
     belongs_to :case_file, CaseFile, type: :binary_id
-    field :type_code,   :string
     field :description, :string
+    field :type_code,   :string
     timestamps()
   end
 
-  @fields ~w(type_code description)
+  @fields ~w(description type_code)
 
   def changeset(data, params \\ %{}) do
     data
@@ -28,11 +28,11 @@ defmodule Trademarks.CaseFileStatement do
 
   defp create_or_update(params, case_file) do
     case Repo.get_by(CaseFileStatement, case_file_id: case_file.id,
-                                        type_code: params[:type_code],
-                                        description: params[:description]) do
+                                        description: params[:description],
+                                        type_code: params[:type_code]) do
       nil  -> %CaseFileStatement{case_file_id: case_file.id,
-                                 type_code: params[:type_code],
-                                 description: params[:description]}
+                                 description: params[:description],
+                                 type_code: params[:type_code]}
       case_file_statement -> case_file_statement
     end
     |> changeset(params)

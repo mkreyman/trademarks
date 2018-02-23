@@ -15,9 +15,11 @@ defmodule Trademarks.Utils.ParamsFormatter do
 
   defp format_date(params) do
     params
+    |> Map.update(:status_date, params[:status_date], &to_date(&1))
     |> Map.update(:filing_date, params[:filing_date], &to_date(&1))
     |> Map.update(:registration_date, params[:registration_date], &to_date(&1))
     |> Map.update(:renewal_date, params[:renewal_date], &to_date(&1))
+    |> Map.update(:abandonment_date, params[:abandonment_date], &to_date(&1))
     |> Map.update(:date, params[:date], &to_date(&1))
   end
 

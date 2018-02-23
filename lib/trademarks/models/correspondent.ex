@@ -10,6 +10,7 @@ defmodule Trademarks.Correspondent do
     field :address_2, :string
     field :address_3, :string
     field :address_4, :string
+    field :address_5, :string
     has_many :case_files, CaseFile
     has_many :case_file_owners, through: [:case_files, :case_file_owners]
     has_many :attorneys, through: [:case_files, :attorney]
@@ -18,7 +19,7 @@ defmodule Trademarks.Correspondent do
     timestamps()
   end
 
-  @fields ~w(address_1 address_2 address_3 address_4)
+  @fields ~w(address_1 address_2 address_3 address_4 address_5)
 
   def changeset(data, params \\ %{}) do
     data
@@ -30,11 +31,13 @@ defmodule Trademarks.Correspondent do
     case Repo.get_by(Correspondent, address_1: params[:address_1],
                                     address_2: params[:address_2],
                                     address_3: params[:address_3],
-                                    address_4: params[:address_4]) do
+                                    address_4: params[:address_4],
+                                    address_5: params[:address_5]) do
       nil  -> %Correspondent{address_1: params[:address_1],
                              address_2: params[:address_2],
                              address_3: params[:address_3],
-                             address_4: params[:address_4]}
+                             address_4: params[:address_4],
+                             address_5: params[:address_5]}
       correspondent -> correspondent
     end
     |> changeset(params)

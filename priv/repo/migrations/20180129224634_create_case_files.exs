@@ -4,14 +4,16 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFiles do
   def change do
     create table(:case_files, primary_key: false) do
       add :id, :uuid, primary_key: true
-      add :serial_number, :text
-      add :registration_number, :text
-      add :filing_date, :date
-      add :registration_date, :date
-      add :trademark, :text
-      add :renewal_date, :date
       add :attorney_id, references(:attorneys, type: :uuid, null: false)
       add :correspondent_id, references(:correspondents, type: :uuid, null: false)
+      add :abandonment_date, :date
+      add :filing_date, :date
+      add :registration_date, :date
+      add :registration_number, :text
+      add :renewal_date, :date
+      add :serial_number, :text
+      add :status_date, :date
+      add :trademark, :text
       timestamps()
     end
 

@@ -14,7 +14,9 @@ defmodule Trademarks.Parser do
             serial_number: ~x[./serial-number/text()]s,
             registration_number: ~x[./registration-number/text()]s,
             filing_date: ~x[./case-file-header/filing-date/text()]s,
+            status_date: ~x[./case-file-header/status-date/text()]s,
             registration_date: ~x[./case-file-header/registration-date/text()]so,
+            abandonment_date: ~x[./case-file-header/abandonment-date/text()]so,
             trademark: ~x[./case-file-header/mark-identification/text()]s,
             renewal_date: ~x[./case-file-header/renewal-date/text()]so,
             attorney: ~x[./case-file-header/attorney-name/text()]so,
@@ -35,16 +37,21 @@ defmodule Trademarks.Parser do
               address_1: ~x[./address-1/text()]s,
               address_2: ~x[./address-2/text()]s,
               address_3: ~x[./address-3/text()]s,
-              address_4: ~x[./address-4/text()]s
+              address_4: ~x[./address-4/text()]s,
+              address_5: ~x[./address-5/text()]s
             ],
             case_file_owners: [
               ~x[./case-file-owners/case-file-owner]l,
-              name: ~x[./party-name/text()]s,
+              party_name: ~x[./party-name/text()]s,
+              dba: ~x[./dba-aka-text/text()]s,
+              nationality_country: ~x[./nationality/country/text()]s,
+              nationality_state: ~x[./nationality/state/text()]s,
               address_1: ~x[./address-1/text()]so,
               address_2: ~x[./address-2/text()]so,
               city: ~x[./city/text()]s,
-              state: ~x[./state/text()]s,
-              postcode: ~x[./postcode/text()]so
+              state: ~x[./state/text()]so,
+              postcode: ~x[./postcode/text()]so,
+              country: ~x[./country/text()]s
           ]]) end)
       {:ok, stream}
     else

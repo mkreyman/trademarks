@@ -18,27 +18,31 @@ defmodule Trademarks.CaseFile do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "case_files" do
-    belongs_to :attorney, Attorney, type: :binary_id
-    belongs_to :correspondent, Correspondent, type: :binary_id
-    field :serial_number, :string
-    field :registration_number, :string
+    field :abandonment_date, :date
     field :filing_date, :date
     field :registration_date, :date
-    field :trademark, :string
+    field :registration_number, :string
     field :renewal_date, :date
+    field :serial_number, :string
+    field :status_date, :date
+    field :trademark, :string
+    many_to_many :case_file_owners, CaseFileOwner, join_through: CaseFilesCaseFileOwner, on_replace: :delete
+    belongs_to :attorney, Attorney, type: :binary_id
+    belongs_to :correspondent, Correspondent, type: :binary_id
     has_many :case_file_statements, CaseFileStatement, on_replace: :delete
     has_many :case_file_event_statements, CaseFileEventStatement, on_replace: :delete
-    many_to_many :case_file_owners, CaseFileOwner, join_through: CaseFilesCaseFileOwner, on_replace: :delete
     has_many :linked, through: [:case_file_owners, :case_files]
     timestamps()
   end
 
-  @fields ~w(serial_number
-             registration_number
+  @fields ~w(abandonment_date
              filing_date
              registration_date
-             trademark
-             renewal_date)a
+             registration_number
+             renewal_date
+             serial_number
+             status_date
+             trademark)a
 
   def changeset(struct, params \\ %{}) do
     params = ParamsFormatter.format(params)
@@ -143,9 +147,11 @@ defmodule Trademarks.CaseFile do
   end
 
   defp validate_date_format(cs, params) do
-    dates = [params[:filing_date],
+    dates = [params[:abandonment_date],
+             params[:filing_date],
              params[:registration_date],
              params[:renewal_date],
+             params[:status_date],
              params[:date]]
     if Enum.any?(dates, fn(date)-> ParamsFormatter.is_date(date) end) == false do
       add_error(cs, :case_files, "case_file")
