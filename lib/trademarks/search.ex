@@ -135,11 +135,9 @@ defmodule Trademarks.Search do
       end
     from(o in CaseFileOwner,
       where: ilike(o.party_name, ^query),
-      preload: [:addresses, :linked],
+      preload: [:linked],
       select: map(o, [:id, :dba, :nationality_country, :nationality_state, :party_name,
-                      # addresses: [:address_1, :address_2, :city, :state, :postcode, :country],
-                      linked: [:id, :dba, :nationality_country, :nationality_state, :party_name,
-                               addresses: [:address_1, :address_2, :city, :state, :postcode, :country]]]))
+                      linked: [:id, :dba, :nationality_country, :nationality_state, :party_name]]))
     |> Repo.all
     |> Enum.map(&drop_self/1)
   end
@@ -151,12 +149,10 @@ defmodule Trademarks.Search do
 
   defp drop_self(%{id: id, dba: dba, nationality_country: nationality_country,
                    nationality_state: nationality_state, party_name: party_name,
-                   addresses: addresses, linked: list}) do
+                   linked: list}) do
     %{id: id, dba: dba, nationality_country: nationality_country,
       nationality_state: nationality_state, party_name: party_name,
-      addresses: addresses,
       linked: List.delete(list, %{id: id, dba: dba, nationality_country: nationality_country,
-                                  nationality_state: nationality_state, party_name: party_name,
-                                  addresses: addresses})}
+                                  nationality_state: nationality_state, party_name: party_name})}
   end
 end
