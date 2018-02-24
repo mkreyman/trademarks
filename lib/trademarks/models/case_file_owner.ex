@@ -2,6 +2,7 @@ defmodule Trademarks.CaseFileOwner do
   require Logger
   use Ecto.Schema
   import Ecto.Changeset
+  # require IEx
 
   alias Trademarks.{
     Address,
@@ -46,13 +47,14 @@ defmodule Trademarks.CaseFileOwner do
                              nationality_state: params[:nationality_state]}
       case_file_owner -> case_file_owner
     end
-    |> Repo.preload(:addresses)
-    |> associate_address(params)
     |> changeset(params)
     |> Repo.insert_or_update
     |> case do
-         {:ok, case_file_owner} -> {:ok, case_file_owner}
-         {:error, changeset}    -> {:error, changeset}
+         {:ok, case_file_owner} ->
+           associate_address(case_file_owner, params)
+           {:ok, case_file_owner}
+         {:error, changeset} ->
+           {:error, changeset}
        end
   end
 
@@ -70,8 +72,14 @@ defmodule Trademarks.CaseFileOwner do
              %CaseFileOwnersAddress{}, %{case_file_owner_id: case_file_owner.id,
                                          address_id: address.id}
            )
+      # IEx.pry
       Repo.insert(cs, on_conflict: :nothing)
+      case_file_owner
+    else
+      _ ->
+        Logger.error fn ->
+          "Something went wrong with params: #{inspect(params)}"
+        end
     end
-    case_file_owner
   end
 end

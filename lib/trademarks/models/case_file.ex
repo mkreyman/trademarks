@@ -31,6 +31,7 @@ defmodule Trademarks.CaseFile do
     belongs_to :correspondent, Correspondent, type: :binary_id
     has_many :case_file_statements, CaseFileStatement, on_replace: :delete
     has_many :case_file_event_statements, CaseFileEventStatement, on_replace: :delete
+    has_many :addresses, through: [:case_file_owners, :addresses]
     has_many :linked, through: [:case_file_owners, :case_files]
     timestamps()
   end
@@ -117,20 +118,6 @@ defmodule Trademarks.CaseFile do
     end
   end
 
-  defp associate_owners(case_file, params) do
-    params[:case_file_owners]
-    |> Enum.map(&CaseFileOwner.create_or_update/1)
-    |> Enum.map(fn({:ok, case_file_owner}) -> case_file_owner end)
-    |> Enum.map(fn(case_file_owner) ->
-         cs = CaseFilesCaseFileOwner.changeset(
-                %CaseFilesCaseFileOwner{}, %{case_file_id: case_file.id,
-                                             case_file_owner_id: case_file_owner.id}
-              )
-         Repo.insert(cs, on_conflict: :nothing)
-       end)
-    case_file
-  end
-
   defp create_or_update(params) do
     case Repo.get_by(CaseFile, serial_number: params[:serial_number],
                                trademark: params[:trademark]) do
@@ -144,6 +131,20 @@ defmodule Trademarks.CaseFile do
          {:ok, case_file}    -> {:ok, case_file}
          {:error, changeset} -> {:error, changeset}
        end
+  end
+
+  defp associate_owners(case_file, params) do
+    params[:case_file_owners]
+    |> Enum.map(&CaseFileOwner.create_or_update/1)
+    |> Enum.map(fn({:ok, case_file_owner}) -> case_file_owner end)
+    |> Enum.map(fn(case_file_owner) ->
+         cs = CaseFilesCaseFileOwner.changeset(
+                %CaseFilesCaseFileOwner{}, %{case_file_id: case_file.id,
+                                             case_file_owner_id: case_file_owner.id}
+              )
+         Repo.insert(cs, on_conflict: :nothing)
+       end)
+    case_file
   end
 
   defp validate_date_format(cs, params) do

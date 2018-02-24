@@ -29,6 +29,7 @@ alias Trademarks.{
   Parser,
   CaseFile,
   CaseFileOwner,
+  CaseFileOwnersAddress,
   Attorney,
   Address,
   Correspondent,

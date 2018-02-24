@@ -4,7 +4,7 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileOwnersAddresses do
   def change do
     create table(:case_file_owners_addresses, primary_key: false) do
       add :case_file_owner_id, references(:case_file_owners, type: :uuid, null: false)
-      add :address_id, references(:case_files, type: :uuid, null: false)
+      add :address_id, references(:addresses, type: :uuid, null: false)
     end
 
     create unique_index(:case_file_owners_addresses,

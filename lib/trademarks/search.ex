@@ -18,13 +18,18 @@ defmodule Trademarks.Search do
       end
     Repo.all from(attorney in Attorney,
                where: ilike(attorney.name, ^query),
-               preload: [:case_files, :correspondents, :case_file_owners, :case_file_statements, :case_file_event_statements],
+               preload: [:case_files,
+                         :correspondents,
+                         :case_file_owners,
+                         :addresses,
+                         :case_file_statements,
+                         :case_file_event_statements],
                select: map(attorney, [:id, :name,
                            case_files: [:id, :abandonment_date, :filing_date, :registration_date, :registration_number,
                              :renewal_date, :serial_number, :status_date, :trademark, :correspondent_id,
                              correspondent: [:id, :address_1, :address_2, :address_3, :address_4, :address_5],
                              case_file_owners: [:id, :dba, :nationality_country, :nationality_state, :party_name,
-                                                :address_1, :address_2, :city, :state, :postcode, :country],
+                                                addresses: [:address_1, :address_2, :city, :state, :postcode, :country]],
                               case_file_statements: [:id, :type_code, :description],
                               case_file_event_statements: [:id, :code, :type, :description, :date]]]))
   end
@@ -38,13 +43,18 @@ defmodule Trademarks.Search do
       end
     Repo.all from(f in CaseFile,
                where: ilike(f.trademark, ^query),
-               preload: [:attorney, :case_file_statements, :case_file_event_statements, :correspondent, :case_file_owners],
+               preload: [:attorney,
+                         :case_file_statements,
+                         :case_file_event_statements,
+                         :correspondent,
+                         :case_file_owners,
+                         :addresses],
                select: map(f, [:id, :abandonment_date, :filing_date, :registration_date, :registration_number,
                                :renewal_date, :serial_number, :status_date, :trademark, :attorney_id, :correspondent_id,
                                attorney: [:id, :name],
                                correspondent: [:id, :address_1, :address_2, :address_3, :address_4, :address_5],
                                case_file_owners: [:id, :dba, :nationality_country, :nationality_state, :party_name,
-                                                  :address_1, :address_2, :city, :state, :postcode, :country],
+                                                  addresses: [:address_1, :address_2, :city, :state, :postcode, :country]],
                                case_file_statements: [:id, :type_code, :description],
                                case_file_event_statements: [:id, :code, :type, :description, :date]]))
   end
@@ -58,9 +68,14 @@ defmodule Trademarks.Search do
       end
     Repo.all from(owner in CaseFileOwner,
                where: ilike(owner.party_name, ^query),
-               preload: [:case_files, :attorneys, :correspondents,:case_file_statements, :case_file_event_statements],
+               preload: [:case_files,
+                         :addresses,
+                         :attorneys,
+                         :correspondents,
+                         :case_file_statements,
+                         :case_file_event_statements],
                select: map(owner, [:id, :dba, :nationality_country, :nationality_state, :party_name,
-                                   :address_1, :address_2, :city, :state, :postcode, :country,
+                                   addresses: [:address_1, :address_2, :city, :state, :postcode, :country],
                            case_files:
                              [:id, :abandonment_date, :filing_date, :registration_date, :registration_number,
                               :renewal_date, :serial_number, :status_date, :trademark, :attorney_id, :correspondent_id,
@@ -79,14 +94,19 @@ defmodule Trademarks.Search do
       end
     Repo.all from(c in Correspondent,
                where: ilike(c.address_1, ^query),
-               preload: [:case_files, :attorneys, :case_file_owners, :case_file_statements, :case_file_event_statements],
+               preload: [:case_files,
+                         :attorneys,
+                         :case_file_owners,
+                         :addresses,
+                         :case_file_statements,
+                         :case_file_event_statements],
                select: map(c, [:id, :address_1, :address_2, :address_3, :address_4, :address_5,
                            case_files:
                              [:id, :abandonment_date, :filing_date, :registration_date, :registration_number,
                               :renewal_date, :serial_number, :status_date, :trademark, :attorney_id, :correspondent_id,
                               attorney: [:id, :name],
                               case_file_owners: [:id, :dba, :nationality_country, :nationality_state, :party_name,
-                                                 :address_1, :address_2, :city, :state, :postcode, :country],
+                                                 addresses: [:address_1, :address_2, :city, :state, :postcode, :country]],
                               case_file_statements: [:id, :type_code, :description],
                               case_file_event_statements: [:id, :code, :type, :description, :date]]]))
   end
@@ -115,11 +135,11 @@ defmodule Trademarks.Search do
       end
     from(o in CaseFileOwner,
       where: ilike(o.party_name, ^query),
-      preload: [:linked],
+      preload: [:addresses, :linked],
       select: map(o, [:id, :dba, :nationality_country, :nationality_state, :party_name,
-                      :address_1, :address_2, :city, :state, :postcode, :country,
+                      # addresses: [:address_1, :address_2, :city, :state, :postcode, :country],
                       linked: [:id, :dba, :nationality_country, :nationality_state, :party_name,
-                               :address_1, :address_2, :city, :state, :postcode, :country]]))
+                               addresses: [:address_1, :address_2, :city, :state, :postcode, :country]]]))
     |> Repo.all
     |> Enum.map(&drop_self/1)
   end
@@ -131,15 +151,12 @@ defmodule Trademarks.Search do
 
   defp drop_self(%{id: id, dba: dba, nationality_country: nationality_country,
                    nationality_state: nationality_state, party_name: party_name,
-                   address_1: address_1, address_2: address_2, city: city,
-                   state: state, postcode: postcode, country: country, linked: list}) do
+                   addresses: addresses, linked: list}) do
     %{id: id, dba: dba, nationality_country: nationality_country,
       nationality_state: nationality_state, party_name: party_name,
-      address_1: address_1, address_2: address_2, city: city,
-      state: state, postcode: postcode, country: country,
+      addresses: addresses,
       linked: List.delete(list, %{id: id, dba: dba, nationality_country: nationality_country,
                                   nationality_state: nationality_state, party_name: party_name,
-                                  address_1: address_1, address_2: address_2,
-                                  city: city, state: state, postcode: postcode, country: country})}
+                                  addresses: addresses})}
   end
 end
