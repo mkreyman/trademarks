@@ -21,11 +21,11 @@ defmodule Trademarks.CaseFileOwner do
     field :party_name, :string
     many_to_many :case_files, CaseFile, join_through: CaseFilesCaseFileOwner, on_replace: :delete
     many_to_many :addresses, Address, join_through: CaseFileOwnersAddress, on_replace: :delete
-    has_many :attorneys, through: [:case_files, :attorney]
-    has_many :correspondents, through: [:case_files, :correspondent]
-    has_many :case_file_statements, through: [:case_files, :case_file_statements]
-    has_many :case_file_event_statements, through: [:case_files, :case_file_event_statements]
-    has_many :linked, through: [:case_files, :case_file_owners]
+    # has_many :attorneys, through: [:case_files, :attorney]
+    # has_many :correspondents, through: [:case_files, :correspondent]
+    # has_many :case_file_statements, through: [:case_files, :case_file_statements]
+    # has_many :case_file_event_statements, through: [:case_files, :case_file_event_statements]
+    # has_many :linked, through: [:case_files, :case_file_owners]
     timestamps()
   end
 

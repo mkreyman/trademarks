@@ -45,14 +45,15 @@ CaseFile.process(stream)
 Repo.all(CaseFile) |> Enum.count
 Repo.all(CaseFileOwner) |> Enum.count
 Repo.all(Attorney) |> Enum.count
+Repo.all(Address) |> Enum.count
 owner = Repo.all(CaseFileOwner) |> Repo.preload(:case_files) |> Enum.at(0)
 owner.case_files
 Repo.all(Correspondent) |> Enum.count
 params = %{owner: "CUTEX", trademark: "CLEANPULP", attorney: "Mark", correspondent: "Salter"}
 params2 = %{trademark: "prime", exact: true}
+Search.by_attorney(params)
 Search.by_trademark(params)
 Search.by_owner(params)
-Search.by_attorney(params)
 Search.by_correspondent(params)
 Search.linked_trademarks(params)
 Search.linked_owners(params)

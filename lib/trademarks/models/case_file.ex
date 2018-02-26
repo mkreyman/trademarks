@@ -31,8 +31,6 @@ defmodule Trademarks.CaseFile do
     belongs_to :correspondent, Correspondent, type: :binary_id
     has_many :case_file_statements, CaseFileStatement, on_replace: :delete
     has_many :case_file_event_statements, CaseFileEventStatement, on_replace: :delete
-    has_many :addresses, through: [:case_file_owners, :addresses]
-    has_many :linked, through: [:case_file_owners, :case_files]
     timestamps()
   end
 

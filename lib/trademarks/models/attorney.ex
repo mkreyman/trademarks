@@ -8,11 +8,11 @@ defmodule Trademarks.Attorney do
   schema "attorneys" do
     field :name, :string
     has_many :case_files, CaseFile
-    has_many :correspondents, through: [:case_files, :correspondent]
-    has_many :case_file_owners, through: [:case_files, :case_file_owners]
-    has_many :addresses, through: [:case_file_owners, :addresses]
-    has_many :case_file_statements, through: [:case_files, :case_file_statements]
-    has_many :case_file_event_statements, through: [:case_files, :case_file_event_statements]
+    # has_many :correspondents, through: [:case_files, :correspondent]
+    # has_many :case_file_owners, through: [:case_files, :case_file_owners]
+    # has_many :addresses, through: [:case_file_owners, :addresses]
+    # has_many :case_file_statements, through: [:case_files, :case_file_statements]
+    # has_many :case_file_event_statements, through: [:case_files, :case_file_event_statements]
     timestamps()
   end
 
