@@ -97,10 +97,11 @@ defmodule Trademarks.Search do
       end
     Repo.all from(c in Correspondent,
                where: ilike(c.address_1, ^query),
-               preload: [:case_files,
-                         :attorneys,
-                         :case_file_owners,
-                         :addresses],
+               left_join: f in assoc(c, :case_files),
+               left_join: att in assoc(f, :attorney),
+               left_join: o in assoc(f, :case_file_owners),
+               left_join: a in assoc(o, :addresses),
+               preload: [case_files: {f, attorney: att, case_file_owners: {o, addresses: a}}],
                select: map(c, [:id, :address_1, :address_2, :address_3, :address_4, :address_5,
                            case_files:
                              [:id, :abandonment_date, :filing_date, :registration_date, :registration_number,
@@ -119,39 +120,16 @@ defmodule Trademarks.Search do
       end
     from(f in CaseFile,
       where: ilike(f.trademark, ^query),
-      preload: [:linked],
-      select: map(f, [:id, :trademark, linked: [:id, :trademark]]))
+      join: o in assoc(f, :case_file_owners),
+      join: f2 in assoc(o, :case_files),
+      preload: [case_file_owners: {o, case_files: f2}],
+      select: map(f, [:id, :trademark, case_file_owners: [:id, :party_name, case_files: [:id, :trademark]]]))
     |> Repo.all
     |> Enum.map(&drop_self/1)
   end
 
-  def linked_owners(params) do
-    term = params[:owner]
-    query =
-      case params[:exact] do
-        true -> "#{term}"
-        _    -> "%#{term}%"
-      end
-    from(o in CaseFileOwner,
-      where: ilike(o.party_name, ^query),
-      preload: [:linked],
-      select: map(o, [:id, :dba, :nationality_country, :nationality_state, :party_name,
-                      linked: [:id, :dba, :nationality_country, :nationality_state, :party_name]]))
-    |> Repo.all
-    # |> Enum.map(&drop_self/1)
-  end
-
-  defp drop_self(%{id: id, trademark: trademark, linked: list}) do
+  defp drop_self(%{id: id, trademark: trademark, case_file_owners: [%{id: owner_id, party_name: owner_name, case_files: list}]}) do
     %{id: id, trademark: trademark,
-      linked: List.delete(list, %{id: id, trademark: trademark})}
-  end
-
-  defp drop_self(%{id: id, dba: dba, nationality_country: nationality_country,
-                   nationality_state: nationality_state, party_name: party_name,
-                   linked: list}) do
-    %{id: id, dba: dba, nationality_country: nationality_country,
-      nationality_state: nationality_state, party_name: party_name,
-      linked: List.delete(list, %{id: id, dba: dba, nationality_country: nationality_country,
-                                  nationality_state: nationality_state, party_name: party_name})}
+      linked: [%{owner_id: owner_id, owner_name: owner_name, case_files: List.delete(list, %{id: id, trademark: trademark})}]}
   end
 end

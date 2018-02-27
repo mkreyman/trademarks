@@ -19,7 +19,6 @@ defmodule Trademarks.Address do
     field :postcode, :string
     field :country, :string
     many_to_many :case_file_owners, CaseFileOwner, join_through: CaseFileOwnersAddress, on_replace: :delete
-    # has_many :linked, through: [:case_file_owners, :addresses]
     timestamps()
   end
 

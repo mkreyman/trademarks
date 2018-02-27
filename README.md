@@ -56,6 +56,5 @@ Search.by_trademark(params)
 Search.by_owner(params)
 Search.by_correspondent(params)
 Search.linked_trademarks(params)
-Search.linked_owners(params)
 ```
 

@@ -12,11 +12,6 @@ defmodule Trademarks.Correspondent do
     field :address_4, :string
     field :address_5, :string
     has_many :case_files, CaseFile
-    # has_many :case_file_owners, through: [:case_files, :case_file_owners]
-    # has_many :addresses, through: [:case_file_owners, :addresses]
-    # has_many :attorneys, through: [:case_files, :attorney]
-    # has_many :case_file_statements, through: [:case_files, :case_file_statements]
-    # has_many :case_file_event_statements, through: [:case_files, :case_file_event_statements]
     timestamps()
   end
 
