@@ -12,12 +12,12 @@ config :trademarks, Trademarks.Repo,
   timeout: 450_000,
   pool_timeout: 450_000
 
-# # tell logger to load a LoggerFileBackend processes
-# config :logger,
-#   backends: [{LoggerFileBackend, :error_log}]
+# tell logger to load a LoggerFileBackend processes
+config :logger,
+  backends: [{LoggerFileBackend, :error_log}]
 
-# # configuration for the {LoggerFileBackend, :error_log} backend
-# config :logger, :error_log,
-#   path: "log/app.log",
-#   level: :info,
-#   truncate: :infinity
+# configuration for the {LoggerFileBackend, :error_log} backend
+config :logger, :error_log,
+  path: "log/app.log",
+  level: :info,
+  truncate: :infinity

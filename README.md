@@ -28,6 +28,8 @@ alias Trademarks.{
   Downloader,
   Parser,
   CaseFile,
+  Trademark,
+  CaseFileOwnersTrademark,
   CaseFileOwner,
   CaseFileOwnersAddress,
   Attorney,
@@ -46,6 +48,7 @@ Repo.all(CaseFile) |> Enum.count
 Repo.all(CaseFileOwner) |> Enum.count
 Repo.all(Attorney) |> Enum.count
 Repo.all(Address) |> Enum.count
+Repo.all(Trademark) |> Enum.count
 owner = Repo.all(CaseFileOwner) |> Repo.preload(:case_files) |> Enum.at(0)
 owner.case_files
 Repo.all(Correspondent) |> Enum.count

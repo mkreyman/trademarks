@@ -2,7 +2,6 @@ defmodule Trademarks.CaseFileOwner do
   require Logger
   use Ecto.Schema
   import Ecto.Changeset
-  # require IEx
 
   alias Trademarks.{
     Address,
@@ -10,6 +9,8 @@ defmodule Trademarks.CaseFileOwner do
     CaseFilesCaseFileOwner,
     CaseFileOwner,
     CaseFile,
+    Trademark,
+    CaseFileOwnersTrademark,
     Repo
   }
 
@@ -21,6 +22,7 @@ defmodule Trademarks.CaseFileOwner do
     field :party_name, :string
     many_to_many :case_files, CaseFile, join_through: CaseFilesCaseFileOwner, on_replace: :delete
     many_to_many :addresses, Address, join_through: CaseFileOwnersAddress, on_replace: :delete
+    many_to_many :trademarks, Trademark, join_through: CaseFileOwnersTrademark, on_replace: :delete
     timestamps()
   end
 
@@ -46,7 +48,8 @@ defmodule Trademarks.CaseFileOwner do
     |> Repo.insert_or_update
     |> case do
          {:ok, case_file_owner} ->
-           associate_address(case_file_owner, params)
+           case_file_owner
+           |> associate_address(params)
            {:ok, case_file_owner}
          {:error, changeset} ->
            {:error, changeset}
@@ -63,18 +66,17 @@ defmodule Trademarks.CaseFileOwner do
       country: params[:country]
     }
     with {:ok, address} <- Address.create_or_update(address_params) do
-      cs = CaseFileOwnersAddress.changeset(
-             %CaseFileOwnersAddress{}, %{case_file_owner_id: case_file_owner.id,
-                                         address_id: address.id}
-           )
-      # IEx.pry
-      Repo.insert(cs, on_conflict: :nothing)
+      %CaseFileOwnersAddress{}
+      |> CaseFileOwnersAddress.changeset(%{case_file_owner_id: case_file_owner.id,
+                                           address_id: address.id})
+      |> Repo.insert(on_conflict: :nothing)
       case_file_owner
     else
       _ ->
         Logger.error fn ->
           "Something went wrong with params: #{inspect(params)}"
         end
+        case_file_owner
     end
   end
 end

@@ -17,7 +17,7 @@ defmodule Trademarks.Parser do
             status_date: ~x[./case-file-header/status-date/text()]s,
             registration_date: ~x[./case-file-header/registration-date/text()]so,
             abandonment_date: ~x[./case-file-header/abandonment-date/text()]so,
-            trademark: ~x[./case-file-header/mark-identification/text()]s,
+            trademark_name: ~x[./case-file-header/mark-identification/text()]so,
             renewal_date: ~x[./case-file-header/renewal-date/text()]so,
             attorney: ~x[./case-file-header/attorney-name/text()]so,
             case_file_statements: [
