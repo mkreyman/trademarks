@@ -6,8 +6,8 @@ defmodule Trademarks.Attorney do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "attorneys" do
-    field :name, :string
-    has_many :case_files, CaseFile
+    field(:name, :string)
+    has_many(:case_files, CaseFile)
     timestamps()
   end
 
@@ -21,16 +21,17 @@ defmodule Trademarks.Attorney do
 
   def create_or_update(%{attorney: nil}), do: nil
   def create_or_update(%{attorney: ""}), do: nil
+
   def create_or_update(params) do
     case Repo.get_by(Attorney, name: params[:attorney]) do
-      nil  -> %Attorney{name: params[:attorney]}
+      nil -> %Attorney{name: params[:attorney]}
       attorney -> attorney
     end
     |> changeset(params)
-    |> Repo.insert_or_update
+    |> Repo.insert_or_update()
     |> case do
-         {:ok, attorney}     -> attorney.id
-         {:error, changeset} -> {:error, changeset}
-       end
+      {:ok, attorney} -> attorney.id
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 end

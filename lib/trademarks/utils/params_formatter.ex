@@ -26,6 +26,7 @@ defmodule Trademarks.Utils.ParamsFormatter do
   defp to_date(nil), do: nil
   defp to_date(string) when byte_size(string) == 0, do: nil
   defp to_date(%Date{} = date), do: date
+
   defp to_date(string) do
     ~r"(\d{4})(\d{2})(\d{2})"
     |> Regex.run(string)

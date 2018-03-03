@@ -1,11 +1,11 @@
 defmodule Trademarks.Downloader do
   require Logger
 
-  @user_agent       [ {"User-agent", Application.get_env(:trademarks, :user_agent)} ]
-  @download_options [ hackney: [:insecure], timeout: 10000, recv_timeout: 10000 ]
-  @trademarks_url   Application.get_env(:trademarks, :trademarks_url)
-  @temp_page        Application.get_env(:trademarks, :temp_page)
-  @temp_file        Application.get_env(:trademarks, :temp_file)
+  @user_agent [{"User-agent", Application.get_env(:trademarks, :user_agent)}]
+  @download_options [hackney: [:insecure], timeout: 10000, recv_timeout: 10000]
+  @trademarks_url Application.get_env(:trademarks, :trademarks_url)
+  @temp_page Application.get_env(:trademarks, :temp_page)
+  @temp_file Application.get_env(:trademarks, :temp_file)
 
   def start do
     fetch_page()
@@ -34,22 +34,24 @@ defmodule Trademarks.Downloader do
       html
       |> Floki.find("td > a[href$=zip]")
       |> Floki.attribute("href")
-      |> List.last
+      |> List.last()
     end
   end
 
   def handle_response(%{status_code: 200, body: body}, output_filename) do
-    Logger.info fn ->
+    Logger.info(fn ->
       "Successfully downloaded #{output_filename}"
-    end
+    end)
+
     File.write!(output_filename, body)
-    { :ok, output_filename }
+    {:ok, output_filename}
   end
 
   def handle_response(%{status_code: status, body: _}, _) do
-    Logger.error fn ->
+    Logger.error(fn ->
       "Error #{status} returned"
-    end
-    { :error, :download_failed }
+    end)
+
+    {:error, :download_failed}
   end
 end

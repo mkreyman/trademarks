@@ -37,8 +37,7 @@ use Mix.Config
 #   temp_file: System.get_env("TMPDIR") <> "trademarks.zip"
 
 # General application configuration
-config :trademarks,
-  ecto_repos: [Trademarks.Repo]
+config :trademarks, ecto_repos: [Trademarks.Repo]
 
 config :trademarks,
   user_agent: "Elixir elixir@test.com",
@@ -49,4 +48,4 @@ config :trademarks,
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

@@ -6,12 +6,12 @@ defmodule Trademarks.Correspondent do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "correspondents" do
-    field :address_1, :string
-    field :address_2, :string
-    field :address_3, :string
-    field :address_4, :string
-    field :address_5, :string
-    has_many :case_files, CaseFile
+    field(:address_1, :string)
+    field(:address_2, :string)
+    field(:address_3, :string)
+    field(:address_4, :string)
+    field(:address_5, :string)
+    has_many(:case_files, CaseFile)
     timestamps()
   end
 
@@ -24,23 +24,31 @@ defmodule Trademarks.Correspondent do
   end
 
   def create_or_update(params) do
-    case Repo.get_by(Correspondent, address_1: params[:address_1],
-                                    address_2: params[:address_2],
-                                    address_3: params[:address_3],
-                                    address_4: params[:address_4],
-                                    address_5: params[:address_5]) do
-      nil  -> %Correspondent{address_1: params[:address_1],
-                             address_2: params[:address_2],
-                             address_3: params[:address_3],
-                             address_4: params[:address_4],
-                             address_5: params[:address_5]}
-      correspondent -> correspondent
+    case Repo.get_by(
+           Correspondent,
+           address_1: params[:address_1],
+           address_2: params[:address_2],
+           address_3: params[:address_3],
+           address_4: params[:address_4],
+           address_5: params[:address_5]
+         ) do
+      nil ->
+        %Correspondent{
+          address_1: params[:address_1],
+          address_2: params[:address_2],
+          address_3: params[:address_3],
+          address_4: params[:address_4],
+          address_5: params[:address_5]
+        }
+
+      correspondent ->
+        correspondent
     end
     |> changeset(params)
-    |> Repo.insert_or_update
+    |> Repo.insert_or_update()
     |> case do
-         {:ok, correspondent} -> correspondent.id
-         {:error, changeset}  -> {:error, changeset}
-       end
+      {:ok, correspondent} -> correspondent.id
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 end

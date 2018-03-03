@@ -16,13 +16,20 @@ defmodule Trademarks.CaseFileOwner do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "case_file_owners" do
-    field :dba, :string
-    field :nationality_country, :string
-    field :nationality_state, :string
-    field :party_name, :string
-    many_to_many :case_files, CaseFile, join_through: CaseFilesCaseFileOwner, on_replace: :delete
-    many_to_many :addresses, Address, join_through: CaseFileOwnersAddress, on_replace: :delete
-    many_to_many :trademarks, Trademark, join_through: CaseFileOwnersTrademark, on_replace: :delete
+    field(:dba, :string)
+    field(:nationality_country, :string)
+    field(:nationality_state, :string)
+    field(:party_name, :string)
+    many_to_many(:case_files, CaseFile, join_through: CaseFilesCaseFileOwner, on_replace: :delete)
+    many_to_many(:addresses, Address, join_through: CaseFileOwnersAddress, on_replace: :delete)
+
+    many_to_many(
+      :trademarks,
+      Trademark,
+      join_through: CaseFileOwnersTrademark,
+      on_replace: :delete
+    )
+
     timestamps()
   end
 
@@ -38,22 +45,32 @@ defmodule Trademarks.CaseFileOwner do
   end
 
   def create_or_update(params) do
-    case Repo.get_by(CaseFileOwner, party_name: params[:party_name],
-                                    nationality_state: params[:nationality_state]) do
-      nil  -> %CaseFileOwner{party_name: params[:party_name],
-                             nationality_state: params[:nationality_state]}
-      case_file_owner -> case_file_owner
+    case Repo.get_by(
+           CaseFileOwner,
+           party_name: params[:party_name],
+           nationality_state: params[:nationality_state]
+         ) do
+      nil ->
+        %CaseFileOwner{
+          party_name: params[:party_name],
+          nationality_state: params[:nationality_state]
+        }
+
+      case_file_owner ->
+        case_file_owner
     end
     |> changeset(params)
-    |> Repo.insert_or_update
+    |> Repo.insert_or_update()
     |> case do
-         {:ok, case_file_owner} ->
-           case_file_owner
-           |> associate_address(params)
-           {:ok, case_file_owner}
-         {:error, changeset} ->
-           {:error, changeset}
-       end
+      {:ok, case_file_owner} ->
+        case_file_owner
+        |> associate_address(params)
+
+        {:ok, case_file_owner}
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   defp associate_address(case_file_owner, params) do
@@ -65,17 +82,22 @@ defmodule Trademarks.CaseFileOwner do
       postcode: params[:postcode],
       country: params[:country]
     }
+
     with {:ok, address} <- Address.create_or_update(address_params) do
       %CaseFileOwnersAddress{}
-      |> CaseFileOwnersAddress.changeset(%{case_file_owner_id: case_file_owner.id,
-                                           address_id: address.id})
+      |> CaseFileOwnersAddress.changeset(%{
+        case_file_owner_id: case_file_owner.id,
+        address_id: address.id
+      })
       |> Repo.insert(on_conflict: :nothing)
+
       case_file_owner
     else
       _ ->
-        Logger.error fn ->
+        Logger.error(fn ->
           "Something went wrong with params: #{inspect(params)}"
-        end
+        end)
+
         case_file_owner
     end
   end

@@ -11,11 +11,11 @@ defmodule Trademarks.CaseFileEventStatement do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "case_file_event_statements" do
-    belongs_to :case_file, CaseFile, type: :binary_id
-    field :code,        :string
-    field :date,        :date
-    field :description, :string
-    field :type,        :string
+    belongs_to(:case_file, CaseFile, type: :binary_id)
+    field(:code, :string)
+    field(:date, :date)
+    field(:description, :string)
+    field(:type, :string)
     timestamps()
   end
 
@@ -23,6 +23,7 @@ defmodule Trademarks.CaseFileEventStatement do
 
   def changeset(struct, params \\ %{}) do
     params = ParamsFormatter.format(params)
+
     struct
     |> cast(params, @fields)
     |> foreign_key_constraint(:case_file_id, message: "Select a valid case file")
@@ -37,24 +38,33 @@ defmodule Trademarks.CaseFileEventStatement do
 
   defp create_or_update(params, case_file) do
     params = ParamsFormatter.format(params)
-    case Repo.get_by(CaseFileEventStatement, case_file_id: case_file.id,
-                                             code: params[:code],
-                                             date: params[:date],
-                                             description: params[:description],
-                                             type: params[:type]) do
-      nil  -> %CaseFileEventStatement{case_file_id: case_file.id,
-                                      code: params[:code],
-                                      date: params[:date],
-                                      description: params[:description],
-                                      type: params[:type]}
-      case_file_event_statement -> case_file_event_statement
+
+    case Repo.get_by(
+           CaseFileEventStatement,
+           case_file_id: case_file.id,
+           code: params[:code],
+           date: params[:date],
+           description: params[:description],
+           type: params[:type]
+         ) do
+      nil ->
+        %CaseFileEventStatement{
+          case_file_id: case_file.id,
+          code: params[:code],
+          date: params[:date],
+          description: params[:description],
+          type: params[:type]
+        }
+
+      case_file_event_statement ->
+        case_file_event_statement
     end
     |> changeset(params)
-    |> Repo.insert_or_update
+    |> Repo.insert_or_update()
     |> case do
-         {:ok, case_file_event_statement} -> case_file_event_statement
-         {:error, changeset}    -> {:error, changeset}
-       end
+      {:ok, case_file_event_statement} -> case_file_event_statement
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   defp validate_date_format(cs, params) do

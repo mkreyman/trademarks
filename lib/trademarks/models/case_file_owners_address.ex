@@ -6,8 +6,8 @@ defmodule Trademarks.CaseFileOwnersAddress do
 
   @primary_key false
   schema "case_file_owners_addresses" do
-    belongs_to :case_file_owner, CaseFileOwner, type: :binary_id, on_replace: :delete
-    belongs_to :address, Address, type: :binary_id, on_replace: :delete
+    belongs_to(:case_file_owner, CaseFileOwner, type: :binary_id, on_replace: :delete)
+    belongs_to(:address, Address, type: :binary_id, on_replace: :delete)
   end
 
   def changeset(struct, params \\ %{}) do

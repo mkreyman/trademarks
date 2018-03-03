@@ -5,12 +5,13 @@ defmodule Trademarks.Parser do
   @temp_dir Application.get_env(:trademarks, :temp_dir)
 
   def start(zip_file) do
-    with {:ok, xml_file}           <- extract(zip_file),
-         %File.Stream{} = doc      <- File.stream!(xml_file) do
+    with {:ok, xml_file} <- extract(zip_file),
+         %File.Stream{} = doc <- File.stream!(xml_file) do
       stream =
-        stream_tags(doc, [:"case-file"]) |>
-        Stream.map(fn {_, doc} -> doc |>
-          xmap([
+        stream_tags(doc, [:"case-file"])
+        |> Stream.map(fn {_, doc} ->
+          doc
+          |> xmap(
             serial_number: ~x[./serial-number/text()]s,
             registration_number: ~x[./registration-number/text()]s,
             filing_date: ~x[./case-file-header/filing-date/text()]s,
@@ -52,7 +53,10 @@ defmodule Trademarks.Parser do
               state: ~x[./state/text()]so,
               postcode: ~x[./postcode/text()]so,
               country: ~x[./country/text()]s
-          ]]) end)
+            ]
+          )
+        end)
+
       {:ok, stream}
     else
       _ -> {:error, zip_file}
@@ -60,18 +64,22 @@ defmodule Trademarks.Parser do
   end
 
   def extract(zip_file) do
-    unzip_options = [ {:cwd, @temp_dir} ]
-    Logger.info "Extracting #{zip_file} ..."
-    result        = zip_file
-                    |> String.to_charlist()
-                    |> :zip.unzip(unzip_options)
+    unzip_options = [{:cwd, @temp_dir}]
+    Logger.info("Extracting #{zip_file} ...")
+
+    result =
+      zip_file
+      |> String.to_charlist()
+      |> :zip.unzip(unzip_options)
 
     case result do
       {:ok, [xml_file]} ->
-        Logger.info fn ->
+        Logger.info(fn ->
           "Extracted #{zip_file} into #{xml_file}"
-        end
+        end)
+
         {:ok, xml_file}
+
       _ ->
         {:error, zip_file}
     end
