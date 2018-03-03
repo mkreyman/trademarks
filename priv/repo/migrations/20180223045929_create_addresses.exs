@@ -13,8 +13,6 @@ defmodule Trademarks.Repo.Migrations.CreateAddresses do
       timestamps()
     end
 
-    create unique_index(:addresses, [:address_1, :postcode],
-                        name: :address_1_postcode_index)
-
+    create unique_index(:addresses, [:address_1, :address_2, :city])
   end
 end

@@ -90,15 +90,18 @@ defmodule Trademarks.CaseFileOwner do
         address_id: address.id
       })
       |> Repo.insert(on_conflict: :nothing)
-
-      case_file_owner
     else
-      _ ->
+      {:error, changeset} ->
         Logger.error(fn ->
-          "Something went wrong with params: #{inspect(params)}"
+          "Invalid changeset: #{inspect(changeset)}"
         end)
 
-        case_file_owner
+      _ ->
+        Logger.error(fn ->
+          "CaseFileOwner: Something went wrong with params: #{inspect(params)}"
+        end)
     end
+
+    case_file_owner
   end
 end
