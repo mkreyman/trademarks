@@ -25,9 +25,8 @@ defmodule Trademarks.Search do
       left_join: t in assoc(f, :trademark),
       left_join: c in assoc(f, :correspondent),
       left_join: o in assoc(f, :case_file_owners),
-      left_join: a in assoc(o, :addresses),
       preload: [
-        case_files: {f, trademark: t, correspondent: c, case_file_owners: {o, addresses: a}}
+        case_files: {f, trademark: t, correspondent: c, case_file_owners: o}
       ],
       select:
         map(att, [
@@ -50,7 +49,12 @@ defmodule Trademarks.Search do
               :nationality_country,
               :nationality_state,
               :party_name,
-              addresses: [:id, :address_1, :address_2, :city, :state, :postcode, :country]
+              :address_1,
+              :address_2,
+              :city,
+              :state,
+              :postcode,
+              :country
             ]
           ]
         ])
@@ -76,7 +80,6 @@ defmodule Trademarks.Search do
       left_join: cfs in assoc(f, :case_file_statements),
       left_join: cfes in assoc(f, :case_file_event_statements),
       left_join: o in assoc(t, :case_file_owners),
-      left_join: a in assoc(o, :addresses),
       preload: [
         case_files:
           {f,
@@ -84,7 +87,7 @@ defmodule Trademarks.Search do
            correspondent: c,
            case_file_statements: cfs,
            case_file_event_statements: cfes},
-        case_file_owners: {o, addresses: a}
+        case_file_owners: o
       ],
       select:
         map(t, [
@@ -110,7 +113,12 @@ defmodule Trademarks.Search do
             :nationality_country,
             :nationality_state,
             :party_name,
-            addresses: [:id, :address_1, :address_2, :city, :state, :postcode, :country]
+            :address_1,
+            :address_2,
+            :city,
+            :state,
+            :postcode,
+            :country
           ]
         ])
     )
@@ -130,11 +138,10 @@ defmodule Trademarks.Search do
       o in CaseFileOwner,
       where: ilike(o.party_name, ^query),
       left_join: t in assoc(o, :trademarks),
-      left_join: a in assoc(o, :addresses),
       left_join: f in assoc(o, :case_files),
       left_join: att in assoc(f, :attorney),
       left_join: c in assoc(f, :correspondent),
-      preload: [trademarks: t, addresses: a, case_files: {f, attorney: att, correspondent: c}],
+      preload: [trademarks: t, case_files: {f, attorney: att, correspondent: c}],
       select:
         map(o, [
           :id,
@@ -142,8 +149,13 @@ defmodule Trademarks.Search do
           :nationality_country,
           :nationality_state,
           :party_name,
+          :address_1,
+          :address_2,
+          :city,
+          :state,
+          :postcode,
+          :country,
           trademarks: [:id, :name],
-          addresses: [:id, :address_1, :address_2, :city, :state, :postcode, :country],
           case_files: [
             :id,
             :abandonment_date,
@@ -177,8 +189,7 @@ defmodule Trademarks.Search do
       left_join: att in assoc(f, :attorney),
       left_join: t in assoc(f, :trademark),
       left_join: o in assoc(f, :case_file_owners),
-      left_join: a in assoc(o, :addresses),
-      preload: [case_files: {f, attorney: att, trademark: t, case_file_owners: {o, addresses: a}}],
+      preload: [case_files: {f, attorney: att, trademark: t, case_file_owners: o}],
       select:
         map(c, [
           :id,
@@ -204,7 +215,12 @@ defmodule Trademarks.Search do
               :nationality_country,
               :nationality_state,
               :party_name,
-              addresses: [:id, :address_1, :address_2, :city, :state, :postcode, :country]
+              :address_1,
+              :address_2,
+              :city,
+              :state,
+              :postcode,
+              :country
             ]
           ]
         ])

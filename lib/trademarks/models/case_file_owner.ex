@@ -4,14 +4,13 @@ defmodule Trademarks.CaseFileOwner do
   import Ecto.Changeset
 
   alias Trademarks.{
-    Address,
-    CaseFileOwnersAddress,
     CaseFilesCaseFileOwner,
     CaseFileOwner,
     CaseFile,
     Trademark,
     CaseFileOwnersTrademark,
-    Repo
+    Repo,
+    Utils.ParamsFormatter
   }
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -20,8 +19,13 @@ defmodule Trademarks.CaseFileOwner do
     field(:nationality_country, :string)
     field(:nationality_state, :string)
     field(:party_name, :string)
+    field(:address_1, :string)
+    field(:address_2, :string)
+    field(:city, :string)
+    field(:state, :string)
+    field(:postcode, :string)
+    field(:country, :string)
     many_to_many(:case_files, CaseFile, join_through: CaseFilesCaseFileOwner, on_replace: :delete)
-    many_to_many(:addresses, Address, join_through: CaseFileOwnersAddress, on_replace: :delete)
 
     many_to_many(
       :trademarks,
@@ -36,72 +40,34 @@ defmodule Trademarks.CaseFileOwner do
   @fields ~w(dba
              nationality_country
              nationality_state
-             party_name)a
+             party_name
+             address_1
+             address_2
+             city
+             state
+             postcode
+             country)a
 
   def changeset(struct, params \\ %{}) do
+    params = ParamsFormatter.format(params)
     struct
     |> cast(params, @fields)
-    |> unique_constraint(:nationality_state_party_name_index)
+    |> unique_constraint(:party_name)
   end
 
   def create_or_update(params) do
-    case Repo.get_by(
-           CaseFileOwner,
-           party_name: params[:party_name],
-           nationality_state: params[:nationality_state]
-         ) do
+    params = ParamsFormatter.format(params)
+    case Repo.get_by(CaseFileOwner, party_name: params[:party_name]) do
       nil ->
-        %CaseFileOwner{
-          party_name: params[:party_name],
-          nationality_state: params[:nationality_state]
-        }
-
+        %CaseFileOwner{party_name: params[:party_name]}
       case_file_owner ->
         case_file_owner
     end
     |> changeset(params)
     |> Repo.insert_or_update()
     |> case do
-      {:ok, case_file_owner} ->
-        case_file_owner
-        |> associate_address(params)
-
-        {:ok, case_file_owner}
-
-      {:error, changeset} ->
-        {:error, changeset}
+      {:ok, case_file_owner} -> {:ok, case_file_owner}
+      {:error, changeset} -> {:error, changeset}
     end
-  end
-
-  defp associate_address(case_file_owner, params) do
-    address_params = %{
-      address_1: params[:address_1],
-      address_2: params[:address_2],
-      city: params[:city],
-      state: params[:state],
-      postcode: params[:postcode],
-      country: params[:country]
-    }
-
-    with {:ok, address} <- Address.create_or_update(address_params) do
-      %CaseFileOwnersAddress{}
-      |> CaseFileOwnersAddress.changeset(%{
-        case_file_owner_id: case_file_owner.id,
-        address_id: address.id
-      })
-      |> Repo.insert(on_conflict: :nothing)
-    else
-      {:error, changeset} ->
-        Logger.error(fn ->
-          "Invalid changeset: #{inspect(changeset)}"
-        end)
-
-      _ ->
-        Logger.error(fn ->
-          "CaseFileOwner: Something went wrong with params: #{inspect(params)}"
-        end)
-    end
-
-    case_file_owner
   end
 end

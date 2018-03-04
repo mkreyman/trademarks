@@ -7,7 +7,8 @@ defmodule Trademarks.Trademark do
     CaseFile,
     CaseFileOwnersTrademark,
     CaseFileOwner,
-    Repo
+    Repo,
+    Utils.ParamsFormatter
   }
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -28,6 +29,7 @@ defmodule Trademarks.Trademark do
   @fields ~w(name)a
 
   def changeset(struct, params \\ %{}) do
+    params = ParamsFormatter.format(params)
     struct
     |> cast(params, @fields)
     |> unique_constraint(:name)
@@ -38,6 +40,7 @@ defmodule Trademarks.Trademark do
   end
 
   def create_or_update(params) do
+    params = ParamsFormatter.format(params)
     case Repo.get_by(Trademark, name: params[:trademark_name]) do
       nil -> %Trademark{name: params[:trademark_name]}
       trademark -> trademark

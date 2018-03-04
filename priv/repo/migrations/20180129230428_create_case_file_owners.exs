@@ -8,11 +8,15 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileOwners do
       add :nationality_country, :text
       add :nationality_state, :text
       add :party_name, :text
+      add :address_1, :text
+      add :address_2, :text
+      add :city, :text
+      add :state, :text
+      add :postcode, :text
+      add :country, :text
       timestamps()
     end
 
-    create unique_index(:case_file_owners,
-                        [:nationality_state, :party_name],
-                        name: :nationality_state_party_name_index)
+    create unique_index(:case_file_owners, :party_name)
   end
 end

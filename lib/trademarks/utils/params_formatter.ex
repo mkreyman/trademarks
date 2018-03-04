@@ -2,6 +2,7 @@ defmodule Trademarks.Utils.ParamsFormatter do
   def format(params) do
     params
     |> format_date()
+    |> upcase()
   end
 
   def is_date(date) do
@@ -12,6 +13,18 @@ defmodule Trademarks.Utils.ParamsFormatter do
       MatchError -> false
     end
   end
+
+  defp upcase(%{trademark_name: _} = params) do
+    params
+    |> Map.update(:trademark_name, params[:trademark_name], &String.upcase(&1))
+  end
+
+  defp upcase(%{party_name: _} = params) do
+    params
+    |> Map.update(:party_name, params[:party_name], &String.upcase(&1))
+  end
+
+  defp upcase(params), do: params
 
   defp format_date(params) do
     params
