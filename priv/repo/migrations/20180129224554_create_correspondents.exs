@@ -12,8 +12,6 @@ defmodule Trademarks.Repo.Migrations.CreateCorrespondents do
       timestamps()
     end
 
-    create unique_index(:correspondents,
-                        [:address_1, :address_2, :address_3, :address_4, :address_5],
-                        name: :addresses_index)
+    create unique_index(:correspondents, :address_1)
   end
 end

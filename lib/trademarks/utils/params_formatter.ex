@@ -24,6 +24,11 @@ defmodule Trademarks.Utils.ParamsFormatter do
     |> Map.update(:party_name, params[:party_name], &String.upcase(&1))
   end
 
+  defp upcase(%{address_1: _} = params) do
+    params
+    |> Map.update(:address_1, params[:address_1], &String.upcase(&1))
+  end
+
   defp upcase(params), do: params
 
   defp format_date(params) do

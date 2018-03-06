@@ -2,7 +2,12 @@ defmodule Trademarks.Correspondent do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Trademarks.{Correspondent, CaseFile, Repo}
+  alias Trademarks.{
+    Correspondent,
+    CaseFile,
+    Repo,
+    Utils.ParamsFormatter
+  }
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "correspondents" do
@@ -18,31 +23,17 @@ defmodule Trademarks.Correspondent do
   @fields ~w(address_1 address_2 address_3 address_4 address_5)
 
   def changeset(data, params \\ %{}) do
+    params = ParamsFormatter.format(params)
     data
     |> cast(params, @fields)
-    |> unique_constraint(:addresses_index)
+    |> unique_constraint(:address_1)
   end
 
   def create_or_update(params) do
-    case Repo.get_by(
-           Correspondent,
-           address_1: params[:address_1],
-           address_2: params[:address_2],
-           address_3: params[:address_3],
-           address_4: params[:address_4],
-           address_5: params[:address_5]
-         ) do
-      nil ->
-        %Correspondent{
-          address_1: params[:address_1],
-          address_2: params[:address_2],
-          address_3: params[:address_3],
-          address_4: params[:address_4],
-          address_5: params[:address_5]
-        }
-
-      correspondent ->
-        correspondent
+    params = ParamsFormatter.format(params)
+    case Repo.get_by(Correspondent, address_1: params[:address_1]) do
+      nil ->  %Correspondent{address_1: params[:address_1]}
+      correspondent -> correspondent
     end
     |> changeset(params)
     |> Repo.insert_or_update()

@@ -40,13 +40,11 @@ alias Trademarks.{
 Downloader.start
 {:ok, stream} = Parser.start("./tmp/trademarks.zip")
 {:ok, stream} = Parser.start("./tmp/sample.zip")
-{:ok, stream} = Parser.start("./tmp/apc180211.zip")
-{:ok, stream} = Parser.start("./tmp/apc180131.zip")
+{:ok, stream} = Parser.start("./tmp/apc180218.zip")
 Persistor.process(stream)
 Repo.all(CaseFile) |> Enum.count
 Repo.all(CaseFileOwner) |> Enum.count
 Repo.all(Attorney) |> Enum.count
-Repo.all(Address) |> Enum.count
 Repo.all(Trademark) |> Enum.count
 owner = Repo.all(CaseFileOwner) |> Repo.preload(:case_files) |> Enum.at(0)
 owner.case_files
