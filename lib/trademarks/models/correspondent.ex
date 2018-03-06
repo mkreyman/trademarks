@@ -24,6 +24,7 @@ defmodule Trademarks.Correspondent do
 
   def changeset(data, params \\ %{}) do
     params = ParamsFormatter.format(params)
+
     data
     |> cast(params, @fields)
     |> unique_constraint(:address_1)
@@ -31,8 +32,9 @@ defmodule Trademarks.Correspondent do
 
   def create_or_update(params) do
     params = ParamsFormatter.format(params)
+
     case Repo.get_by(Correspondent, address_1: params[:address_1]) do
-      nil ->  %Correspondent{address_1: params[:address_1]}
+      nil -> %Correspondent{address_1: params[:address_1]}
       correspondent -> correspondent
     end
     |> changeset(params)

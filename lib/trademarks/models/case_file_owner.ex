@@ -50,6 +50,7 @@ defmodule Trademarks.CaseFileOwner do
 
   def changeset(struct, params \\ %{}) do
     params = ParamsFormatter.format(params)
+
     struct
     |> cast(params, @fields)
     |> unique_constraint(:party_name)
@@ -57,9 +58,11 @@ defmodule Trademarks.CaseFileOwner do
 
   def create_or_update(params) do
     params = ParamsFormatter.format(params)
+
     case Repo.get_by(CaseFileOwner, party_name: params[:party_name]) do
       nil ->
         %CaseFileOwner{party_name: params[:party_name]}
+
       case_file_owner ->
         case_file_owner
     end

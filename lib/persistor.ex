@@ -30,8 +30,8 @@ defmodule Trademarks.Persistor do
     Logger.info("Started processing ...")
 
     # subset = 3
-    stream
     # |> Stream.take(subset)
+    stream
     |> Enum.map(&save(&1))
 
     finished = :os.system_time(:seconds)
