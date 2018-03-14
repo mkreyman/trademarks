@@ -6,7 +6,7 @@ defmodule Trademarks.Correspondent do
     Correspondent,
     CaseFile,
     Repo,
-    Utils.ParamsFormatter
+    Utils.AttrsFormatter
   }
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -17,27 +17,29 @@ defmodule Trademarks.Correspondent do
     field(:address_4, :string)
     field(:address_5, :string)
     has_many(:case_files, CaseFile)
+
     timestamps()
   end
 
   @fields ~w(address_1 address_2 address_3 address_4 address_5)
 
-  def changeset(data, params \\ %{}) do
-    params = ParamsFormatter.format(params)
+  @doc false
+  def changeset(correspondent, attrs \\ %{}) do
+    attrs = AttrsFormatter.format(attrs)
 
-    data
-    |> cast(params, @fields)
+    correspondent
+    |> cast(attrs, @fields)
     |> unique_constraint(:address_1)
   end
 
-  def create_or_update(params) do
-    params = ParamsFormatter.format(params)
+  def create_or_update(attrs) do
+    attrs = AttrsFormatter.format(attrs)
 
-    case Repo.get_by(Correspondent, address_1: params[:address_1]) do
-      nil -> %Correspondent{address_1: params[:address_1]}
+    case Repo.get_by(Correspondent, address_1: attrs[:address_1]) do
+      nil -> %Correspondent{address_1: attrs[:address_1]}
       correspondent -> correspondent
     end
-    |> changeset(params)
+    |> changeset(attrs)
     |> Repo.insert_or_update()
     |> case do
       {:ok, correspondent} -> correspondent.id

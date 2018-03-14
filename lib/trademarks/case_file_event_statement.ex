@@ -6,7 +6,7 @@ defmodule Trademarks.CaseFileEventStatement do
     CaseFileEventStatement,
     CaseFile,
     Repo,
-    Utils.ParamsFormatter
+    Utils.AttrsFormatter
   }
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -16,50 +16,52 @@ defmodule Trademarks.CaseFileEventStatement do
     field(:date, :date)
     field(:description, :string)
     field(:type, :string)
+
     timestamps()
   end
 
   @fields ~w(code date description type)
 
-  def changeset(struct, params \\ %{}) do
-    params = ParamsFormatter.format(params)
+  @doc false
+  def changeset(case_file_event_statement, attrs \\ %{}) do
+    attrs = AttrsFormatter.format(attrs)
 
-    struct
-    |> cast(params, @fields)
+    case_file_event_statement
+    |> cast(attrs, @fields)
     |> foreign_key_constraint(:case_file_id, message: "Select a valid case file")
     |> unique_constraint(:case_file_id_code_type_description_date_index)
-    |> validate_date_format(params)
+    |> validate_date_format(attrs)
   end
 
-  def create_or_update_all(params, case_file) do
-    params
+  def create_or_update_all(attrs, case_file) do
+    attrs
     |> Enum.map(&create_or_update(&1, case_file))
   end
 
-  defp create_or_update(params, case_file) do
-    params = ParamsFormatter.format(params)
+  defp create_or_update(attrs, case_file) do
+    attrs = AttrsFormatter.format(attrs)
 
     case Repo.get_by(
            CaseFileEventStatement,
            case_file_id: case_file.id,
-           code: params[:code],
-           date: params[:date],
-           description: params[:description],
-           type: params[:type]
+           code: attrs[:code],
+           date: attrs[:date],
+           description: attrs[:description],
+           type: attrs[:type]
          ) do
       nil ->
         %CaseFileEventStatement{
           case_file_id: case_file.id,
-          code: params[:code],
-          date: params[:date],
-          description: params[:description],
-          type: params[:type]
+          code: attrs[:code],
+          date: attrs[:date],
+          description: attrs[:description],
+          type: attrs[:type]
         }
 
       case_file_event_statement ->
         case_file_event_statement
     end
-    |> changeset(params)
+    |> changeset(attrs)
     |> Repo.insert_or_update()
     |> case do
       {:ok, case_file_event_statement} -> case_file_event_statement
@@ -67,8 +69,8 @@ defmodule Trademarks.CaseFileEventStatement do
     end
   end
 
-  defp validate_date_format(cs, params) do
-    if ParamsFormatter.is_date(params[:date]) == false do
+  defp validate_date_format(cs, attrs) do
+    if AttrsFormatter.is_date(attrs[:date]) == false do
       add_error(cs, :case_file_event_statements, "case_file_event_statement")
     else
       cs

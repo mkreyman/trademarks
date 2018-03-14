@@ -12,7 +12,7 @@ defmodule Trademarks.CaseFile do
     Correspondent,
     CaseFileOwner,
     CaseFilesCaseFileOwner,
-    Utils.ParamsFormatter,
+    Utils.AttrsFormatter,
     Repo
   }
 
@@ -38,6 +38,7 @@ defmodule Trademarks.CaseFile do
     belongs_to(:trademark, Trademark, type: :binary_id)
     has_many(:case_file_statements, CaseFileStatement, on_replace: :delete)
     has_many(:case_file_event_statements, CaseFileEventStatement, on_replace: :delete)
+
     timestamps()
   end
 
@@ -49,21 +50,22 @@ defmodule Trademarks.CaseFile do
              serial_number
              status_date)a
 
-  def changeset(struct, params \\ %{}) do
-    params = ParamsFormatter.format(params)
+  @doc false
+  def changeset(case_file, attrs \\ %{}) do
+    attrs = AttrsFormatter.format(attrs)
 
-    struct
-    |> cast(params, @fields)
+    case_file
+    |> cast(attrs, @fields)
     |> unique_constraint(:serial_number)
-    |> validate_date_format(params)
+    |> validate_date_format(attrs)
   end
 
-  def create_or_update(params) do
-    case Repo.get_by(CaseFile, serial_number: params[:serial_number]) do
-      nil -> %CaseFile{serial_number: params[:serial_number]}
+  def create_or_update(attrs) do
+    case Repo.get_by(CaseFile, serial_number: attrs[:serial_number]) do
+      nil -> %CaseFile{serial_number: attrs[:serial_number]}
       case_file -> case_file
     end
-    |> CaseFile.changeset(params)
+    |> CaseFile.changeset(attrs)
     |> Repo.insert_or_update()
     |> case do
       {:ok, case_file} -> {:ok, case_file}
@@ -71,17 +73,17 @@ defmodule Trademarks.CaseFile do
     end
   end
 
-  defp validate_date_format(cs, params) do
+  defp validate_date_format(cs, attrs) do
     dates = [
-      params[:abandonment_date],
-      params[:filing_date],
-      params[:registration_date],
-      params[:renewal_date],
-      params[:status_date],
-      params[:date]
+      attrs[:abandonment_date],
+      attrs[:filing_date],
+      attrs[:registration_date],
+      attrs[:renewal_date],
+      attrs[:status_date],
+      attrs[:date]
     ]
 
-    if Enum.any?(dates, fn date -> ParamsFormatter.is_date(date) end) == false do
+    if Enum.any?(dates, fn date -> AttrsFormatter.is_date(date) end) == false do
       add_error(cs, :case_files, "case_file")
     else
       cs

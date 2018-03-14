@@ -8,7 +8,7 @@ defmodule Trademarks.Trademark do
     CaseFileOwnersTrademark,
     CaseFileOwner,
     Repo,
-    Utils.ParamsFormatter
+    Utils.AttrsFormatter
   }
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -28,11 +28,12 @@ defmodule Trademarks.Trademark do
 
   @fields ~w(name)a
 
-  def changeset(struct, params \\ %{}) do
-    params = ParamsFormatter.format(params)
+  @doc false
+  def changeset(trademark, attrs \\ %{}) do
+    attrs = AttrsFormatter.format(attrs)
 
-    struct
-    |> cast(params, @fields)
+    trademark
+    |> cast(attrs, @fields)
     |> unique_constraint(:name)
   end
 
@@ -40,14 +41,14 @@ defmodule Trademarks.Trademark do
     {:ok, nil}
   end
 
-  def create_or_update(params) do
-    params = ParamsFormatter.format(params)
+  def create_or_update(attrs) do
+    attrs = AttrsFormatter.format(attrs)
 
-    case Repo.get_by(Trademark, name: params[:trademark_name]) do
-      nil -> %Trademark{name: params[:trademark_name]}
+    case Repo.get_by(Trademark, name: attrs[:trademark_name]) do
+      nil -> %Trademark{name: attrs[:trademark_name]}
       trademark -> trademark
     end
-    |> changeset(params)
+    |> changeset(attrs)
     |> Repo.insert_or_update()
     |> case do
       {:ok, trademark} -> {:ok, trademark.id}

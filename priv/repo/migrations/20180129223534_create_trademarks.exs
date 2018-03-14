@@ -5,6 +5,7 @@ defmodule Trademarks.Repo.Migrations.CreateTrademarks do
     create table(:trademarks, primary_key: false) do
       add :id, :uuid, primary_key: true
       add :name, :text
+      
       timestamps()
     end
 

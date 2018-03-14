@@ -4,11 +4,12 @@ defmodule Trademarks.Repo.Migrations.CreateCaseFileEventStatements do
   def change do
     create table(:case_file_event_statements, primary_key: false) do
       add :id, :uuid, primary_key: true
-      add :case_file_id, references(:case_files, type: :uuid, null: false)
       add :code, :text
       add :date, :date
       add :description, :text
       add :type, :text
+      add :case_file_id, references(:case_files, type: :uuid, null: false, on_delete: :nothing)
+      
       timestamps()
     end
 

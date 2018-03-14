@@ -10,7 +10,7 @@ defmodule Trademarks.CaseFileOwner do
     Trademark,
     CaseFileOwnersTrademark,
     Repo,
-    Utils.ParamsFormatter
+    Utils.AttrsFormatter
   }
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -48,25 +48,26 @@ defmodule Trademarks.CaseFileOwner do
              postcode
              country)a
 
-  def changeset(struct, params \\ %{}) do
-    params = ParamsFormatter.format(params)
+  @doc false
+  def changeset(case_file_owner, attrs \\ %{}) do
+    attrs = AttrsFormatter.format(attrs)
 
-    struct
-    |> cast(params, @fields)
+    case_file_owner
+    |> cast(attrs, @fields)
     |> unique_constraint(:party_name)
   end
 
-  def create_or_update(params) do
-    params = ParamsFormatter.format(params)
+  def create_or_update(attrs) do
+    attrs = AttrsFormatter.format(attrs)
 
-    case Repo.get_by(CaseFileOwner, party_name: params[:party_name]) do
+    case Repo.get_by(CaseFileOwner, party_name: attrs[:party_name]) do
       nil ->
-        %CaseFileOwner{party_name: params[:party_name]}
+        %CaseFileOwner{party_name: attrs[:party_name]}
 
       case_file_owner ->
         case_file_owner
     end
-    |> changeset(params)
+    |> changeset(attrs)
     |> Repo.insert_or_update()
     |> case do
       {:ok, case_file_owner} -> {:ok, case_file_owner}

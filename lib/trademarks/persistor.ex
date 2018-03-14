@@ -58,9 +58,9 @@ defmodule Trademarks.Persistor do
     end)
   end
 
-  defp save(params) do
-    with {:ok, case_file} <- CaseFile.create_or_update(params),
-         {:ok, trademark_id} <- Trademark.create_or_update(params) do
+  defp save(attrs) do
+    with {:ok, case_file} <- CaseFile.create_or_update(attrs),
+         {:ok, trademark_id} <- Trademark.create_or_update(attrs) do
       case_file
       |> Repo.preload([
         :attorney,
@@ -70,19 +70,19 @@ defmodule Trademarks.Persistor do
         :case_file_event_statements,
         :case_file_owners
       ])
-      |> associate_owners_and_trademarks(params, trademark_id)
-      |> CaseFile.changeset(params)
-      |> put_change(:attorney_id, Attorney.create_or_update(params))
-      |> put_change(:correspondent_id, Correspondent.create_or_update(params[:correspondent]))
+      |> associate_owners_and_trademarks(attrs, trademark_id)
+      |> CaseFile.changeset(attrs)
+      |> put_change(:attorney_id, Attorney.create_or_update(attrs))
+      |> put_change(:correspondent_id, Correspondent.create_or_update(attrs[:correspondent]))
       |> put_change(:trademark_id, trademark_id)
       |> put_change(
         :case_file_statements,
-        CaseFileStatement.create_or_update_all(params[:case_file_statements], case_file)
+        CaseFileStatement.create_or_update_all(attrs[:case_file_statements], case_file)
       )
       |> put_change(
         :case_file_event_statements,
         CaseFileEventStatement.create_or_update_all(
-          params[:case_file_event_statements],
+          attrs[:case_file_event_statements],
           case_file
         )
       )
@@ -95,22 +95,22 @@ defmodule Trademarks.Persistor do
       {:error, changeset} ->
         Logger.error(fn ->
           """
-          Invalid changeset for serial number: #{inspect(params[:serial_number])}
-          and trademark: #{inspect(params[:trademark_name])},
-          params: #{inspect(params)},
+          Invalid changeset for serial number: #{inspect(attrs[:serial_number])}
+          and trademark: #{inspect(attrs[:trademark_name])},
+          attrs: #{inspect(attrs)},
           changeset: #{inspect(changeset)}
           """
         end)
 
       _ ->
         Logger.error(fn ->
-          "Persistor: Something went wrong with params: #{inspect(params)}"
+          "Persistor: Something went wrong with attrs: #{inspect(attrs)}"
         end)
     end
   end
 
-  defp associate_owners_and_trademarks(case_file, params, trademark_id) do
-    params[:case_file_owners]
+  defp associate_owners_and_trademarks(case_file, attrs, trademark_id) do
+    attrs[:case_file_owners]
     |> Enum.map(&CaseFileOwner.create_or_update/1)
     |> Enum.map(fn {:ok, case_file_owner} -> case_file_owner end)
     |> Enum.map(fn case_file_owner ->

@@ -8,26 +8,28 @@ defmodule Trademarks.Attorney do
   schema "attorneys" do
     field(:name, :string)
     has_many(:case_files, CaseFile)
+
     timestamps()
   end
 
   @fields ~w(name)
 
-  def changeset(data, params \\ %{}) do
-    data
-    |> cast(params, @fields)
+  @doc false
+  def changeset(attorney, attrs \\ %{}) do
+    attorney
+    |> cast(attrs, @fields)
     |> unique_constraint(:name)
   end
 
   def create_or_update(%{attorney: nil}), do: nil
   def create_or_update(%{attorney: ""}), do: nil
 
-  def create_or_update(params) do
-    case Repo.get_by(Attorney, name: params[:attorney]) do
-      nil -> %Attorney{name: params[:attorney]}
+  def create_or_update(attrs) do
+    case Repo.get_by(Attorney, name: attrs[:attorney]) do
+      nil -> %Attorney{name: attrs[:attorney]}
       attorney -> attorney
     end
-    |> changeset(params)
+    |> changeset(attrs)
     |> Repo.insert_or_update()
     |> case do
       {:ok, attorney} -> attorney.id
