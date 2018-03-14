@@ -25,7 +25,8 @@ config :trademarks,
   trademarks_url: "https://bulkdata.uspto.gov/data/trademark/dailyxml/applications/",
   temp_dir: "./tmp/",
   temp_page: "./tmp/trademarks.html",
-  temp_file: "./tmp/trademarks.zip"
+  temp_file: "./tmp/trademarks.zip",
+  proxy: System.get_env("HTTPS_PROXY")
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

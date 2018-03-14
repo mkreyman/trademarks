@@ -2,7 +2,9 @@ defmodule Trademarks.Downloader do
   require Logger
 
   @user_agent [{"User-agent", Application.get_env(:trademarks, :user_agent)}]
+  @proxy Application.get_env(:trademarks, :proxy)
   @download_options [hackney: [:insecure], timeout: 10000, recv_timeout: 10000]
+  @download_options_with_proxy [proxy: @proxy, hackney: [:insecure], timeout: 10000, recv_timeout: 10000]
   @trademarks_url Application.get_env(:trademarks, :trademarks_url)
   @temp_page Application.get_env(:trademarks, :temp_page)
   @temp_file Application.get_env(:trademarks, :temp_file)
@@ -21,7 +23,14 @@ defmodule Trademarks.Downloader do
   end
 
   def download(url, output_filename) do
-    HTTPoison.get!(url, @user_agent, @download_options)
+    download_options =
+      if @proxy do
+        @download_options_with_proxy
+      else
+        @download_options
+      end
+
+    HTTPoison.get!(url, @user_agent, download_options)
     |> handle_response(output_filename)
   end
 
