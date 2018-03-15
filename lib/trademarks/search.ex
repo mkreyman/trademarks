@@ -63,10 +63,11 @@ defmodule Trademarks.Search do
   end
 
   def by_trademark(params) do
-    term = params[:trademark]
+    term = params[:trademark] || params["trademark"]
+    exact = params[:exact] || params["exact"]
 
     query =
-      case params[:exact] do
+      case exact do
         true -> "#{term}"
         _ -> "%#{term}%"
       end
@@ -122,7 +123,7 @@ defmodule Trademarks.Search do
           ]
         ])
     )
-    |> Repo.all()
+    |> Repo.paginate(params)
   end
 
   def by_owner(params) do

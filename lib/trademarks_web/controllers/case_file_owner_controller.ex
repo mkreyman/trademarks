@@ -1,44 +1,24 @@
 defmodule TrademarksWeb.CaseFileOwnerController do
   use TrademarksWeb, :controller
+  import Ecto.Query, warn: false
 
-  alias Trademarks.CaseFileOwner
+  alias Trademarks.{CaseFileOwner, Repo}
 
   action_fallback(TrademarksWeb.FallbackController)
 
-  def index(conn, _params) do
-    case_file_owners = Trademarks.list_case_file_owners()
-    render(conn, "index.json", case_file_owners: case_file_owners)
-  end
+  def index(conn, params) do
+    page =
+      CaseFileOwner
+      |> order_by(desc: :updated_at)
+      |> Repo.paginate(params)
 
-  def create(conn, %{"case_file_owner" => case_file_owner_params}) do
-    with {:ok, %CaseFileOwner{} = case_file_owner} <-
-           Trademarks.create_case_file_owner(case_file_owner_params) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", case_file_owner_path(conn, :show, case_file_owner))
-      |> render("show.json", case_file_owner: case_file_owner)
-    end
+    conn
+    |> Scrivener.Headers.paginate(page)
+    |> render("index.json", case_file_owners: page.entries)
   end
 
   def show(conn, %{"id" => id}) do
-    case_file_owner = Trademarks.get_case_file_owner!(id)
-    render(conn, "show.json", case_file_owner: case_file_owner)
-  end
-
-  def update(conn, %{"id" => id, "case_file_owner" => case_file_owner_params}) do
-    case_file_owner = Trademarks.get_case_file_owner!(id)
-
-    with {:ok, %CaseFileOwner{} = case_file_owner} <-
-           Trademarks.update_case_file_owner(case_file_owner, case_file_owner_params) do
-      render(conn, "show.json", case_file_owner: case_file_owner)
-    end
-  end
-
-  def delete(conn, %{"id" => id}) do
-    case_file_owner = Trademarks.get_case_file_owner!(id)
-
-    with {:ok, %CaseFileOwner{}} <- Trademarks.delete_case_file_owner(case_file_owner) do
-      send_resp(conn, :no_content, "")
-    end
+    case_file_owner = Repo.get!(CaseFileOwner, id)
+    render(conn, "show.json", case_file_owners: case_file_owner)
   end
 end

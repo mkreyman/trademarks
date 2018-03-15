@@ -20,7 +20,9 @@ defmodule Trademarks.Mixfile do
   def application do
     [
       mod: {Trademarks.Application, []},
-      extra_applications: [:logger, :runtime_tools, :logger_file_backend]
+      extra_applications: [
+        :logger, :runtime_tools, :logger_file_backend, :scrivener_ecto
+      ]
     ]
   end
 
@@ -43,7 +45,9 @@ defmodule Trademarks.Mixfile do
       {:poison, "~> 3.1"},
       {:sweet_xml, "~> 0.6.5"},
       {:floki, "~> 0.19.2"},
-      {:logger_file_backend, "~> 0.0.10"}
+      {:logger_file_backend, "~> 0.0.10"},
+      {:scrivener_ecto, "~> 1.0"},
+      {:scrivener_headers, "~> 3.1"}
     ]
   end
 
