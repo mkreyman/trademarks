@@ -8,7 +8,7 @@ Download and parse trademark files from https://bulkdata.uspto.gov/data/trademar
 
 - Install Elixir
 - Install PostgreSQL
-- Configure you local variables in `~/.bash_profile`, i.e.
+- Configure local variables in `~/.bash_profile`, i.e.
 ```
 export DB_USER=$USER
 export DB_PASSWORD=''
