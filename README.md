@@ -4,17 +4,47 @@
 
 Download and parse trademark files from https://bulkdata.uspto.gov/data/trademark/dailyxml/applications/.
 
+## How to install
+
+- Install Elixir
+- Install PostgreSQL
+- Configure you local variables in `~/.bash_profile`, i.e.
+```
+export DB_USER=$USER
+export DB_PASSWORD=''
+export DB_NAME='trademarks_dev'
+export DB_HOST='localhost'
+export DATABASE_URL="ecto://$DB_USER:$DB_PASSWORD@$DB_HOST/$DB_NAME"
+```
+
+...then
+
+```
+git clone <this repo>
+cd trademarks
+mix deps.get
+mix ecto.create
+mix ecto.migrate
+```
+
 ## How to use
 
 ### ...from iex
 
 ```elixir
-# To download the last daily zip with case files
+# Download the last daily zip file with trademark case files
+# from https://bulkdata.uspto.gov/data/trademark/dailyxml/applications/
 Downloader.start
 
+# You could also download any zip file from that page manually and
+# then provide its local path as input to Parser.start().
 {:ok, stream} = Parser.start("./tmp/trademarks.zip")
+
+# A typical daily file contains 50,000 - 100,000 case files and
+# may take up to 30 minutes to process.
 Persistor.process(stream)
 
+# Get counts
 Repo.all(CaseFile) |> Enum.count
 Repo.all(CaseFileOwner) |> Enum.count
 Repo.all(Attorney) |> Enum.count
@@ -23,6 +53,7 @@ owner = Repo.all(CaseFileOwner) |> Repo.preload(:case_files) |> Enum.at(0)
 owner.case_files
 Repo.all(Correspondent) |> Enum.count
 
+# Run searches
 Search.by_attorney("attorney's name")
 Search.by_trademark("trademark name")
 Search.by_owner("party name")
@@ -30,7 +61,7 @@ Search.by_correspondent("correspondent's name")
 Search.linked_trademarks("trademark name")
 ```
 
-### ...from a browser
+### ...from a browser (after the database has been seeded)
 
 ```
 mix phx.server
