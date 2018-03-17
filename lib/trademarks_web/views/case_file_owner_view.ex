@@ -25,4 +25,8 @@ defmodule TrademarksWeb.CaseFileOwnerView do
       country: case_file_owner.country
     }
   end
+
+  def render("search.json", %{entries: entries}) do
+    %{data: entries}
+  end
 end

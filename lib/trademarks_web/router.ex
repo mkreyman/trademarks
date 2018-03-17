@@ -8,7 +8,7 @@ defmodule TrademarksWeb.Router do
   scope "/api", TrademarksWeb do
     pipe_through(:api)
 
-    get "/trademarks/search", TrademarkController, :search
+    get "/search", SearchController, :search
 
     resources "/trademarks", TrademarkController, only: [:index, :show]
     resources "/attorneys", AttorneyController, only: [:index, :show]

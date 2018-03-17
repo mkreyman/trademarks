@@ -13,4 +13,8 @@ defmodule TrademarksWeb.AttorneyView do
   def render("attorney.json", %{attorney: attorney}) do
     %{id: attorney.id, name: attorney.name}
   end
+
+  def render("search.json", %{entries: entries}) do
+    %{data: entries}
+  end
 end

@@ -1,6 +1,6 @@
 defmodule Trademarks.Repo do
   use Ecto.Repo, otp_app: :trademarks
-  use Scrivener, page_size: 10
+  use Scrivener, page_size: 10, max_page_size: 100
 
   @doc """
   Dynamically loads the repository url from the

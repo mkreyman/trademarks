@@ -14,7 +14,7 @@ defmodule TrademarksWeb.TrademarkView do
     %{id: trademark.id, name: trademark.name}
   end
 
-  def render("search.json", %{results: results}) do
-    %{data: results}
+  def render("search.json", %{entries: entries}) do
+    %{data: entries}
   end
 end

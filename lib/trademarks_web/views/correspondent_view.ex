@@ -20,4 +20,8 @@ defmodule TrademarksWeb.CorrespondentView do
       address_5: correspondent.address_5
     }
   end
+
+  def render("search.json", %{entries: entries}) do
+    %{data: entries}
+  end
 end

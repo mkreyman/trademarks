@@ -2,7 +2,7 @@ defmodule TrademarksWeb.TrademarkController do
   use TrademarksWeb, :controller
   import Ecto.Query, warn: false
 
-  alias Trademarks.{Trademark, Repo, Search}
+  alias Trademarks.{Trademark, Repo}
 
   action_fallback(TrademarksWeb.FallbackController)
 
@@ -20,14 +20,6 @@ defmodule TrademarksWeb.TrademarkController do
   def show(conn, %{"id" => id}) do
     trademark = Repo.get!(Trademark, id)
     render(conn, "show.json", trademark: trademark)
-  end
-
-  def search(conn, params) do
-    page = Search.by_trademark(params)
-
-    conn
-    |> Scrivener.Headers.paginate(page)
-    |> render("search.json", results: page.entries)
   end
 
   # def index(conn, _params) do

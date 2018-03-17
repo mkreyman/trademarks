@@ -9,18 +9,10 @@ defmodule Trademarks.Search do
     Repo
   }
 
-  def by_attorney(params) do
-    term = params[:attorney]
-
-    query =
-      case params[:exact] do
-        true -> "#{term}"
-        _ -> "%#{term}%"
-      end
-
+  def by_attorney(name) do
     from(
       att in Attorney,
-      where: ilike(att.name, ^query),
+      where: ilike(att.name, ^"%#{name}%"),
       left_join: f in assoc(att, :case_files),
       left_join: t in assoc(f, :trademark),
       left_join: c in assoc(f, :correspondent),
@@ -62,19 +54,10 @@ defmodule Trademarks.Search do
     |> Repo.all()
   end
 
-  def by_trademark(params) do
-    term = params[:trademark] || params["trademark"]
-    exact = params[:exact] || params["exact"]
-
-    query =
-      case exact do
-        true -> "#{term}"
-        _ -> "%#{term}%"
-      end
-
+  def by_trademark(name) do
     from(
       t in Trademark,
-      where: ilike(t.name, ^query),
+      where: ilike(t.name, ^"%#{name}%"),
       left_join: f in assoc(t, :case_files),
       left_join: att in assoc(f, :attorney),
       left_join: c in assoc(f, :correspondent),
@@ -123,21 +106,13 @@ defmodule Trademarks.Search do
           ]
         ])
     )
-    |> Repo.paginate(params)
+    |> Repo.all()
   end
 
-  def by_owner(params) do
-    term = params[:owner]
-
-    query =
-      case params[:exact] do
-        true -> "#{term}"
-        _ -> "%#{term}%"
-      end
-
+  def by_owner(party_name) do
     from(
       o in CaseFileOwner,
-      where: ilike(o.party_name, ^query),
+      where: ilike(o.party_name, ^"%#{party_name}%"),
       left_join: t in assoc(o, :trademarks),
       left_join: f in assoc(o, :case_files),
       left_join: att in assoc(f, :attorney),
@@ -174,18 +149,10 @@ defmodule Trademarks.Search do
     |> Repo.all()
   end
 
-  def by_correspondent(params) do
-    term = params[:correspondent]
-
-    query =
-      case params[:exact] do
-        true -> "#{term}"
-        _ -> "%#{term}%"
-      end
-
+  def by_correspondent(address_1) do
     from(
       c in Correspondent,
-      where: ilike(c.address_1, ^query),
+      where: ilike(c.address_1, ^"%#{address_1}%"),
       left_join: f in assoc(c, :case_files),
       left_join: att in assoc(f, :attorney),
       left_join: t in assoc(f, :trademark),
@@ -229,42 +196,15 @@ defmodule Trademarks.Search do
     |> Repo.all()
   end
 
-  def linked_trademarks(params) do
-    term = params[:trademark]
-
-    query =
-      case params[:exact] do
-        true -> "#{term}"
-        _ -> "%#{term}%"
-      end
-
+  def linked_trademarks(name) do
     from(
       t in Trademark,
-      where: ilike(t.name, ^query),
+      where: ilike(t.name, ^"%#{name}%"),
       join: o in assoc(t, :case_file_owners),
       join: t2 in assoc(o, :trademarks),
       preload: [case_file_owners: {o, trademarks: t2}],
       select: map(t, [:id, :name, case_file_owners: [:id, :party_name, trademarks: [:id, :name]]])
     )
     |> Repo.all()
-    |> Enum.map(&drop_self/1)
-  end
-
-  defp drop_self(%{
-         id: id,
-         name: trademark,
-         case_file_owners: [%{id: owner_id, party_name: owner_name, trademarks: list}]
-       }) do
-    %{
-      id: id,
-      name: trademark,
-      linked: [
-        %{
-          owner_id: owner_id,
-          owner_name: owner_name,
-          trademarks: List.delete(list, %{id: id, name: trademark})
-        }
-      ]
-    }
   end
 end
