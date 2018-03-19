@@ -21,7 +21,10 @@ defmodule Trademarks.Mixfile do
     [
       mod: {Trademarks.Application, []},
       extra_applications: [
-        :logger, :runtime_tools, :logger_file_backend, :scrivener_ecto
+        :logger,
+        :runtime_tools,
+        :logger_file_backend,
+        :scrivener_ecto
       ]
     ]
   end

@@ -9,9 +9,9 @@ defmodule TrademarksWeb.SearchController do
   def search(conn, params) do
     results =
       case params do
-      	%{"attorney" => name} -> Search.by_attorney(name)
-      	%{"owner" => party_name} -> Search.by_owner(party_name)
-      	%{"correspondent" => address_1} -> Search.by_correspondent(address_1)
+        %{"attorney" => name} -> Search.by_attorney(name)
+        %{"owner" => party_name} -> Search.by_owner(party_name)
+        %{"correspondent" => address_1} -> Search.by_correspondent(address_1)
         %{"trademark" => name} -> Search.by_trademark(name)
         %{"linked" => name} -> Search.linked_trademarks(name)
       end
