@@ -3,6 +3,7 @@ defmodule TrademarksWeb.AttorneyController do
   import Ecto.Query, warn: false
 
   alias Trademarks.{Attorney, Repo}
+  alias TrademarksWeb.ErrorView
 
   action_fallback(TrademarksWeb.FallbackController)
 
@@ -18,7 +19,13 @@ defmodule TrademarksWeb.AttorneyController do
   end
 
   def show(conn, %{"id" => id}) do
-    attorney = Repo.get!(Attorney, id)
-    render(conn, "show.json", attorney: attorney)
+    with attorney = %Attorney{} <- Repo.get(Attorney, id) do
+      render(conn, "show.json", attorney: attorney)
+    else
+      nil ->
+        conn
+        |> put_status(404)
+        |> render(ErrorView, "404.json", error: "Not found")
+    end
   end
 end

@@ -3,6 +3,7 @@ defmodule TrademarksWeb.CaseFileController do
   import Ecto.Query, warn: false
 
   alias Trademarks.{CaseFile, Repo}
+  alias TrademarksWeb.ErrorView
 
   action_fallback(TrademarksWeb.FallbackController)
 
@@ -18,7 +19,13 @@ defmodule TrademarksWeb.CaseFileController do
   end
 
   def show(conn, %{"id" => id}) do
-    case_file = Repo.get!(CaseFile, id)
-    render(conn, "show.json", case_file: case_file)
+    with case_file = %CaseFile{} <- Repo.get(CaseFile, id) do
+      render(conn, "show.json", case_file: case_file)
+    else
+      nil ->
+        conn
+        |> put_status(404)
+        |> render(ErrorView, "404.json", error: "Not found")
+    end
   end
 end

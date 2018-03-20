@@ -3,6 +3,7 @@ defmodule TrademarksWeb.Router do
 
   pipeline :api do
     plug(:accepts, ["json"])
+    plug(TrademarksWeb.Plugs.RequireUUID, Ecto.UUID.generate())
   end
 
   scope "/api", TrademarksWeb do

@@ -5,6 +5,7 @@ defmodule Trademarks.Attorney do
   alias Trademarks.{CaseFile, Attorney, Repo}
 
   @primary_key {:id, :binary_id, autogenerate: true}
+
   schema "attorneys" do
     field(:name, :string)
     has_many(:case_files, CaseFile)
