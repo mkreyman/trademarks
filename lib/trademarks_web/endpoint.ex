@@ -9,8 +9,7 @@ defmodule TrademarksWeb.Endpoint do
     Plug.Static,
     at: "/",
     from: :trademarks,
-    gzip: false,
-    only: ~w()
+    gzip: false
   )
 
   # Code reloading can be explicitly enabled under the
