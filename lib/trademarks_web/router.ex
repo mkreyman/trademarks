@@ -2,7 +2,11 @@ defmodule TrademarksWeb.Router do
   use TrademarksWeb, :router
 
   pipeline :api do
-    plug(:accepts, ["json"])
+    # plug(:accepts, ["json"])
+    # json-api is the only one we support
+    plug :accepts, ["json-api"]
+    plug JaSerializer.ContentTypeNegotiation
+    plug JaSerializer.Deserializer
     plug(TrademarksWeb.Plugs.RequireUUID, Ecto.UUID.generate())
   end
 

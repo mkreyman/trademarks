@@ -19,6 +19,6 @@ defmodule TrademarksWeb.V1.SearchController do
 
     conn
     |> Scrivener.Headers.paginate(results)
-    |> render("search.json", results)
+    |> render("search.json-api", data: results.entries)
   end
 end

@@ -22,7 +22,7 @@ defmodule TrademarksWeb.Endpoint do
 
   plug(
     Plug.Parsers,
-    parsers: [:urlencoded, :multipart, :json],
+    parsers: [:urlencoded, :multipart, :json, :json_api],
     pass: ["*/*"],
     json_decoder: Poison
   )

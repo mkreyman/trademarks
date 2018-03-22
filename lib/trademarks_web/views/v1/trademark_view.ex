@@ -1,20 +1,12 @@
 defmodule TrademarksWeb.V1.TrademarkView do
   use TrademarksWeb, :view
-  alias TrademarksWeb.V1.TrademarkView
 
-  def render("index.json", %{trademarks: trademarks}) do
-    %{data: render_many(trademarks, TrademarkView, "trademark.json")}
-  end
+  attributes [:name]
 
-  def render("show.json", %{trademark: trademark}) do
-    %{data: render_one(trademark, TrademarkView, "trademark.json")}
-  end
+  # The render("index.json-api", data) and render("show.json-api", data)
+  # are defined for us by JaSerializer.PhoenixView.
 
-  def render("trademark.json", %{trademark: trademark}) do
-    %{id: trademark.id, name: trademark.name}
-  end
-
-  def render("search.json", %{entries: entries}) do
+  def render("search.json-api", %{data: entries}) do
     %{data: entries}
   end
 end

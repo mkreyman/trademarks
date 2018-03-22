@@ -1,27 +1,18 @@
 defmodule TrademarksWeb.V1.CorrespondentView do
   use TrademarksWeb, :view
-  alias TrademarksWeb.V1.CorrespondentView
 
-  def render("index.json", %{correspondents: correspondents}) do
-    %{data: render_many(correspondents, CorrespondentView, "correspondent.json")}
-  end
+  attributes [
+    :address_1,
+    :address_2,
+    :address_3,
+    :address_4,
+    :address_5
+  ]
 
-  def render("show.json", %{correspondent: correspondent}) do
-    %{data: render_one(correspondent, CorrespondentView, "correspondent.json")}
-  end
+  # The render("index.json-api", data) and render("show.json-api", data)
+  # are defined for us by JaSerializer.PhoenixView.
 
-  def render("correspondent.json", %{correspondent: correspondent}) do
-    %{
-      id: correspondent.id,
-      address_1: correspondent.address_1,
-      address_2: correspondent.address_2,
-      address_3: correspondent.address_3,
-      address_4: correspondent.address_4,
-      address_5: correspondent.address_5
-    }
-  end
-
-  def render("search.json", %{entries: entries}) do
+  def render("search.json-api", %{data: entries}) do
     %{data: entries}
   end
 end

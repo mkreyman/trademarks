@@ -32,6 +32,8 @@ defmodule TrademarksWeb do
         root: "lib/trademarks_web/templates",
         namespace: TrademarksWeb
 
+      use JaSerializer.PhoenixView
+
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
 
