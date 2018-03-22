@@ -6,15 +6,16 @@ defmodule TrademarksWeb.Router do
     plug(TrademarksWeb.Plugs.RequireUUID, Ecto.UUID.generate())
   end
 
-  scope "/api", TrademarksWeb do
+  scope "/api", TrademarksWeb, as: :api do
     pipe_through(:api)
 
-    get("/search", SearchController, :search)
-
-    resources("/trademarks", TrademarkController, only: [:index, :show])
-    resources("/attorneys", AttorneyController, only: [:index, :show])
-    resources("/correspondents", CorrespondentController, only: [:index, :show])
-    resources("/case_files", CaseFileController, only: [:index, :show])
-    resources("/case_file_owners", CaseFileOwnerController, only: [:index, :show])
+    scope "/v1", V1, as: :v1 do
+      get("/search", SearchController, :search)
+      resources("/trademarks", TrademarkController, only: [:index, :show])
+      resources("/attorneys", AttorneyController, only: [:index, :show])
+      resources("/correspondents", CorrespondentController, only: [:index, :show])
+      resources("/case_files", CaseFileController, only: [:index, :show])
+      resources("/case_file_owners", CaseFileOwnerController, only: [:index, :show])
+    end
   end
 end

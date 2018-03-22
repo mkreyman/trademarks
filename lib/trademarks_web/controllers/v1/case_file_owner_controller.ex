@@ -1,4 +1,4 @@
-defmodule TrademarksWeb.CaseFileOwnerController do
+defmodule TrademarksWeb.V1.CaseFileOwnerController do
   use TrademarksWeb, :controller
   import Ecto.Query, warn: false
 

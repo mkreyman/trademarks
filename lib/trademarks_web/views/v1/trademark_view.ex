@@ -1,6 +1,6 @@
-defmodule TrademarksWeb.TrademarkView do
+defmodule TrademarksWeb.V1.TrademarkView do
   use TrademarksWeb, :view
-  alias TrademarksWeb.TrademarkView
+  alias TrademarksWeb.V1.TrademarkView
 
   def render("index.json", %{trademarks: trademarks}) do
     %{data: render_many(trademarks, TrademarkView, "trademark.json")}

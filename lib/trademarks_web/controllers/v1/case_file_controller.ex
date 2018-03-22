@@ -1,26 +1,26 @@
-defmodule TrademarksWeb.CorrespondentController do
+defmodule TrademarksWeb.V1.CaseFileController do
   use TrademarksWeb, :controller
   import Ecto.Query, warn: false
 
-  alias Trademarks.{Correspondent, Repo}
+  alias Trademarks.{CaseFile, Repo}
   alias TrademarksWeb.ErrorView
 
   action_fallback(TrademarksWeb.FallbackController)
 
   def index(conn, params) do
     page =
-      Correspondent
+      CaseFile
       |> order_by(desc: :updated_at)
       |> Repo.paginate(params)
 
     conn
     |> Scrivener.Headers.paginate(page)
-    |> render("index.json", correspondents: page.entries)
+    |> render("index.json", case_files: page.entries)
   end
 
   def show(conn, %{"id" => id}) do
-    with correspondent = %Correspondent{} <- Repo.get(Correspondent, id) do
-      render(conn, "show.json", correspondent: correspondent)
+    with case_file = %CaseFile{} <- Repo.get(CaseFile, id) do
+      render(conn, "show.json", case_file: case_file)
     else
       nil ->
         conn

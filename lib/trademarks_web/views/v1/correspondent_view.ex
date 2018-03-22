@@ -1,6 +1,6 @@
-defmodule TrademarksWeb.CorrespondentView do
+defmodule TrademarksWeb.V1.CorrespondentView do
   use TrademarksWeb, :view
-  alias TrademarksWeb.CorrespondentView
+  alias TrademarksWeb.V1.CorrespondentView
 
   def render("index.json", %{correspondents: correspondents}) do
     %{data: render_many(correspondents, CorrespondentView, "correspondent.json")}

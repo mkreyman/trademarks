@@ -1,6 +1,6 @@
-defmodule TrademarksWeb.CaseFileOwnerView do
+defmodule TrademarksWeb.V1.CaseFileOwnerView do
   use TrademarksWeb, :view
-  alias TrademarksWeb.CaseFileOwnerView
+  alias TrademarksWeb.V1.CaseFileOwnerView
 
   def render("index.json", %{case_file_owners: case_file_owners}) do
     %{data: render_many(case_file_owners, CaseFileOwnerView, "case_file_owner.json")}

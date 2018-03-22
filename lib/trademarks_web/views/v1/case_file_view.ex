@@ -1,6 +1,6 @@
-defmodule TrademarksWeb.CaseFileView do
+defmodule TrademarksWeb.V1.CaseFileView do
   use TrademarksWeb, :view
-  alias TrademarksWeb.CaseFileView
+  alias TrademarksWeb.V1.CaseFileView
 
   def render("index.json", %{case_files: case_files}) do
     %{data: render_many(case_files, CaseFileView, "case_file.json")}

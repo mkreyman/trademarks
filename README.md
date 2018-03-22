@@ -71,25 +71,25 @@ Then navigate to...
 
 ```
 # List all records
-http://localhost:4000/api/attorneys/
-http://localhost:4000/api/trademarks/
-http://localhost:4000/api/case_file_owners/
-http://localhost:4000/api/correspondents/
-http://localhost:4000/api/case_files/
+http://localhost:4000/api/v1/v1/attorneys/
+http://localhost:4000/api/v1/trademarks/
+http://localhost:4000/api/v1/case_file_owners/
+http://localhost:4000/api/v1/correspondents/
+http://localhost:4000/api/v1/case_files/
 
 # List a particular record
-http://localhost:4000/api/attorneys/attorney_id
-http://localhost:4000/api/trademarks/trademark_id
-http://localhost:4000/api/case_file_owners/case_file_owner_id
-http://localhost:4000/api/correspondents/correspondent_id
-http://localhost:4000/api/case_files/case_file_id
+http://localhost:4000/api/v1/attorneys/attorney_id
+http://localhost:4000/api/v1/trademarks/trademark_id
+http://localhost:4000/api/v1/case_file_owners/case_file_owner_id
+http://localhost:4000/api/v1/correspondents/correspondent_id
+http://localhost:4000/api/v1/case_files/case_file_id
 
 # Search
-http://localhost:4000/api/search?trademark=trademark_name
-http://localhost:4000/api/search?correspondent=correspondent_name
-http://localhost:4000/api/search?attorney=attorney_name
-http://localhost:4000/api/search?owner=party_name
-http://localhost:4000/api/search?linked=trademark_name
+http://localhost:4000/api/v1/search?trademark=trademark_name
+http://localhost:4000/api/v1/search?correspondent=correspondent_name
+http://localhost:4000/api/v1/search?attorney=attorney_name
+http://localhost:4000/api/v1/search?owner=party_name
+http://localhost:4000/api/v1/search?linked=trademark_name
 ```
 
 All results are paginated. The HTTP header contains the following information:

@@ -1,4 +1,4 @@
-defmodule TrademarksWeb.TrademarkController do
+defmodule TrademarksWeb.V1.TrademarkController do
   use TrademarksWeb, :controller
   import Ecto.Query, warn: false
 
