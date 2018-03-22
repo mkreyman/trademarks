@@ -9,3 +9,9 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias Trademarks.{Parser, Persistor}
+
+{:ok, stream} = Parser.start("./priv/repo/seed.zip")
+Persistor.process(stream)
+File.rm("./priv/repo/seed.xml")
