@@ -29,7 +29,7 @@ defmodule Trademarks.Parser do
             case_file_event_statements: [
               ~x[./case-file-event-statements/case-file-event-statement]l,
               code: ~x[./code/text()]s,
-              type: ~x[./type/text()]s,
+              event_type: ~x[./type/text()]s,
               description: ~x[./description-text/text()]s,
               date: ~x[./date/text()]s
             ],

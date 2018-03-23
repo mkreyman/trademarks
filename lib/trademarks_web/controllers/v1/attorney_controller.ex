@@ -10,7 +10,6 @@ defmodule TrademarksWeb.V1.AttorneyController do
   def index(conn, params) do
     page =
       Attorney
-      |> order_by(desc: :updated_at)
       |> Repo.paginate(params)
 
     conn
@@ -18,8 +17,10 @@ defmodule TrademarksWeb.V1.AttorneyController do
   end
 
   def show(conn, %{"id" => id}) do
-    with attorney = %Attorney{} <- Repo.get(Attorney, id) do
-      render(conn, "show.json-api", data: attorney)
+    with attorney = %Attorney{} <-
+           Repo.get(Attorney, id)
+           |> Repo.preload([:case_files]) do
+      render(conn, "show.json-api", data: attorney, opts: %{include: "case_files"})
     else
       nil ->
         conn

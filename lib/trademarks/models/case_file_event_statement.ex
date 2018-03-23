@@ -15,12 +15,12 @@ defmodule Trademarks.CaseFileEventStatement do
     field(:code, :string)
     field(:date, :date)
     field(:description, :string)
-    field(:type, :string)
+    field(:event_type, :string)
 
     timestamps()
   end
 
-  @fields ~w(code date description type)
+  @fields ~w(code date description event_type)
 
   @doc false
   def changeset(case_file_event_statement, attrs \\ %{}) do
@@ -47,7 +47,7 @@ defmodule Trademarks.CaseFileEventStatement do
            code: attrs[:code],
            date: attrs[:date],
            description: attrs[:description],
-           type: attrs[:type]
+           event_type: attrs[:event_type]
          ) do
       nil ->
         %CaseFileEventStatement{
@@ -55,7 +55,7 @@ defmodule Trademarks.CaseFileEventStatement do
           code: attrs[:code],
           date: attrs[:date],
           description: attrs[:description],
-          type: attrs[:type]
+          event_type: attrs[:event_type]
         }
 
       case_file_event_statement ->

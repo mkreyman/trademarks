@@ -89,7 +89,7 @@ defmodule Trademarks.Search do
             attorney: [:id, :name],
             correspondent: [:id, :address_1, :address_2, :address_3, :address_4, :address_5],
             case_file_statements: [:id, :type_code, :description],
-            case_file_event_statements: [:id, :code, :type, :description, :date]
+            case_file_event_statements: [:id, :code, :event_type, :description, :date]
           ],
           case_file_owners: [
             :id,

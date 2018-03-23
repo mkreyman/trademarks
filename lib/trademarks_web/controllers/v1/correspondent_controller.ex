@@ -10,7 +10,6 @@ defmodule TrademarksWeb.V1.CorrespondentController do
   def index(conn, params) do
     page =
       Correspondent
-      |> order_by(desc: :updated_at)
       |> Repo.paginate(params)
 
     conn
@@ -18,8 +17,10 @@ defmodule TrademarksWeb.V1.CorrespondentController do
   end
 
   def show(conn, %{"id" => id}) do
-    with correspondent = %Correspondent{} <- Repo.get(Correspondent, id) do
-      render(conn, "show.json-api", data: correspondent)
+    with correspondent = %Correspondent{} <-
+           Repo.get(Correspondent, id)
+           |> Repo.preload([:case_files]) do
+      render(conn, "show.json-api", data: correspondent, opts: %{include: "case_files"})
     else
       nil ->
         conn

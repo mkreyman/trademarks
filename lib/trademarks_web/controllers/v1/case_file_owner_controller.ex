@@ -10,7 +10,6 @@ defmodule TrademarksWeb.V1.CaseFileOwnerController do
   def index(conn, params) do
     page =
       CaseFileOwner
-      |> order_by(desc: :updated_at)
       |> Repo.paginate(params)
 
     conn
@@ -18,8 +17,10 @@ defmodule TrademarksWeb.V1.CaseFileOwnerController do
   end
 
   def show(conn, %{"id" => id}) do
-    with case_file_owner = %CaseFileOwner{} <- Repo.get(CaseFileOwner, id) do
-      render(conn, "show.json-api", data: case_file_owner)
+    with case_file_owner = %CaseFileOwner{} <-
+           Repo.get(CaseFileOwner, id)
+           |> Repo.preload([:case_files]) do
+      render(conn, "show.json-api", data: case_file_owner, opts: %{include: "case_files"})
     else
       nil ->
         conn

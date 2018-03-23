@@ -14,6 +14,13 @@ defmodule TrademarksWeb.V1.CaseFileOwnerView do
     :country
   ])
 
+  has_many(
+    :case_files,
+    serializer: TrademarksWeb.V1.CaseFileView,
+    include: false,
+    identifiers: :when_included
+  )
+
   # The render("index.json-api", data) and render("show.json-api", data)
   # are defined for us by JaSerializer.PhoenixView.
 

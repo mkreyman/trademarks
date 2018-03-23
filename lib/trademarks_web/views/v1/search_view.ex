@@ -1,7 +1,7 @@
 defmodule TrademarksWeb.V1.SearchView do
   use TrademarksWeb, :view
 
-  def render("search.json-api", %{data: results} = data) do
+  def render("search.json-api", %{results: results} = data) do
     %{
       links: links(data),
       jsonapi: %{version: "1.0"},
@@ -10,7 +10,7 @@ defmodule TrademarksWeb.V1.SearchView do
   end
 
   defp links(%{
-         data: results,
+         results: results,
          query_params: query_params,
          request_path: request_path,
          base_url: base_url
