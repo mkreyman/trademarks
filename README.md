@@ -23,8 +23,7 @@ export DATABASE_URL="ecto://$DB_USER:$DB_PASSWORD@$DB_HOST/$DB_NAME"
 git clone <this repo>
 cd trademarks
 mix deps.get
-mix ecto.create
-mix ecto.migrate
+mix ecto.setup
 ```
 
 ## How to use
@@ -75,7 +74,6 @@ http://localhost:4000/api/v1/v1/attorneys/
 http://localhost:4000/api/v1/trademarks/
 http://localhost:4000/api/v1/case_file_owners/
 http://localhost:4000/api/v1/correspondents/
-http://localhost:4000/api/v1/case_files/
 
 # List a particular record
 http://localhost:4000/api/v1/attorneys/attorney_id
