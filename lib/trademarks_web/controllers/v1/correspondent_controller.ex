@@ -14,8 +14,7 @@ defmodule TrademarksWeb.V1.CorrespondentController do
       |> Repo.paginate(params)
 
     conn
-    |> Scrivener.Headers.paginate(page)
-    |> render("index.json-api", data: page.entries)
+    |> render("index.json-api", data: page)
   end
 
   def show(conn, %{"id" => id}) do

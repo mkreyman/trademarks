@@ -1,7 +1,7 @@
 defmodule TrademarksWeb.V1.CaseFileOwnerView do
   use TrademarksWeb, :view
 
-  attributes [
+  attributes([
     :dba,
     :nationality_country,
     :nationality_state,
@@ -12,7 +12,7 @@ defmodule TrademarksWeb.V1.CaseFileOwnerView do
     :state,
     :postcode,
     :country
-  ]
+  ])
 
   # The render("index.json-api", data) and render("show.json-api", data)
   # are defined for us by JaSerializer.PhoenixView.

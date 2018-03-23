@@ -29,8 +29,7 @@ config :trademarks,
   proxy: System.get_env("HTTPS_PROXY")
 
 # mime-type to serialize JSON API
-config :phoenix, :format_encoders,
-  "json-api": Poison
+config :phoenix, :format_encoders, "json-api": Poison
 
 config :mime, :types, %{
   "application/vnd.api+json" => ["json-api"]

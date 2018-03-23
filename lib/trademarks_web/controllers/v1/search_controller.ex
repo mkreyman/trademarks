@@ -18,7 +18,11 @@ defmodule TrademarksWeb.V1.SearchController do
       |> Repo.paginate(params)
 
     conn
-    |> Scrivener.Headers.paginate(results)
-    |> render("search.json-api", data: results.entries)
+    |> render("search.json-api", %{
+      data: results,
+      query_params: conn.query_params,
+      request_path: conn.request_path,
+      base_url: Application.get_env(:ja_serializer, :page_base_url, conn.request_path)
+    })
   end
 end
