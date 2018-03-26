@@ -1,0 +1,52 @@
+version: "3.3"
+services:
+  web:
+    image: shufo/phoenix:latest
+    restart: always
+    tty: true
+    entrypoint: # Override open source container entrypoint which is incorrect and missing config
+      - sh
+      - -c
+      - mix deps.get && mix ecto.create --quiet && mix ecto.migrate && mix phx.server
+    environment: 
+      - HEX_UNSAFE_HTTPS=1
+      - DB_USER
+      - DB_PASSWORD
+      - DB_NAME
+      - DB_HOST=db
+    ports:
+      - "4000:4000"
+    volumes:
+      - .:/app
+    working_dir: /app
+    depends_on:
+      - db
+    links:
+      - db
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      # uncomment the following line if $DB_PASSWORD is set and not blank
+      # - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_HOST=db
+    # Only needed for accessing the container db from localhost while avoiding
+    # port conflicts with local Postgres instance that runs on 5432 by default.
+    ports:
+      - "5431:5432"
+
+  test:
+    image: trademarks_web
+    command: mix test
+    environment:
+      - MIX_ENV=test
+    volumes:
+      - app:./app
+    links:
+      - db
+
+volumes:
+  app:

@@ -6,6 +6,8 @@ Download and parse trademark files from https://bulkdata.uspto.gov/data/trademar
 
 ## How to install
 
+### ...locally
+
 - Install Elixir
 - Install PostgreSQL
 - Configure local variables in `~/.bash_profile`, i.e.
@@ -24,7 +26,20 @@ git clone <this repo>
 cd trademarks
 mix deps.get
 mix ecto.setup
+
+# seed the db (optional)
+mix run priv/repo/seeds.exs
 ```
+
+### ...in Docker container
+
+```
+docker-compose up web
+
+# seed the db (optional)
+docker-compose exec web mix run priv/repo/seeds.exs
+```
+
 
 ## How to use
 
