@@ -13,11 +13,12 @@ defmodule TrademarksWeb.V1.CaseFileOwnerControllerTest do
     {:ok, conn: conn}
   end
 
-  @tag :pending
   describe "index" do
     test "lists all case_file_owners", %{conn: conn} do
       conn = get(conn, api_v1_case_file_owner_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+      assert conn.status == 200
+      assert [@content_type_header] = get_resp_header(conn, "content-type")
+      # assert json_response(conn, 200)["data"] == []
     end
   end
 end
