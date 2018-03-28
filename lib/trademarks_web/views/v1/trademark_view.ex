@@ -1,6 +1,8 @@
 defmodule TrademarksWeb.V1.TrademarkView do
   use TrademarksWeb, :view
 
+  alias Trademarks.Repo
+
   attributes([:name])
 
   # The render("index.json-api", data) and render("show.json-api", data)
@@ -20,7 +22,10 @@ defmodule TrademarksWeb.V1.TrademarkView do
     identifiers: :when_included
   )
 
-  # def render("search.json-api", %{data: entries}) do
-  #   %{data: entries}
-  # end
+  has_many(
+    :trademarks,
+    serializer: TrademarksWeb.V1.TrademarkView,
+    include: false,
+    identifiers: :when_included
+  )
 end

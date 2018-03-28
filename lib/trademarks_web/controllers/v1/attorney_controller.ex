@@ -9,8 +9,16 @@ defmodule TrademarksWeb.V1.AttorneyController do
 
   def index(conn, params) do
     page =
-      Attorney
-      |> Repo.paginate(params)
+      case params do
+        %{"name" => name} ->
+          Attorney
+          |> where([a], ilike(a.name, ^"%#{name}%"))
+          |> Repo.paginate()
+
+        _ ->
+          Attorney
+          |> Repo.paginate()
+      end
 
     conn
     |> render("index.json-api", data: page)

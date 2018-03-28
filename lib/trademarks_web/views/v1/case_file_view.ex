@@ -1,6 +1,8 @@
 defmodule TrademarksWeb.V1.CaseFileView do
   use TrademarksWeb, :view
 
+  alias Trademarks.Repo
+
   attributes([
     :abandonment_date,
     :filing_date,
@@ -45,7 +47,4 @@ defmodule TrademarksWeb.V1.CaseFileView do
     include: true,
     identifiers: :when_included
   )
-
-  # The render("index.json-api", data) and render("show.json-api", data)
-  # are defined for us by JaSerializer.PhoenixView.
 end

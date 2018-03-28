@@ -9,8 +9,16 @@ defmodule TrademarksWeb.V1.CorrespondentController do
 
   def index(conn, params) do
     page =
-      Correspondent
-      |> Repo.paginate(params)
+      case params do
+        %{"name" => name} ->
+          Correspondent
+          |> where([c], ilike(c.address_1, ^"%#{name}%"))
+          |> Repo.paginate()
+
+        _ ->
+          Correspondent
+          |> Repo.paginate()
+      end
 
     conn
     |> render("index.json-api", data: page)

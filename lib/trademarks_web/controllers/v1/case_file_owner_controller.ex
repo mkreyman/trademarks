@@ -5,12 +5,18 @@ defmodule TrademarksWeb.V1.CaseFileOwnerController do
   alias Trademarks.{CaseFileOwner, Repo}
   alias TrademarksWeb.ErrorView
 
-  action_fallback(TrademarksWeb.FallbackController)
-
   def index(conn, params) do
     page =
-      CaseFileOwner
-      |> Repo.paginate(params)
+      case params do
+        %{"name" => name} ->
+          CaseFileOwner
+          |> where([o], ilike(o.party_name, ^"%#{name}%"))
+          |> Repo.paginate()
+
+        _ ->
+          CaseFileOwner
+          |> Repo.paginate()
+      end
 
     conn
     |> render("index.json-api", data: page)

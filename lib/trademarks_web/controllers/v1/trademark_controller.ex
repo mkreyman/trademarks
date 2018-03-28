@@ -7,10 +7,34 @@ defmodule TrademarksWeb.V1.TrademarkController do
 
   action_fallback(TrademarksWeb.FallbackController)
 
-  def index(conn, params) do
+  def index(conn, %{"name" => name}) do
     page =
       Trademark
-      |> Repo.paginate(params)
+      |> where([t], ilike(t.name, ^"%#{name}%"))
+      |> Repo.paginate()
+
+    conn
+    |> render("index.json-api", data: page)
+  end
+
+  def index(conn, %{"linked" => name}) do
+    page =
+      from(
+        t in Trademark,
+        where: ilike(t.name, ^"%#{name}%"),
+        join: t2 in assoc(t, :trademarks),
+        preload: [trademarks: t2]
+      )
+      |> Repo.paginate()
+
+    conn
+    |> render("index.json-api", data: page, opts: %{include: "trademarks"})
+  end
+
+  def index(conn, _params) do
+    page =
+      Trademark
+      |> Repo.paginate()
 
     conn
     |> render("index.json-api", data: page)
@@ -33,31 +57,4 @@ defmodule TrademarksWeb.V1.TrademarkController do
         |> render(ErrorView, "404.json-api", error: "Not found")
     end
   end
-
-  # @TODO: figure out how to do this...
-  #
-  # def search(conn, name) do
-  #   query =
-  #     from(
-  #     t in Trademark,
-  #     where: ilike(t.name, ^"%#{name}%"),
-  #     left_join: f in assoc(t, :case_files),
-  #     left_join: o in assoc(t, :case_file_owners),
-  #     preload: [case_files: f, case_file_owners: o]
-  #   )
-
-  #   results =
-  #     query
-  #     |> Repo.all()
-  #     |> Repo.paginate()
-
-  #   data =
-  #     %{data: results,
-  #       query_params: conn.query_params,
-  #       request_path: conn.request_path,
-  #       base_url: Application.get_env(:ja_serializer, :page_base_url, conn.request_path)}
-
-  #   conn
-  #   |> render("search.json-api", data)
-  # end
 end

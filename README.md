@@ -91,18 +91,17 @@ http://localhost:4000/api/v1/case_file_owners/
 http://localhost:4000/api/v1/correspondents/
 
 # List a particular record
-http://localhost:4000/api/v1/attorneys/attorney_id
-http://localhost:4000/api/v1/trademarks/trademark_id
-http://localhost:4000/api/v1/case_file_owners/case_file_owner_id
-http://localhost:4000/api/v1/correspondents/correspondent_id
-http://localhost:4000/api/v1/case_files/case_file_id
+http://localhost:4000/api/v1/attorneys/attorney_uuid
+http://localhost:4000/api/v1/trademarks/trademark_uuid
+http://localhost:4000/api/v1/case_file_owners/case_file_owner_uuid
+http://localhost:4000/api/v1/correspondents/correspondent_uuid
+http://localhost:4000/api/v1/case_files/case_file_uuid
 
 # Search
-http://localhost:4000/api/v1/search?trademark=trademark_name
-http://localhost:4000/api/v1/search?correspondent=correspondent_name
-http://localhost:4000/api/v1/search?attorney=attorney_name
-http://localhost:4000/api/v1/search?owner=party_name
-http://localhost:4000/api/v1/search?linked=trademark_name
+http://localhost:4000/api/v1/attorneys?name=attorney_name
+http://localhost:4000/api/v1/trademarks?name=trademark_name
+http://localhost:4000/api/v1/case_file_owners?name=owner_name
+http://localhost:4000/api/v1/correspondents?name=correspondent_name
 ```
 
 All results are paginated. The HTTP header contains the following information:

@@ -23,6 +23,8 @@ defmodule Trademarks.Trademark do
       on_replace: :delete
     )
 
+    has_many(:trademarks, through: [:case_file_owners, :trademarks])
+
     timestamps()
   end
 

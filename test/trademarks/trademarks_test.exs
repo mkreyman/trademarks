@@ -10,7 +10,8 @@ defmodule Trademarks.TrademarksTest do
       {:ok, trademark} =
         attrs
         |> Enum.into(@valid_attrs)
-        # |> Trademarks.create_trademark()
+
+      # |> Trademarks.create_trademark()
 
       trademark
     end
@@ -37,7 +38,8 @@ defmodule Trademarks.TrademarksTest do
       {:ok, attorney} =
         attrs
         |> Enum.into(@valid_attrs)
-        # |> Trademarks.create_attorney()
+
+      # |> Trademarks.create_attorney()
 
       attorney
     end
@@ -70,7 +72,8 @@ defmodule Trademarks.TrademarksTest do
       {:ok, correspondent} =
         attrs
         |> Enum.into(@valid_attrs)
-        # |> Trademarks.create_correspondent()
+
+      # |> Trademarks.create_correspondent()
 
       correspondent
     end
@@ -105,7 +108,8 @@ defmodule Trademarks.TrademarksTest do
       {:ok, case_file} =
         attrs
         |> Enum.into(@valid_attrs)
-        # |> Trademarks.create_case_file()
+
+      # |> Trademarks.create_case_file()
 
       case_file
     end
@@ -137,7 +141,8 @@ defmodule Trademarks.TrademarksTest do
       {:ok, case_file_owner} =
         attrs
         |> Enum.into(@valid_attrs)
-        # |> Trademarks.create_case_file_owner()
+
+      # |> Trademarks.create_case_file_owner()
 
       case_file_owner
     end

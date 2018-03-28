@@ -50,7 +50,6 @@ defmodule Trademarks.Mixfile do
       {:floki, "~> 0.19.2"},
       {:logger_file_backend, "~> 0.0.10"},
       {:scrivener_ecto, "~> 1.0"},
-      {:scrivener_headers, "~> 3.1"},
       {:scrivener_list, "~> 1.0"},
       {:ja_serializer, "~> 0.12.0"}
     ]
