@@ -2,21 +2,16 @@ defmodule TrademarksWeb.V1.CaseFileOwnerController do
   use TrademarksWeb, :controller
   import Ecto.Query, warn: false
 
+  plug(TrademarksWeb.Plugs.ValidFilters, ~w(name) when action in [:index])
+
   alias Trademarks.{CaseFileOwner, Repo}
   alias TrademarksWeb.ErrorView
 
-  def index(conn, params) do
+  def index(conn, _params) do
     page =
-      case params do
-        %{"name" => name} ->
-          CaseFileOwner
-          |> where([o], ilike(o.party_name, ^"%#{name}%"))
-          |> Repo.paginate()
-
-        _ ->
-          CaseFileOwner
-          |> Repo.paginate()
-      end
+      CaseFileOwner
+      |> filtered_by(conn.assigns.filters)
+      |> Repo.paginate()
 
     conn
     |> render("index.json-api", data: page)
@@ -33,5 +28,14 @@ defmodule TrademarksWeb.V1.CaseFileOwnerController do
         |> put_status(404)
         |> render(ErrorView, "404.json-api", error: "Not found")
     end
+  end
+
+  defp filtered_by(query, params) do
+    Enum.reduce(params, query, fn {key, value}, query ->
+      case String.downcase(key) do
+        _ ->
+          from(o in query, where: ilike(field(o, ^String.to_atom(key)), ^"%#{value}%"))
+      end
+    end)
   end
 end

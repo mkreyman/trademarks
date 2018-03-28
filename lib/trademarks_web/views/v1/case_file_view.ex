@@ -1,8 +1,6 @@
 defmodule TrademarksWeb.V1.CaseFileView do
   use TrademarksWeb, :view
 
-  alias Trademarks.Repo
-
   attributes([
     :abandonment_date,
     :filing_date,

@@ -18,7 +18,7 @@ defmodule Trademarks.CaseFileOwner do
     field(:dba, :string)
     field(:nationality_country, :string)
     field(:nationality_state, :string)
-    field(:party_name, :string)
+    field(:name, :string)
     field(:address_1, :string)
     field(:address_2, :string)
     field(:city, :string)
@@ -40,7 +40,7 @@ defmodule Trademarks.CaseFileOwner do
   @fields ~w(dba
              nationality_country
              nationality_state
-             party_name
+             name
              address_1
              address_2
              city
@@ -54,15 +54,15 @@ defmodule Trademarks.CaseFileOwner do
 
     case_file_owner
     |> cast(attrs, @fields)
-    |> unique_constraint(:party_name)
+    |> unique_constraint(:name)
   end
 
   def create_or_update(attrs) do
     attrs = AttrsFormatter.format(attrs)
 
-    case Repo.get_by(CaseFileOwner, party_name: attrs[:party_name]) do
+    case Repo.get_by(CaseFileOwner, name: attrs[:name]) do
       nil ->
-        %CaseFileOwner{party_name: attrs[:party_name]}
+        %CaseFileOwner{name: attrs[:name]}
 
       case_file_owner ->
         case_file_owner

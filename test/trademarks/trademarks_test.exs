@@ -132,7 +132,7 @@ defmodule Trademarks.TrademarksTest do
       dba: "some dba",
       nationality_country: "some nationality_country",
       nationality_state: "some nationality_state",
-      party_name: "some party_name",
+      name: "some name",
       postcode: "some postcode",
       state: "some state"
     }

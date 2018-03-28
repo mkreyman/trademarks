@@ -19,9 +19,9 @@ defmodule Trademarks.Utils.AttrsFormatter do
     |> Map.update(:trademark_name, attrs[:trademark_name], &String.upcase(&1))
   end
 
-  defp upcase(%{party_name: _} = attrs) do
+  defp upcase(%{name: _} = attrs) do
     attrs
-    |> Map.update(:party_name, attrs[:party_name], &String.upcase(&1))
+    |> Map.update(:name, attrs[:name], &String.upcase(&1))
   end
 
   defp upcase(%{address_1: _} = attrs) do

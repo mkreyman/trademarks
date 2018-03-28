@@ -40,7 +40,7 @@ defmodule Trademarks.Search do
               :dba,
               :nationality_country,
               :nationality_state,
-              :party_name,
+              :name,
               :address_1,
               :address_2,
               :city,
@@ -96,7 +96,7 @@ defmodule Trademarks.Search do
             :dba,
             :nationality_country,
             :nationality_state,
-            :party_name,
+            :name,
             :address_1,
             :address_2,
             :city,
@@ -109,10 +109,10 @@ defmodule Trademarks.Search do
     |> Repo.all()
   end
 
-  def by_owner(party_name) do
+  def by_owner(name) do
     from(
       o in CaseFileOwner,
-      where: ilike(o.party_name, ^"%#{party_name}%"),
+      where: ilike(o.name, ^"%#{name}%"),
       left_join: t in assoc(o, :trademarks),
       left_join: f in assoc(o, :case_files),
       left_join: att in assoc(f, :attorney),
@@ -124,7 +124,7 @@ defmodule Trademarks.Search do
           :dba,
           :nationality_country,
           :nationality_state,
-          :party_name,
+          :name,
           :address_1,
           :address_2,
           :city,
@@ -182,7 +182,7 @@ defmodule Trademarks.Search do
               :dba,
               :nationality_country,
               :nationality_state,
-              :party_name,
+              :name,
               :address_1,
               :address_2,
               :city,
@@ -203,7 +203,7 @@ defmodule Trademarks.Search do
       join: o in assoc(t, :case_file_owners),
       join: t2 in assoc(o, :trademarks),
       preload: [case_file_owners: {o, trademarks: t2}],
-      select: map(t, [:id, :name, case_file_owners: [:id, :party_name, trademarks: [:id, :name]]])
+      select: map(t, [:id, :name, case_file_owners: [:id, :name, trademarks: [:id, :name]]])
     )
     |> Repo.all()
   end

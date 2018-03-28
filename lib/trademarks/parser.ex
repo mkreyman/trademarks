@@ -43,7 +43,7 @@ defmodule Trademarks.Parser do
             ],
             case_file_owners: [
               ~x[./case-file-owners/case-file-owner]l,
-              party_name: ~x[./party-name/text()]s,
+              name: ~x[./party-name/text()]s,
               dba: ~x[./dba-aka-text/text()]s,
               nationality_country: ~x[./nationality/country/text()]s,
               nationality_state: ~x[./nationality/state/text()]s,

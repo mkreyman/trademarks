@@ -1,12 +1,7 @@
 defmodule TrademarksWeb.V1.TrademarkView do
   use TrademarksWeb, :view
 
-  alias Trademarks.Repo
-
   attributes([:name])
-
-  # The render("index.json-api", data) and render("show.json-api", data)
-  # are defined for us by JaSerializer.PhoenixView.
 
   has_many(
     :case_files,
@@ -28,4 +23,7 @@ defmodule TrademarksWeb.V1.TrademarkView do
     include: false,
     identifiers: :when_included
   )
+
+  # The render("index.json-api", data) and render("show.json-api", data)
+  # are defined for us by JaSerializer.PhoenixView.
 end
