@@ -4,7 +4,7 @@ defmodule TrademarksWeb.V1.CorrespondentController do
 
   plug(
     TrademarksWeb.Plugs.ValidFilters,
-    ~w(name address_1 address_2 address_3 address_4 address_5) when action in [:index]
+    ~w(name address_1 address_2 address_3 address_4 address_5 limit) when action in [:index]
   )
 
   alias Trademarks.{Correspondent, Repo}
@@ -35,14 +35,32 @@ defmodule TrademarksWeb.V1.CorrespondentController do
     end
   end
 
+  defp filtered_by(query, []), do: query
   defp filtered_by(query, params) do
     Enum.reduce(params, query, fn {key, value}, query ->
       case String.downcase(key) do
         "name" ->
           from(c in query, where: ilike(c.address_1, ^"%#{value}%"))
+          |> filtered_by(Keyword.drop(params, ["name", "address_1"]))
+
+        "address_1" ->
+          from(c in query, where: ilike(c.address_1, ^"%#{value}%"))
+          |> filtered_by(Keyword.drop(params, ["name", "address_1"]))
+
+        "limit" ->
+          try do
+            query
+            |> limit(^String.to_integer(value))
+            |> filtered_by(Keyword.drop(params, ["limit"]))
+          rescue
+            _ ->
+              query
+              |> filtered_by(Keyword.drop(params, ["limit"]))
+          end
 
         _ ->
-          from(c in query, where: ilike(field(c, ^String.to_atom(key)), ^"%#{value}%"))
+          from(t in query, where: ilike(field(t, ^String.to_atom(key)), ^"%#{value}%"))
+          |> filtered_by(Keyword.drop(params, [key]))
       end
     end)
   end

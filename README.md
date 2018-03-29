@@ -75,13 +75,14 @@ Search.by_correspondent("correspondent's name")
 Search.linked_trademarks("trademark name")
 ```
 
-### ...from a browser (after the database has been seeded)
+### ...from a client, i.e. Postman
 
 ```
+# after the database has been populated/seeded
 mix phx.server
 ```
 
-Then navigate to...
+Then point your API client to...
 
 ```
 # List all records
@@ -104,13 +105,8 @@ http://localhost:4000/api/v1/case_file_owners?name=owner_name
 http://localhost:4000/api/v1/correspondents?name=correspondent_name
 ```
 
-All results are paginated. The HTTP header contains the following information:
+NOTE: Your requests must be configured with `content-type` set to `application/vnd.api+json` in the header. Navigating to the above links from a web browser won't work. Read about `JSON API` specification at http://jsonapi.org/format/.
 
-  - `link` - to navigate between pages,
-  - `page-number` - current page number,
-  - `per-page` - number of results per page,
-  - `total` - total number of results,
-  - `total-pages` - total number of pages.
 
-You could also append `&page=page_number` to each url to go to a specific page.
+All results are paginated and contain navigation links. You could limit the number of pages returned by appending `&limit=number` to any link.
 
