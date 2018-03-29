@@ -31,6 +31,7 @@ defmodule TrademarksWeb.V1.CaseFileOwnerController do
   end
 
   defp filtered_by(query, []), do: query
+
   defp filtered_by(query, params) do
     Enum.reduce(params, query, fn {key, value}, query ->
       case String.downcase(key) do
@@ -44,7 +45,7 @@ defmodule TrademarksWeb.V1.CaseFileOwnerController do
               query
               |> filtered_by(Keyword.drop(params, ["limit"]))
           end
-          
+
         _ ->
           from(t in query, where: ilike(field(t, ^String.to_atom(key)), ^"%#{value}%"))
           |> filtered_by(Keyword.drop(params, [key]))

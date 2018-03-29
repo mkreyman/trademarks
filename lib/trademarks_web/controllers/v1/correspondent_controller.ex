@@ -36,6 +36,7 @@ defmodule TrademarksWeb.V1.CorrespondentController do
   end
 
   defp filtered_by(query, []), do: query
+
   defp filtered_by(query, params) do
     Enum.reduce(params, query, fn {key, value}, query ->
       case String.downcase(key) do
