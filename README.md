@@ -19,6 +19,14 @@ export DB_HOST='localhost'
 export DATABASE_URL="ecto://$DB_USER:$DB_PASSWORD@$DB_HOST/$DB_NAME"
 ```
 
+If you are behind a proxy, make sure to also set `HTTPS_PROXY` variable, i.e.:
+```
+export HTTPS_PROXY="http://username:password@corporate.proxy.com:port_number/"
+```
+
+Check `config/config.exs` for other configuration options, i.e. `temp_dir`, `temp_page` and `temp_file`.
+
+
 ...then
 
 ```
@@ -29,6 +37,16 @@ mix ecto.setup
 
 # seed the db (optional)
 mix run priv/repo/seeds.exs
+
+# download the latest daily trademarks file;
+# it would be saved as <temp_dir>/<temp_file>
+mix trademarks.download
+
+# parse the default file
+mix trademarks.parse
+
+# otherwise, specify file path for a zip file to be parsed
+mix trademarks.parse <path/filename.zip>
 ```
 
 ### ...in Docker container
@@ -48,11 +66,11 @@ docker-compose exec web mix run priv/repo/seeds.exs
 ```elixir
 # Download the last daily zip file with trademark case files
 # from https://bulkdata.uspto.gov/data/trademark/dailyxml/applications/
-Downloader.start
+Downloader.download
 
 # You could also download any zip file from that page manually and
-# then provide its local path as input to Parser.start().
-{:ok, stream} = Parser.start("./tmp/trademarks.zip")
+# then provide its local path as input to Parser.parse().
+{:ok, stream} = Parser.parse("./tmp/trademarks.zip")
 
 # A typical daily file contains 50,000 - 100,000 case files and
 # may take up to 30 minutes to process.
@@ -75,7 +93,7 @@ Search.by_correspondent("correspondent's name")
 Search.linked_trademarks("trademark name")
 ```
 
-### ...from a client, i.e. Postman
+### ...from an API client, i.e. Postman
 
 ```
 # after the database has been populated/seeded
@@ -108,5 +126,5 @@ http://localhost:4000/api/v1/correspondents?name=correspondent_name
 NOTE: Your requests must be configured with `content-type` set to `application/vnd.api+json` in the header. Navigating to the above links from a web browser won't work. Read about `JSON API` specification at http://jsonapi.org/format/.
 
 
-All results are paginated and contain navigation links. You could limit the number of pages returned by appending `&limit=number` to any link.
+All results are paginated and contain navigation links. Get results from a specific page by appending links with `&page=number`. You could limit the number of results returned by appending `&limit=number` to any link (though you would still get at least one page of results).
 

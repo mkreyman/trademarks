@@ -7,20 +7,20 @@ defmodule Trademarks.Downloader do
   @temp_page Application.get_env(:trademarks, :temp_page)
   @temp_file Application.get_env(:trademarks, :temp_file)
 
-  def start do
+  def download do
     fetch_page()
     fetch_file()
   end
 
-  def fetch_page do
+  defp fetch_page do
     download(@trademarks_url, @temp_page)
   end
 
-  def fetch_file do
+  defp fetch_file do
     download(file_url(), @temp_file)
   end
 
-  def download(url, output_filename) do
+  defp download(url, output_filename) do
     proxy = Application.get_env(:trademarks, :proxy)
 
     download_options =
@@ -34,11 +34,11 @@ defmodule Trademarks.Downloader do
     |> handle_response(output_filename)
   end
 
-  def file_url do
+  defp file_url do
     @trademarks_url <> filename()
   end
 
-  def filename do
+  defp filename do
     with {:ok, html} <- File.read(@temp_page) do
       html
       |> Floki.find("td > a[href$=zip]")
@@ -47,7 +47,7 @@ defmodule Trademarks.Downloader do
     end
   end
 
-  def handle_response(%{status_code: 200, body: body}, output_filename) do
+  defp handle_response(%{status_code: 200, body: body}, output_filename) do
     Logger.info(fn ->
       "Successfully downloaded #{output_filename}"
     end)
@@ -56,7 +56,7 @@ defmodule Trademarks.Downloader do
     {:ok, output_filename}
   end
 
-  def handle_response(%{status_code: status, body: _}, _) do
+  defp handle_response(%{status_code: status, body: _}, _) do
     Logger.error(fn ->
       "Error #{status} returned"
     end)

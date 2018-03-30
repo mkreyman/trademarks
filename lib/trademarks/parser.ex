@@ -4,7 +4,11 @@ defmodule Trademarks.Parser do
 
   @temp_dir Application.get_env(:trademarks, :temp_dir)
 
-  def start(zip_file) do
+  def parse(zip_file) do
+    if !File.exists?(zip_file) do
+      raise RuntimeError, message: "File does not exist"
+    end
+
     with {:ok, xml_file} <- extract(zip_file),
          %File.Stream{} = doc <- File.stream!(xml_file) do
       stream =
