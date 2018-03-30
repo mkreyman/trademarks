@@ -24,13 +24,10 @@ defmodule Mix.Tasks.Trademarks.Parse do
   end
 
   defp parse_args(args) do
-    with {_, options, _} <- OptionParser.parse(args) do
-      if Enum.empty?(options) do
-        Mix.shell().info("No input provided, using default...")
-        Application.get_env(:trademarks, :temp_file)
-      else
-        List.first(options)
-      end
+    if Enum.empty?(args) do
+      maybe_use_default_path()
+    else
+      List.first(args)
     end
   end
 
@@ -39,7 +36,7 @@ defmodule Mix.Tasks.Trademarks.Parse do
       file
     else
       Mix.shell().info("\n\tPlease verify the file exists: \n\t#{Path.expand(file)}\n")
-      raise "File not found"
+      Process.exit(self(), :not_found)
     end
   end
 
@@ -54,5 +51,16 @@ defmodule Mix.Tasks.Trademarks.Parse do
     end
 
     Mix.shell().info("Done")
+  end
+
+  defp maybe_use_default_path() do
+    default = Application.get_env(:trademarks, :temp_file)
+    confirmed = Mix.Shell.IO.yes?("No input provided, so using default: #{default}.\nContinue?")
+
+    if confirmed do
+      default
+    else
+      Process.exit(self(), :exit)
+    end
   end
 end
