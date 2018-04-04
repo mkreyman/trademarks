@@ -12,11 +12,11 @@ Download and parse trademark files from https://bulkdata.uspto.gov/data/trademar
 - Install PostgreSQL
 - Configure local variables in `~/.bash_profile`, i.e.
 ```
-export DB_USER=$USER
-export DB_PASSWORD=''
-export DB_NAME='trademarks_dev'
-export DB_HOST='localhost'
-export DATABASE_URL="ecto://$DB_USER:$DB_PASSWORD@$DB_HOST/$DB_NAME"
+export TM_DB_USER=$USER
+export TM_DB_PASSWORD=''
+export TM_DB_NAME='trademarks_dev'
+export TM_DB_HOST='localhost'
+export TM_DATABASE_URL="ecto://$DB_USER:$DB_PASSWORD@$DB_HOST/$DB_NAME"
 ```
 
 If you are behind a proxy, make sure to also set `HTTPS_PROXY` variable, i.e.:
