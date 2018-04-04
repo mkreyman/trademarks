@@ -12,6 +12,6 @@
 
 alias Trademarks.{Parser, Persistor}
 
-{:ok, stream} = Parser.start("./priv/repo/seed.zip")
+{:ok, stream} = Parser.parse("./priv/repo/seed.zip")
 Persistor.process(stream)
 File.rm("./priv/repo/seed.xml")
