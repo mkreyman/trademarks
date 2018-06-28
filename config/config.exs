@@ -23,7 +23,7 @@ config :bolt_sips, Bolt,
     "http://" <>
       (("#{System.get_env("NEO4J_HOST")}" != "" && "#{System.get_env("NEO4J_HOST")}") ||
          "localhost") <> ":7687",
-  pool_size: 5,
+  pool_size: 10,
   max_overflow: 2,
   timeout: 30_000
   # url: "bolt://hobby-happyHoHoHo.dbs.graphenedb.com:24786",

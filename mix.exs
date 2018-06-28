@@ -34,7 +34,6 @@ defmodule Trademarks.Mixfile do
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
-  #
   # Type `mix help deps` for examples and options.
   defp deps do
     [
@@ -49,9 +48,7 @@ defmodule Trademarks.Mixfile do
       {:logger_file_backend, "~> 0.0.10"},
       {:scrivener_list, "~> 1.0"},
       {:ja_serializer, "~> 0.12.0"},
-      # {:bolt_sips, "~> 0.5"},
-      {:db_connection, [env: :prod, github: "elixir-ecto/db_connection", manager: :mix, override: true]},
-      {:bolt_sips, github: "florinpatrascu/bolt_sips"}
+      {:bolt_sips, "~> 0.4.11"}
     ]
   end
 

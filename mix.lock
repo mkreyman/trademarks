@@ -1,5 +1,5 @@
 %{
-  "bolt_sips": {:git, "https://github.com/florinpatrascu/bolt_sips.git", "c71a6b183dab18a0f71c6ef050c3a0d3fd80da95", []},
+  "bolt_sips": {:hex, :bolt_sips, "0.4.12", "aae226f32d9267b8a0391bfa3ac063c2400849d236c9d2d9de44db119b5131c4", [:mix], [{:boltex, "~> 0.4.0", [hex: :boltex, repo: "hexpm", optional: false]}, {:fuzzyurl, "~> 0.9.1", [hex: :fuzzyurl, repo: "hexpm", optional: false]}, {:poolboy, "~> 1.5.1", [hex: :poolboy, repo: "hexpm", optional: false]}, {:retry, "~> 0.8.1", [hex: :retry, repo: "hexpm", optional: false]}], "hexpm"},
   "boltex": {:hex, :boltex, "0.4.1", "49de302ebb59d92419532f1953fbfea0acc312503306be57b493b56d6b7a3fb7", [:hex], [], "hexpm"},
   "certifi": {:hex, :certifi, "2.0.0", "a0c0e475107135f76b8c1d5bc7efb33cd3815cb3cf3dea7aefdd174dabead064", [:rebar3], [], "hexpm"},
   "connection": {:hex, :connection, "1.0.4", "a1cae72211f0eef17705aaededacac3eb30e6625b04a6117c1b2db6ace7d5976", [:mix], [], "hexpm"},
