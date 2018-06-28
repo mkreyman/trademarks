@@ -8,10 +8,8 @@ defmodule Trademarks.Application do
 
     # Define workers and child supervisors to be supervised
     children = [
-      # Start the Ecto repository
-      supervisor(Trademarks.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(TrademarksWeb.Endpoint, [])
+      supervisor(TrademarksWeb.Endpoint, []),
       # Start your own worker by calling: Trademarks.Worker.start_link(arg1, arg2, arg3)
       # worker(Trademarks.Worker, [arg1, arg2, arg3]),
     ]

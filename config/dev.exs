@@ -32,28 +32,6 @@ config :trademarks, TrademarksWeb.Endpoint,
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
-# # Alternative logger configuration
-# # tell logger to load a LoggerFileBackend processes
-# config :logger, backends: [{LoggerFileBackend, :error_log}]
-
-# # configuration for the {LoggerFileBackend, :error_log} backend
-# config :logger, :error_log,
-#   path: "log/app.log",
-#   level: :info,
-#   truncate: :infinity
-
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
-
-# Configure your database
-config :trademarks, Trademarks.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: System.get_env("TM_DB_USER"),
-  password: System.get_env("TM_DB_PASSWORD"),
-  database: System.get_env("TM_DB_NAME"),
-  hostname: System.get_env("TM_DB_HOST"),
-  pool_size: 10,
-  ownership_timeout: 450_000,
-  timeout: 450_000,
-  pool_timeout: 450_000

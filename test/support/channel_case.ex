@@ -1,9 +1,9 @@
-defmodule TrademarksWeb.ConnCase do
+defmodule TrademarksWeb.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
-  tests that require setting up a connection.
+  channel tests.
 
-  Such tests rely on `Phoenix.ConnTest` and also
+  Such tests rely on `Phoenix.ChannelTest` and also
   import other functionality to make it easier
   to build common datastructures and query the data layer.
 
@@ -17,9 +17,8 @@ defmodule TrademarksWeb.ConnCase do
 
   using do
     quote do
-      # Import conveniences for testing with connections
-      use Phoenix.ConnTest
-      import TrademarksWeb.Router.Helpers
+      # Import conveniences for testing with channels
+      use Phoenix.ChannelTest
 
       # The default endpoint for testing
       @endpoint TrademarksWeb.Endpoint
@@ -28,7 +27,7 @@ defmodule TrademarksWeb.ConnCase do
 
 
   setup _tags do
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+    :ok
   end
 
 end
