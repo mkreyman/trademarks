@@ -24,7 +24,7 @@ defmodule Trademarks.Mixfile do
         :logger,
         :runtime_tools,
         :logger_file_backend,
-        :scrivener_ecto
+        :bolt_sips
       ]
     ]
   end
@@ -40,8 +40,6 @@ defmodule Trademarks.Mixfile do
     [
       {:phoenix, "~> 1.3.2"},
       {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_ecto, "~> 3.2"},
-      {:postgrex, ">= 0.13.4"},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:httpoison, "~> 1.0.0"},
@@ -49,23 +47,21 @@ defmodule Trademarks.Mixfile do
       {:sweet_xml, "~> 0.6.5"},
       {:floki, "~> 0.19.2"},
       {:logger_file_backend, "~> 0.0.10"},
-      {:scrivener_ecto, "~> 1.0"},
       {:scrivener_list, "~> 1.0"},
-      {:ja_serializer, "~> 0.12.0"}
+      {:ja_serializer, "~> 0.12.0"},
+      # {:bolt_sips, "~> 0.5"},
+      {:db_connection, [env: :prod, github: "elixir-ecto/db_connection", manager: :mix, override: true]},
+      {:bolt_sips, github: "florinpatrascu/bolt_sips"}
     ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
-  # For example, to create, migrate and run the seeds file at once:
-  #
-  #     $ mix ecto.setup
-  #
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      # "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      # "ecto.reset": ["ecto.drop", "ecto.setup"],
+      # test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

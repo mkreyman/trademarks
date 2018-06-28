@@ -10,6 +10,7 @@ defmodule Trademarks.Application do
     children = [
       # Start the endpoint when the application starts
       supervisor(TrademarksWeb.Endpoint, []),
+      {Bolt.Sips, Application.get_env(:bolt_sips, Bolt)}
       # Start your own worker by calling: Trademarks.Worker.start_link(arg1, arg2, arg3)
       # worker(Trademarks.Worker, [arg1, arg2, arg3]),
     ]
