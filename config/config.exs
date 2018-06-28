@@ -10,8 +10,7 @@ config :trademarks, TrademarksWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "pL2zrg64jDf5o0OpGHAr25DfnVu3KL0MvSZPI3nJzS1Y6O0zbdvBIo3LTPEt4Xc/",
   render_errors: [view: TrademarksWeb.ErrorView, accepts: ~w(json)],
-  pubsub: [name: Trademarks.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: Trademarks.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -26,11 +25,12 @@ config :bolt_sips, Bolt,
   pool_size: 10,
   max_overflow: 2,
   timeout: 30_000
-  # url: "bolt://hobby-happyHoHoHo.dbs.graphenedb.com:24786",
-  # basic_auth: [username: "demo", password: "demo"]
-  # ssl: true,
-  # retry_linear_backoff: [delay: 150, factor: 2, tries: 3]
+
+# url: "bolt://hobby-happyHoHoHo.dbs.graphenedb.com:24786",
+# basic_auth: [username: "demo", password: "demo"]
+# ssl: true,
+# retry_linear_backoff: [delay: 150, factor: 2, tries: 3]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"
