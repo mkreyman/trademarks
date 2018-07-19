@@ -1,0 +1,60 @@
+defmodule Trademarks.Models.Links.Describes do
+  @moduledoc """
+  CRUD operations for "Describes" links between Statement and CaseFile.
+  """
+
+  use Validators.ObjectKeyValidator
+  use ApplicationErrors.Validator
+  use Util.StructUtils
+  use Util.InterfaceBase
+
+  import UUID
+  import Neo4j.LinkCore
+
+  alias __MODULE__, warn: false
+  alias Trademarks.Models.Nodes.{Statement, CaseFile}
+
+  defstruct [:describes_id, :label]
+
+  @type t :: %Describes{
+          describes_id: String.t(),
+          label: String.t()
+        }
+
+  def object_keys() do
+    [:describes_id]
+  end
+
+  def empty_instance() do
+    %Describes{describes_id: uuid1(), label: struct_to_name()}
+  end
+
+  @doc """
+  CRUD create operation for a Describes relationship.
+  Note that this method only creates an instance, and does NOT save it to the database.
+
+  ## Parameters
+
+    - options: optional property settings for the new Describes node.
+
+  ## Returns
+
+    Describes instance to be used to join Statement to CaseFile
+  """
+  def create(options) do
+    empty_instance()
+    |> merge_options(options)
+  end
+
+  def link(%CaseFile{} = case_file, %Statement{} = statement) do
+    make(statement, case_file, empty_instance())
+  end
+
+  def unlink(%CaseFile{} = case_file, %Statement{} = statement) do
+    break(statement, case_file, %Describes{})
+  end
+
+  def validate(%Describes{} = describes) do
+    describes
+  end
+end

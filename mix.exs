@@ -39,6 +39,7 @@ defmodule Trademarks.Mixfile do
     [
       {:phoenix, "~> 1.3.2"},
       {:phoenix_pubsub, "~> 1.0"},
+      {:uuid, "~> 1.1"},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:httpoison, "~> 1.0.0"},
@@ -56,9 +57,10 @@ defmodule Trademarks.Mixfile do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      # "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-      # "ecto.reset": ["ecto.drop", "ecto.setup"],
-      # test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      "neo4j.drop": ["run lib/scripts/drop.exs"],
+      "neo4j.init": ["run lib/scripts/init.exs"],
+      # "neo4j.seed": ["run priv/repo/seeds.exs"],
+      # "neo4j.reset": ["neo4j.drop", "neo4j.seed"]
     ]
   end
 end

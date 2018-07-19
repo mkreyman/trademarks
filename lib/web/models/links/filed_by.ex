@@ -1,0 +1,60 @@
+defmodule Trademarks.Models.Links.FiledBy do
+  @moduledoc """
+  CRUD operations for "FiledBy" links between CaseFile and Attorney.
+  """
+
+  use Validators.ObjectKeyValidator
+  use ApplicationErrors.Validator
+  use Util.StructUtils
+  use Util.InterfaceBase
+
+  import UUID
+  import Neo4j.LinkCore
+
+  alias __MODULE__, warn: false
+  alias Trademarks.Models.Nodes.{CaseFile, Attorney}
+
+  defstruct [:filed_by_id, :label]
+
+  @type t :: %FiledBy{
+          filed_by_id: String.t(),
+          label: String.t()
+        }
+
+  def object_keys() do
+    [:filed_by_id]
+  end
+
+  def empty_instance() do
+    %FiledBy{filed_by_id: uuid1(), label: struct_to_name()}
+  end
+
+  @doc """
+  CRUD create operation for a FiledBy relationship.
+  Note that this method only creates an instance, and does NOT save it to the database.
+
+  ## Parameters
+
+    - options: optional property settings for the new FiledBy node.
+
+  ## Returns
+
+    FiledBy instance to be used to join CaseFile to Attorney
+  """
+  def create(options) do
+    empty_instance()
+    |> merge_options(options)
+  end
+
+  def link(%Attorney{} = attorney, %CaseFile{} = case_file) do
+    make(case_file, attorney, empty_instance())
+  end
+
+  def unlink(%Attorney{} = attorney, %CaseFile{} = case_file) do
+    break(case_file, attorney, %FiledBy{})
+  end
+
+  def validate(%FiledBy{} = filed_by) do
+    filed_by
+  end
+end

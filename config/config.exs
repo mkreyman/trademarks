@@ -15,7 +15,7 @@ config :trademarks, TrademarksWeb.Endpoint,
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:user_id]
+  metadata: [:request_id]
 
 config :bolt_sips, Bolt,
   url:
@@ -30,6 +30,21 @@ config :bolt_sips, Bolt,
 # basic_auth: [username: "demo", password: "demo"]
 # ssl: true,
 # retry_linear_backoff: [delay: 150, factor: 2, tries: 3]
+
+config :trademarks,
+  user_agent: "Elixir elixir@test.com",
+  trademarks_url: "https://bulkdata.uspto.gov/data/trademark/dailyxml/applications/",
+  temp_dir: "./tmp/",
+  temp_page: "./tmp/trademarks.html",
+  temp_file: "./tmp/trademarks.zip",
+  proxy: System.get_env("HTTPS_PROXY")
+
+# mime-type to serialize JSON API
+config :phoenix, :format_encoders, "json-api": Poison
+
+config :mime, :types, %{
+  "application/vnd.api+json" => ["json-api"]
+}
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

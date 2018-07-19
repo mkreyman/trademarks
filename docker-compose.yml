@@ -7,6 +7,7 @@ services:
       - NEO4J_AUTH=none
     volumes:
       - ./data:/data
+      - ./plugins:/plugins
     working_dir: /data
     entrypoint: # Override open source container entrypoint to load dummy test data into the local neo4j image.
       - sh
@@ -20,6 +21,7 @@ services:
       - NEO4J_AUTH=none
     volumes:
       - ./data:/data
+      - ./plugins:/plugins
     working_dir: /data
     entrypoint: # Override open source container entrypoint to remove dummy test data from the local neo4j image.
       - sh
@@ -36,6 +38,7 @@ services:
       - "7687:7687"
     volumes:
       - ./data:/data
+      - ./plugins:/plugins
 
   test:
     image: shufo/phoenix:latest
@@ -43,12 +46,12 @@ services:
     entrypoint: # Override open source container entrypoint to run tests
       - sh
       - -c
-      - mix hex.repo set hexpm --url https://artifactory.global.dish.com/artifactory/repo.hex.pm && mix deps.get && mix test
+      - mix hex.repo set hexpm --url $HEX_CDN && mix deps.get && mix test
     environment: # Set backup environment variables
       - NEO4J_HOST=neo4j
       - HEX_UNSAFE_HTTPS=1
-      - HEX_CDN=https://artifactory.global.dish.com/artifactory/repo.hex.pm
-      - HEX_MIRROR=https://artifactory.global.dish.com/artifactory/repo.hex.pm
+      - HEX_CDN
+      - HEX_MIRROR
     volumes:
       - .:/app
     working_dir: /app
@@ -59,12 +62,12 @@ services:
     entrypoint: # Override open source container entrypoint to generate docs
       - sh
       - -c
-      - mix hex.repo set hexpm --url https://artifactory.global.dish.com/artifactory/repo.hex.pm && mix deps.get && mix docs
+      - mix hex.repo set hexpm --url $HEX_CDN && mix deps.get && mix docs
     environment: # Set backup environment variables
       - NEO4J_HOST=neo4j
       - HEX_UNSAFE_HTTPS=1
-      - HEX_CDN=https://artifactory.global.dish.com/artifactory/repo.hex.pm
-      - HEX_MIRROR=https://artifactory.global.dish.com/artifactory/repo.hex.pm
+      - HEX_CDN
+      - HEX_MIRROR
     volumes:
       - .:/app
     working_dir: /app
@@ -75,12 +78,12 @@ services:
     entrypoint: # Override open source container entrypoint which is incorrect and missing config
       - sh
       - -c
-      - no_proxy="localhost,127.0.0.1,vault.int.slingtv.com,*.int.slingtv.com,*.global.dish.com,gitlab.global.dish.com,artifactory.global.dish.com" mix hex.repo set hexpm --url https://artifactory.global.dish.com/artifactory/repo.hex.pm && mix deps.get && mix phx.server
+      - mix hex.repo set hexpm --url $HEX_CDN && mix deps.get && mix phx.server
     environment: # Set backup environment variables
       - NEO4J_HOST=neo4j
       - HEX_UNSAFE_HTTPS=1
-      - HEX_CDN=https://artifactory.global.dish.com/artifactory/repo.hex.pm
-      - HEX_MIRROR=https://artifactory.global.dish.com/artifactory/repo.hex.pm
+      - HEX_CDN
+      - HEX_MIRROR
     ports:
       - "4000:4000"
     volumes:
