@@ -114,6 +114,8 @@ defmodule Neo4j.LinkCore do
   """
   def link_label(link) do
     struct_to_name(link)
+    |> Macro.underscore()
+    |> String.upcase()
   end
 
   # Private

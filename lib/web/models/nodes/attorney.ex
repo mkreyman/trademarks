@@ -51,6 +51,39 @@ defmodule Trademarks.Models.Nodes.Attorney do
   end
 
   @doc """
+    Search operation for Attorneys
+
+    ## Parameters
+
+      - attorney: a Attorney instance with fields to use to search for matching instances in the database.
+
+    ## Returns
+
+      - A list of matching Attorney instances.
+  """
+  def search(%Attorney{} = attorney) do
+    exec_search(attorney)
+  end
+
+  @doc """
+    Combines find and create operations for Attorneys
+
+    ## Parameters
+
+      - attorney: an Attorney instance with key data to use to find the instance in the database.
+
+    ## Returns
+
+      - Attorney instance that was found or created.
+  """
+  def find_or_create(%Attorney{} = attorney) do
+    case search(attorney) do
+      %Attorney{} = attorney -> attorney
+      nil -> create(attorney)
+    end
+  end
+
+  @doc """
   CRUD update operation for Attorney.
   Note that the key data for the Attorney will not be updated! It is used only to update non-key fields.  To replace a
   Attorney's key fields, delete and recreate the Attorney.

@@ -51,6 +51,39 @@ defmodule Trademarks.Models.Nodes.Statement do
   end
 
   @doc """
+    Search operation for Statements
+
+    ## Parameters
+
+      - statement: a Statement instance with fields to use to search for matching instances in the database.
+
+    ## Returns
+
+      - A list of matching Statement instances.
+  """
+  def search(%Statement{} = statement) do
+    exec_search(statement)
+  end
+
+  @doc """
+    Combines find and create operations for Statements
+
+    ## Parameters
+
+      - statement: an Statement instance with key data to use to find the instance in the database.
+
+    ## Returns
+
+      - Statement instance that was found or created.
+  """
+  def find_or_create(%Statement{} = statement) do
+    case search(statement) do
+      %Statement{} = statement -> statement
+      nil -> create(statement)
+    end
+  end
+
+  @doc """
   CRUD update operation for Statement.
   Note that the key data for the Statement will not be updated! It is used only to update non-key fields.  To replace a
   Statement's key fields, delete and recreate the Statement.

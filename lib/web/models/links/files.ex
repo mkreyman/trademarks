@@ -14,19 +14,16 @@ defmodule Trademarks.Models.Links.Files do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{Attorney, CaseFile}
 
-  defstruct [:files_id, :label]
+  defstruct [:files_id]
 
-  @type t :: %Files{
-          files_id: String.t(),
-          label: String.t()
-        }
+  @type t :: %Files{files_id: String.t()}
 
   def object_keys() do
     [:files_id]
   end
 
   def empty_instance() do
-    %Files{files_id: uuid1(), label: struct_to_name()}
+    %Files{files_id: uuid1()}
   end
 
   @doc """

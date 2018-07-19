@@ -6,7 +6,7 @@ defmodule Trademarks.Models.Nodes.Trademark do
   use Util.StructUtils
 
   # import UUID
-  import Neo4j.Core, only: [exec_query: 2]
+  import Neo4j.Core, only: [exec_query: 2, exec_raw: 1]
   import Neo4j.NodeCore
 
   alias __MODULE__, warn: false
@@ -22,6 +22,10 @@ defmodule Trademarks.Models.Nodes.Trademark do
 
   def object_keys() do
     [:name]
+  end
+
+  def struct_to_name() do
+    "TM"
   end
 
   def empty_instance() do
@@ -45,9 +49,54 @@ defmodule Trademarks.Models.Nodes.Trademark do
     |> exec_create()
   end
 
+  # def create(%Trademark{name: name} = trademark) do
+  #   %{trademark | name: String.upcase(name), label: struct_to_name()}
+  #   |> exec_create()
+  # end
+
   def create(%Trademark{name: name} = trademark) do
-    %{trademark | name: String.upcase(name), label: struct_to_name()}
-    |> exec_create()
+    %{"tm" => %{properties: %{"name" => name}}} =
+      """
+        MERGE (tm:Trademark {name: UPPER(\"#{name}\"), label: \"#{struct_to_name()}\"})
+        RETURN tm
+      """
+      |> exec_raw()
+      |> List.first()
+
+    find(%Trademark{name: name})
+  end
+
+  @doc """
+    Search operation for Trademarks
+
+    ## Parameters
+
+      - trademark: a Trademark instance with fields to use to search for matching instances in the database.
+
+    ## Returns
+
+      - A list of matching Trademark instances.
+  """
+  def search(%Trademark{} = trademark) do
+    exec_search(trademark)
+  end
+
+  @doc """
+    Combines find and create operations for Trademarks
+
+    ## Parameters
+
+      - trademark: an Trademark instance with key data to use to find the instance in the database.
+
+    ## Returns
+
+      - Trademark instance that was found or created.
+  """
+  def find_or_create(%Trademark{} = trademark) do
+    case search(trademark) do
+      %Trademark{} = trademark -> trademark
+      nil -> create(trademark)
+    end
   end
 
   @doc """

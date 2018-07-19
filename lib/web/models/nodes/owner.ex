@@ -6,7 +6,7 @@ defmodule Trademarks.Models.Nodes.Owner do
   use Util.StructUtils
 
   # import UUID
-  import Neo4j.Core, only: [exec_query: 2]
+  import Neo4j.Core, only: [exec_query: 2, exec_raw: 1]
   import Neo4j.NodeCore
 
   alias __MODULE__, warn: false
@@ -50,13 +50,64 @@ defmodule Trademarks.Models.Nodes.Owner do
   """
   def create(%Owner{name: name} = owner) when is_nil(name) do
     owner
-    |> struct(name: struct_to_name())
+    |> struct(label: struct_to_name())
     |> exec_create()
   end
 
+  # def create(%Owner{name: name} = owner) do
+  #   %{owner | name: String.upcase(name), label: struct_to_name()}
+  #   |> exec_create()
+  # end
+
   def create(%Owner{name: name} = owner) do
-    %{owner | name: String.upcase(name), label: struct_to_name()}
-    |> exec_create()
+    %{"o" => %{properties: %{"name" => name}}} =
+      """
+        MERGE (o:Owner {name: UPPER(\"#{name}\")})
+          ON CREATE SET o.dba = \"#{owner.dba}\",
+                        o.nationality_state = \"#{owner.nationality_state}\",
+                        o.nationality_country = \"#{owner.nationality_country}\",
+                        o.label = \"#{struct_to_name()}\"
+        RETURN o
+      """
+      |> exec_raw()
+      |> List.first()
+
+    find(%Owner{name: name})
+  end
+
+  @doc """
+    Search operation for Owners
+
+    ## Parameters
+
+      - owner: a Owner instance with fields to use to search for matching instances in the database.
+
+    ## Returns
+
+      - A list of matching Owner instances.
+  """
+  def search(%Owner{} = owner) do
+    exec_search(owner)
+  end
+
+  @doc """
+    Combines find and create operations for Owners
+
+    ## Parameters
+
+      - owner: an Owner instance with key data to use to find the instance in the database.
+
+    ## Returns
+
+      - Owner instance that was found or created.
+  """
+  def find_or_create(%Owner{name: name} = owner) do
+    owner = %{owner | name: String.upcase(name)}
+
+    case search(owner) do
+      %Owner{} = owner -> owner
+      nil -> create(owner)
+    end
   end
 
   @doc """

@@ -88,6 +88,39 @@ defmodule Trademarks.Models.Nodes.CaseFile do
   end
 
   @doc """
+    Search operation for CaseFiles
+
+    ## Parameters
+
+      - case_file: a CaseFile instance with fields to use to search for matching instances in the database.
+
+    ## Returns
+
+      - A list of matching CaseFile instances.
+  """
+  def search(%CaseFile{} = case_file) do
+    exec_search(case_file)
+  end
+
+  @doc """
+    Combines find and create operations for CaseFiles
+
+    ## Parameters
+
+      - case_file: an CaseFile instance with key data to use to find the instance in the database.
+
+    ## Returns
+
+      - CaseFile instance that was found or created.
+  """
+  def find_or_create(%CaseFile{} = case_file) do
+    case search(case_file) do
+      %CaseFile{} = case_file -> case_file
+      nil -> create(case_file)
+    end
+  end
+
+  @doc """
   CRUD update operation for CaseFile.
   Note that the key data for the CaseFile will not be updated!  It is used only to update non-key fields.  To replace a
   CaseFile's key fields, delete and recreate the CaseFile.

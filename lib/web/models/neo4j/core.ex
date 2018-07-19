@@ -122,7 +122,9 @@ defmodule Neo4j.Core do
     - Neo4j.Exception: if the cypher query results in an error.
   """
   def exec_raw(cypher) do
+    cypher = cypher |> String.replace("\n", " ")
     conn = @neo4j_interface.conn
+
     case @neo4j_interface.query(conn, cypher) do
       {:ok, result} -> result
       {:error, message} -> raise(Neo4j.Exception, message)

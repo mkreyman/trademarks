@@ -5,7 +5,7 @@ defmodule Util.StructUtils do
   - getting empty struct instances from existing ones.
   - getting the name of a struct (last part of dotted module name).
   """
-  
+
   # import Util.PipeDebug
 
   defmacro __using__(_opts) do
@@ -45,6 +45,12 @@ defmodule Util.StructUtils do
         |> List.last()
       end
 
+      def link_label() do
+        struct_to_name()
+        |> Macro.underscore()
+        |> String.upcase()
+      end
+
       @doc """
       Provide an empty instance of the struct supported by the module that uses StructUtils.
 
@@ -62,10 +68,10 @@ defmodule Util.StructUtils do
 
       # https://medium.com/@kay.sackey/create-a-struct-from-a-map-within-elixir-78bf592b5d3b
       def struct_from_map(map) do
-        struct = __MODULE__.__struct__
-        
+        struct = __MODULE__.__struct__()
+
         keys =
-          Map.keys(struct) 
+          Map.keys(struct)
           |> Enum.filter(fn x -> x != :__struct__ end)
 
         processed_map =
@@ -73,7 +79,7 @@ defmodule Util.StructUtils do
             value = Map.get(map, key) || Map.get(map, to_string(key))
             {key, value}
           end
-        
+
         Map.merge(struct, processed_map)
       end
 

@@ -14,19 +14,16 @@ defmodule Trademarks.Models.Links.RepresentedBy do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{Owner, Attorney}
 
-  defstruct [:represented_by_id, :label]
+  defstruct [:represented_by_id]
 
-  @type t :: %RepresentedBy{
-          represented_by_id: String.t(),
-          label: String.t()
-        }
+  @type t :: %RepresentedBy{represented_by_id: String.t()}
 
   def object_keys() do
     [:represented_by_id]
   end
 
   def empty_instance() do
-    %RepresentedBy{represented_by_id: uuid1(), label: struct_to_name()}
+    %RepresentedBy{represented_by_id: uuid1()}
   end
 
   @doc """

@@ -40,7 +40,8 @@ defmodule Trademarks.Models.Nodes.EventStatement do
 
     EventStatement instance of the stored value.
   """
-  def create(%EventStatement{description: description} = event_statement) when is_nil(description) do
+  def create(%EventStatement{description: description} = event_statement)
+      when is_nil(description) do
     event_statement
     |> struct(label: struct_to_name())
     |> exec_create()
@@ -49,6 +50,39 @@ defmodule Trademarks.Models.Nodes.EventStatement do
   def create(%EventStatement{description: description} = event_statement) do
     %{event_statement | description: description, hash: md5(description), label: struct_to_name()}
     |> exec_create()
+  end
+
+  @doc """
+    Search operation for EventStatements
+
+    ## Parameters
+
+      - event_statement: a EventStatement instance with fields to use to search for matching instances in the database.
+
+    ## Returns
+
+      - A list of matching EventStatement instances.
+  """
+  def search(%EventStatement{} = event_statement) do
+    exec_search(event_statement)
+  end
+
+  @doc """
+    Combines find and create operations for EventStatements
+
+    ## Parameters
+
+      - event_statement: an EventStatement instance with key data to use to find the instance in the database.
+
+    ## Returns
+
+      - EventStatement instance that was found or created.
+  """
+  def find_or_create(%EventStatement{} = event_statement) do
+    case search(event_statement) do
+      %EventStatement{} = event_statement -> event_statement
+      nil -> create(event_statement)
+    end
   end
 
   @doc """

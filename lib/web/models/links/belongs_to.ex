@@ -14,19 +14,16 @@ defmodule Trademarks.Models.Links.BelongsTo do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{Owner, Trademark}
 
-  defstruct [:belongs_to_id, :label]
+  defstruct [:belongs_to_id]
 
-  @type t :: %BelongsTo{
-          belongs_to_id: String.t(),
-          label: String.t()
-        }
+  @type t :: %BelongsTo{belongs_to_id: String.t()}
 
   def object_keys() do
     [:belongs_to_id]
   end
 
   def empty_instance() do
-    %BelongsTo{belongs_to_id: uuid1(), label: struct_to_name()}
+    %BelongsTo{belongs_to_id: uuid1()}
   end
 
   @doc """

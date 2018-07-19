@@ -14,19 +14,16 @@ defmodule Trademarks.Models.Links.Aka do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{Attorney, Correspondent}
 
-  defstruct [:aka_id, :label]
+  defstruct [:aka_id]
 
-  @type t :: %Aka{
-          aka_id: String.t(),
-          label: String.t()
-        }
+  @type t :: %Aka{aka_id: String.t()}
 
   def object_keys() do
     [:aka_id]
   end
 
   def empty_instance() do
-    %Aka{aka_id: uuid1(), label: struct_to_name()}
+    %Aka{aka_id: uuid1()}
   end
 
   @doc """

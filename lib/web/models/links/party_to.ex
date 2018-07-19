@@ -14,19 +14,16 @@ defmodule Trademarks.Models.Links.PartyTo do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{Owner, CaseFile}
 
-  defstruct [:party_to_id, :label]
+  defstruct [:party_to_id]
 
-  @type t :: %PartyTo{
-          party_to_id: String.t(),
-          label: String.t()
-        }
+  @type t :: %PartyTo{party_to_id: String.t()}
 
   def object_keys() do
     [:party_to_id]
   end
 
   def empty_instance() do
-    %PartyTo{party_to_id: uuid1(), label: struct_to_name()}
+    %PartyTo{party_to_id: uuid1()}
   end
 
   @doc """

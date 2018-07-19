@@ -5,8 +5,7 @@ defmodule Util.InterfaceBase do
 
   @moduledoc """
   Macros and functions to support interface wrappers over Node and Link objects.  Interfaces allow different operations
-  to be performed on the same underlying objects.  For implementations, see AllOf/AnyOf (over Combines nodes),
-  MessageContext/MicroService (over DataSource nodes) and Denies/Grants (over Qualifies links).
+  to be performed on the same underlying objects.
   """
 
   defmacro __using__(_opts) do

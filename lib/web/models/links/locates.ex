@@ -14,19 +14,16 @@ defmodule Trademarks.Models.Links.Locates do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{Address, Owner}
 
-  defstruct [:locates_id, :label]
+  defstruct [:locates_id]
 
-  @type t :: %Locates{
-          locates_id: String.t(),
-          label: String.t()
-        }
+  @type t :: %Locates{locates_id: String.t()}
 
   def object_keys() do
     [:locates_id]
   end
 
   def empty_instance() do
-    %Locates{locates_id: uuid1(), label: struct_to_name()}
+    %Locates{locates_id: uuid1()}
   end
 
   @doc """

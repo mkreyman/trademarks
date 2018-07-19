@@ -61,6 +61,39 @@ defmodule Trademarks.Models.Nodes.Correspondent do
   end
 
   @doc """
+    Search operation for Correspondents
+
+    ## Parameters
+
+      - correspondent: a Correspondent instance with fields to use to search for matching instances in the database.
+
+    ## Returns
+
+      - A list of matching Correspondent instances.
+  """
+  def search(%Correspondent{} = correspondent) do
+    exec_search(correspondent)
+  end
+
+  @doc """
+    Combines find and create operations for Correspondents
+
+    ## Parameters
+
+      - correspondent: an Correspondent instance with key data to use to find the instance in the database.
+
+    ## Returns
+
+      - Correspondent instance that was found or created.
+  """
+  def find_or_create(%Correspondent{} = correspondent) do
+    case search(correspondent) do
+      %Correspondent{} = correspondent -> correspondent
+      nil -> create(correspondent)
+    end
+  end
+
+  @doc """
   CRUD update operation for Correspondent.
   Note that the key data for the Correspondent will not be updated! It is used only to update non-key fields.  To replace a
   Correspondent's key fields, delete and recreate the Correspondent.
@@ -114,7 +147,7 @@ defmodule Trademarks.Models.Nodes.Correspondent do
     exec_find(correspondent)
   end
 
-    @doc """
+  @doc """
   Look up Correspondent by its parent CaseFile.
 
   ## Parameters
@@ -127,12 +160,16 @@ defmodule Trademarks.Models.Nodes.Correspondent do
   """
 
   def find_by_case_file(%CaseFile{} = case_file) do
-    "MATCH (cf:CaseFile)-[:CommunicatesWith]->(c:Correspondent) WHERE cf.serial_number = \"#{case_file.serial_number}\" RETURN c"
+    "MATCH (cf:CaseFile)-[:CommunicatesWith]->(c:Correspondent) WHERE cf.serial_number = \"#{
+      case_file.serial_number
+    }\" RETURN c"
     |> exec_query(empty_instance())
   end
 
   def find_by_case_file(%{serial_number: _serial_number} = case_file) do
-    "MATCH (cf:CaseFile)-[:CommunicatesWith]->(c:Correspondent) WHERE cf.serial_number = \"#{case_file.serial_number}\" RETURN c"
+    "MATCH (cf:CaseFile)-[:CommunicatesWith]->(c:Correspondent) WHERE cf.serial_number = \"#{
+      case_file.serial_number
+    }\" RETURN c"
     |> exec_query(empty_instance())
   end
 

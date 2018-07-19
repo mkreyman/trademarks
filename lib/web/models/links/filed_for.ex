@@ -14,19 +14,16 @@ defmodule Trademarks.Models.Links.FiledFor do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{CaseFile, Trademark}
 
-  defstruct [:filed_for_id, :label]
+  defstruct [:filed_for_id]
 
-  @type t :: %FiledFor{
-          filed_for_id: String.t(),
-          label: String.t()
-        }
+  @type t :: %FiledFor{filed_for_id: String.t()}
 
   def object_keys() do
     [:filed_for_id]
   end
 
   def empty_instance() do
-    %FiledFor{filed_for_id: uuid1(), label: struct_to_name()}
+    %FiledFor{filed_for_id: uuid1()}
   end
 
   @doc """

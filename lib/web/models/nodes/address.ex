@@ -63,6 +63,39 @@ defmodule Trademarks.Models.Nodes.Address do
   end
 
   @doc """
+    Search operation for Addresses
+
+    ## Parameters
+
+      - address: a Address instance with fields to use to search for matching instances in the database.
+
+    ## Returns
+
+      - A list of matching Address instances.
+  """
+  def search(%Address{} = address) do
+    exec_search(address)
+  end
+
+  @doc """
+    Combines find and create operations for Addresses
+
+    ## Parameters
+
+      - address: an Address instance with key data to use to find the instance in the database.
+
+    ## Returns
+
+      - Address instance that was found or created.
+  """
+  def find_or_create(%Address{} = address) do
+    case search(address) do
+      %Address{} = address -> address
+      nil -> create(address)
+    end
+  end
+
+  @doc """
   CRUD update operation for Address.
   Note that the key data for the Address will not be updated! It is used only to update non-key fields.  To replace a
   Address's key fields, delete and recreate the Address.
@@ -116,7 +149,7 @@ defmodule Trademarks.Models.Nodes.Address do
     exec_find(address)
   end
 
-    @doc """
+  @doc """
   Look up Address by its parent Owner.
 
   ## Parameters

@@ -94,16 +94,6 @@ defmodule Neo4j.NodeCore do
     |> exec_query(empty_instance(node))
   end
 
-  def exec_find(node, :combines) do
-    """
-      MATCH (x:#{node_label(node)} {#{build_match_clause(node)}})
-      WITH x MATCH (x)-[:Qualifies]-(a)
-      WHERE a.name = "AllOf" OR a.name = "AnyOf"
-      RETURN a;
-    """
-    |> exec_raw()
-  end
-
   @doc """
     Given a single node instance, it finds the node specified by the given node's fields.
 
@@ -145,28 +135,6 @@ defmodule Neo4j.NodeCore do
     """
     |> exec_query(node)
 
-    node
-  end
-
-  def exec_delete(node, :with_combines) do
-    query =
-      case exec_find(node, :combines) do
-        [] ->
-          """
-            MATCH (x:#{node_label(node)} {#{build_match_clause(node)}})
-            DETACH DELETE x
-          """
-
-        _ ->
-          """
-            MATCH (x:#{node_label(node)} {#{build_match_clause(node)}})
-            WITH x MATCH (x)-[:Qualifies]-(a)
-            WHERE a.name = "AllOf" OR a.name = "AnyOf"
-            DETACH DELETE x, a;
-          """
-      end
-
-    exec_query(query, node)
     node
   end
 
