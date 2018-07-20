@@ -5,6 +5,13 @@ alias Trademarks.Util.{
   Search
 }
 
+alias Neo4j.Tasks.{
+  Init,
+  Drop,
+  Ingest
+}
+
+
 alias Trademarks.Models.Nodes.{
   Address,
   Attorney,

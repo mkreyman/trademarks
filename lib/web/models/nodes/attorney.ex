@@ -45,9 +45,18 @@ defmodule Trademarks.Models.Nodes.Attorney do
     |> exec_create()
   end
 
+  # def create(%Attorney{name: name} = attorney) do
+  #   %{attorney | name: String.upcase(name), label: struct_to_name()}
+  #   |> exec_create()
+  # end
+
   def create(%Attorney{name: name} = attorney) do
-    %{attorney | name: String.upcase(name), label: struct_to_name()}
-    |> exec_create()
+    """
+      MERGE (a:Attorney {name: UPPER(\"#{name}\"), label: \"#{struct_to_name()}\"})
+      RETURN a
+    """
+    |> String.replace("\n", " ")
+    |> exec_query(%Attorney{})
   end
 
   @doc """

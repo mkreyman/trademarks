@@ -58,7 +58,8 @@ defmodule Trademarks.Mixfile do
   defp aliases do
     [
       "neo4j.drop": ["run lib/scripts/drop.exs"],
-      "neo4j.init": ["run lib/scripts/init.exs"]
+      "neo4j.init": ["run lib/scripts/init.exs"],
+      "ingest": ["run lib/scripts/ingest.exs"]
       # "neo4j.seed": ["run priv/repo/seeds.exs"],
       # "neo4j.reset": ["neo4j.drop", "neo4j.seed"]
     ]

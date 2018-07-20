@@ -77,14 +77,30 @@ defmodule Trademarks.Models.Nodes.CaseFile do
 
     CaseFile instance of the stored value.
   """
-  def create(%CaseFile{} = case_file) do
-    exec_create(case_file)
-  end
+  # def create(%CaseFile{} = case_file) do
+  #   exec_create(case_file)
+  # end
 
-  def create(%{} = case_file) do
-    case_file
-    |> struct_from_map()
-    |> exec_create()
+  # def create(%{} = case_file) do
+  #   case_file
+  #   |> struct_from_map()
+  #   |> exec_create()
+  # end
+
+  def create(%CaseFile{serial_number: serial_number} = case_file) do
+    """
+      MERGE (cf:CaseFile {serial_number: \"#{serial_number}\"})
+      ON CREATE SET cf.abandonment_date = toInt(\"#{case_file.abandonment_date}\"),
+                    cf.filing_date = toInt(\"#{case_file.filing_date}\"),
+                    cf.registration_date = toInt(\"#{case_file.registration_date}\"),
+                    cf.registration_number = \"#{case_file.registration_number}\",
+                    cf.renewal_date = toInt(\"#{case_file.renewal_date}\"),
+                    cf.status_date = toInt(\"#{case_file.status_date}\"),
+                    cf.label = \"#{struct_to_name()}\"
+      RETURN cf
+    """
+    |> String.replace("\n", " ")
+    |> exec_query(%CaseFile{})
   end
 
   @doc """

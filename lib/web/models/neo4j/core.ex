@@ -122,7 +122,10 @@ defmodule Neo4j.Core do
     - Neo4j.Exception: if the cypher query results in an error.
   """
   def exec_raw(cypher) do
-    cypher = cypher |> String.replace("\n", " ")
+    cypher =
+      cypher
+      |> String.replace("\n", " ")
+
     conn = @neo4j_interface.conn
 
     case @neo4j_interface.query(conn, cypher) do
@@ -236,11 +239,15 @@ defmodule Neo4j.Core do
     nil
   end
 
-  defp to_record(neo_set, structure) do
+  defp to_record(neo_set, structure) when is_map(neo_set) do
     neo_set
     |> Map.values()
     |> List.first()
     |> structify(structure)
+  end
+
+  defp to_record(_neo_set, _structure) do
+    nil
   end
 
   # Query construction...

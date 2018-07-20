@@ -43,11 +43,11 @@ defmodule Trademarks.Models.Links.Locates do
     |> merge_options(options)
   end
 
-  def link(%Owner{} = owner, %Address{} = address) do
+  def link(%Address{} = address, %Owner{} = owner) do
     make(address, owner, empty_instance())
   end
 
-  def unlink(%Owner{} = owner, %Address{} = address) do
+  def unlink(%Address{} = address, %Owner{} = owner) do
     break(address, owner, %Locates{})
   end
 

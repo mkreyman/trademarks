@@ -6,7 +6,7 @@ defmodule Trademarks.Models.Nodes.Address do
   use Util.StructUtils
 
   # import UUID
-  import Neo4j.Core, only: [exec_query: 2]
+  import Neo4j.Core, only: [exec_query: 2, exec_raw: 1]
   import Neo4j.NodeCore
 
   alias __MODULE__, warn: false
@@ -19,7 +19,8 @@ defmodule Trademarks.Models.Nodes.Address do
     :state,
     :postcode,
     :country,
-    :label
+    :label,
+    :hash
   ]
 
   @type t :: %Address{
@@ -29,7 +30,8 @@ defmodule Trademarks.Models.Nodes.Address do
           state: String.t(),
           postcode: String.t(),
           country: String.t(),
-          label: String.t()
+          label: String.t(),
+          hash: String.t()
         }
 
   def object_keys() do
@@ -57,9 +59,25 @@ defmodule Trademarks.Models.Nodes.Address do
     |> exec_create()
   end
 
-  def create(%Address{address_1: address_1} = address) do
-    %{address | address_1: String.upcase(address_1), label: struct_to_name()}
-    |> exec_create()
+  # def create(%Address{address_1: address_1} = address) do
+  #   %{address | address_1: String.upcase(address_1), label: struct_to_name()}
+  #   |> exec_create()
+  # end
+
+  def create(%Address{} = address) do
+      """
+        MERGE (a:Address {hash: apoc.util.md5([UPPER(\"#{address.address_1}\"), UPPER(\"#{address.address_2}\"), UPPER(\"#{address.city}\"), UPPER(\"#{address.state}\"), \"#{address.postcode}\", UPPER(\"#{address.country}\")])})
+        ON CREATE SET a.address_1 = UPPER(\"#{address.address_1}\"),
+                a.address_2 = UPPER(\"#{address.address_2}\"),
+                a.city = UPPER(\"#{address.city}\"),
+                a.state = UPPER(\"#{address.state}\"),
+                a.postcode = \"#{address.postcode}\",
+                a.country = UPPER(\"#{address.country}\"),
+                a.label = \"#{struct_to_name()}\"
+        RETURN a
+      """
+      |> String.replace("\n", " ")
+      |> exec_query(%Address{})
   end
 
   @doc """

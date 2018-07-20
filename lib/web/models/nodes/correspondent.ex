@@ -18,7 +18,8 @@ defmodule Trademarks.Models.Nodes.Correspondent do
     :address_3,
     :address_4,
     :address_5,
-    :label
+    :label,
+    :hash
   ]
 
   @type t :: %Correspondent{
@@ -27,7 +28,8 @@ defmodule Trademarks.Models.Nodes.Correspondent do
           address_3: String.t(),
           address_4: String.t(),
           address_5: String.t(),
-          label: String.t()
+          label: String.t(),
+          hash: String.t()
         }
 
   def object_keys() do
@@ -55,9 +57,24 @@ defmodule Trademarks.Models.Nodes.Correspondent do
     |> exec_create()
   end
 
-  def create(%Correspondent{address_1: address_1} = correspondent) do
-    %{correspondent | address_1: String.upcase(address_1), label: struct_to_name()}
-    |> exec_create()
+  # def create(%Correspondent{address_1: address_1} = correspondent) do
+  #   %{correspondent | address_1: String.upcase(address_1), label: struct_to_name()}
+  #   |> exec_create()
+  # end
+
+  def create(%Correspondent{} = correspondent) do
+    """
+      MERGE (c:Correspondent {hash: apoc.util.md5([UPPER(\"#{correspondent.address_1}\"), UPPER(\"#{correspondent.address_2}\"), UPPER(\"#{correspondent.address_3}\"), UPPER(\"#{correspondent.address_4}\"), UPPER(\"#{correspondent.address_5}\")])})
+      ON CREATE SET c.address_1 = \"#{correspondent.address_1}\",
+                    c.address_2 = \"#{correspondent.address_2}\",
+                    c.address_3 = \"#{correspondent.address_3}\",
+                    c.address_4 = \"#{correspondent.address_4}\",
+                    c.address_5 = \"#{correspondent.address_5}\",
+                    c.label = \"#{struct_to_name()}\"
+      RETURN c
+    """
+    |> String.replace("\n", " ")
+    |> exec_query(%Correspondent{})
   end
 
   @doc """

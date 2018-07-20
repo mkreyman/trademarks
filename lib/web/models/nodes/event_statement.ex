@@ -47,9 +47,25 @@ defmodule Trademarks.Models.Nodes.EventStatement do
     |> exec_create()
   end
 
-  def create(%EventStatement{description: description} = event_statement) do
-    %{event_statement | description: description, hash: md5(description), label: struct_to_name()}
-    |> exec_create()
+  # def create(%EventStatement{description: description} = event_statement) do
+  #   %{event_statement | description: description, hash: md5(description), label: struct_to_name()}
+  #   |> exec_create()
+  # end
+
+  def create(%EventStatement{date: date, description: description} = event_statement) do
+    description =
+      description
+      |> String.replace("\n", " ")
+      
+    """
+      MERGE (es:EventStatement {hash: apoc.util.md5([\"#{description}\", \"#{date}\"])})
+      ON CREATE SET es.description = \"#{description}\",
+                    es.date = toInt(\"#{date}\"),
+                    es.label = \"#{struct_to_name()}\")
+      RETURN es
+    """
+    |> String.replace("\n", " ")
+    |> exec_query(%EventStatement{})
   end
 
   @doc """

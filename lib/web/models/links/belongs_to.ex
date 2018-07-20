@@ -9,7 +9,9 @@ defmodule Trademarks.Models.Links.BelongsTo do
   use Util.InterfaceBase
 
   import UUID
+  # import Neo4j.Core
   import Neo4j.LinkCore
+  # import Neo4j.NodeCore
 
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{Owner, Trademark}
@@ -43,11 +45,11 @@ defmodule Trademarks.Models.Links.BelongsTo do
     |> merge_options(options)
   end
 
-  def link(%Owner{} = owner, %Trademark{} = trademark) do
+  def link(%Trademark{} = trademark, %Owner{} = owner) do
     make(trademark, owner, empty_instance())
   end
 
-  def unlink(%Owner{} = owner, %Trademark{} = trademark) do
+  def unlink(%Trademark{} = trademark, %Owner{} = owner) do
     break(trademark, owner, %BelongsTo{})
   end
 

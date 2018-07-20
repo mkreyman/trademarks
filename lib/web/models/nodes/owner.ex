@@ -60,19 +60,16 @@ defmodule Trademarks.Models.Nodes.Owner do
   # end
 
   def create(%Owner{name: name} = owner) do
-    %{"o" => %{properties: %{"name" => name}}} =
-      """
-        MERGE (o:Owner {name: UPPER(\"#{name}\")})
-          ON CREATE SET o.dba = \"#{owner.dba}\",
-                        o.nationality_state = \"#{owner.nationality_state}\",
-                        o.nationality_country = \"#{owner.nationality_country}\",
-                        o.label = \"#{struct_to_name()}\"
-        RETURN o
-      """
-      |> exec_raw()
-      |> List.first()
-
-    find(%Owner{name: name})
+    """
+      MERGE (o:Owner {name: UPPER(\"#{name}\")})
+      ON CREATE SET o.dba = \"#{owner.dba}\",
+                    o.nationality_state = \"#{owner.nationality_state}\",
+                    o.nationality_country = \"#{owner.nationality_country}\",
+                    o.label = \"#{struct_to_name()}\"
+      RETURN o
+    """
+    |> String.replace("\n", " ")
+    |> exec_query(%Owner{})
   end
 
   @doc """

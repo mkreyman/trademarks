@@ -43,11 +43,11 @@ defmodule Trademarks.Models.Links.Aka do
     |> merge_options(options)
   end
 
-  def link(%Attorney{} = attorney, %Correspondent{} = correspondent) do
+  def link(%Correspondent{} = correspondent, %Attorney{} = attorney) do
     make(correspondent, attorney, empty_instance())
   end
 
-  def unlink(%Attorney{} = attorney, %Correspondent{} = correspondent) do
+  def unlink(%Correspondent{} = correspondent, %Attorney{} = attorney) do
     break(correspondent, attorney, %Aka{})
   end
 

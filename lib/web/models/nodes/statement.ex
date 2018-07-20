@@ -45,9 +45,24 @@ defmodule Trademarks.Models.Nodes.Statement do
     |> exec_create()
   end
 
+  # def create(%Statement{description: description} = statement) do
+  #   %{statement | description: description, hash: md5(description), label: struct_to_name()}
+  #   |> exec_create()
+  # end
+
   def create(%Statement{description: description} = statement) do
-    %{statement | description: description, hash: md5(description), label: struct_to_name()}
-    |> exec_create()
+    description =
+      description
+      |> String.replace("\n", " ")
+      
+    """
+      MERGE (s:Statement {hash: apoc.util.md5([\"#{description}\"])})
+      ON CREATE SET s.description = \"#{description}\",
+                    s.label = \"#{struct_to_name()}\")
+      RETURN s
+    """
+    |> String.replace("\n", " ")
+    |> exec_query(%Statement{})
   end
 
   @doc """

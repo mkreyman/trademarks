@@ -43,11 +43,11 @@ defmodule Trademarks.Models.Links.CommunicatesWith do
     |> merge_options(options)
   end
 
-  def link(%Correspondent{} = correspondent, %CaseFile{} = case_file) do
+  def link(%CaseFile{} = case_file, %Correspondent{} = correspondent) do
     make(case_file, correspondent, empty_instance())
   end
 
-  def unlink(%Correspondent{} = correspondent, %CaseFile{} = case_file) do
+  def unlink(%CaseFile{} = case_file, %Correspondent{} = correspondent) do
     break(case_file, correspondent, %CommunicatesWith{})
   end
 

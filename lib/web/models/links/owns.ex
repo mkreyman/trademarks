@@ -44,11 +44,11 @@ defmodule Trademarks.Models.Links.Owns do
   end
 
   def link(%Owner{} = owner, %Trademark{} = trademark) do
-    make(trademark, owner, empty_instance())
+    make(owner, trademark, empty_instance())
   end
 
   def unlink(%Owner{} = owner, %Trademark{} = trademark) do
-    break(trademark, owner, %Owns{})
+    break(owner, trademark, %Owns{})
   end
 
   def validate(%Owns{} = owns) do

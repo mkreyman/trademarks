@@ -43,11 +43,11 @@ defmodule Trademarks.Models.Links.Updates do
     |> merge_options(options)
   end
 
-  def link(%CaseFile{} = case_file, %EventStatement{} = event_statement) do
+  def link(%EventStatement{} = event_statement, %CaseFile{} = case_file) do
     make(event_statement, case_file, empty_instance())
   end
 
-  def unlink(%CaseFile{} = case_file, %EventStatement{} = event_statement) do
+  def unlink(%EventStatement{} = event_statement, %CaseFile{} = case_file) do
     break(event_statement, case_file, %Updates{})
   end
 

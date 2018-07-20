@@ -43,11 +43,11 @@ defmodule Trademarks.Models.Links.Represents do
     |> merge_options(options)
   end
 
-  def link(%Owner{} = owner, %Attorney{} = attorney) do
+  def link(%Attorney{} = attorney, %Owner{} = owner) do
     make(attorney, owner, empty_instance())
   end
 
-  def unlink(%Owner{} = owner, %Attorney{} = attorney) do
+  def unlink(%Attorney{} = attorney, %Owner{} = owner) do
     break(attorney, owner, %Represents{})
   end
 

@@ -43,11 +43,11 @@ defmodule Trademarks.Models.Links.PartyTo do
     |> merge_options(options)
   end
 
-  def link(%CaseFile{} = case_file, %Owner{} = owner) do
+  def link(%Owner{} = owner, %CaseFile{} = case_file) do
     make(owner, case_file, empty_instance())
   end
 
-  def unlink(%CaseFile{} = case_file, %Owner{} = owner) do
+  def unlink(%Owner{} = owner, %CaseFile{} = case_file) do
     break(owner, case_file, %PartyTo{})
   end
 

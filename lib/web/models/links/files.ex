@@ -43,11 +43,11 @@ defmodule Trademarks.Models.Links.Files do
     |> merge_options(options)
   end
 
-  def link(%CaseFile{} = case_file, %Attorney{} = attorney) do
+  def link(%Attorney{} = attorney, %CaseFile{} = case_file) do
     make(attorney, case_file, empty_instance())
   end
 
-  def unlink(%CaseFile{} = case_file, %Attorney{} = attorney) do
+  def unlink(%Attorney{} = attorney, %CaseFile{} = case_file) do
     break(attorney, case_file, %Files{})
   end
 

@@ -4,6 +4,7 @@ defmodule Trademarks.Models.Nodes.Trademark do
   """
 
   use Util.StructUtils
+  use Util.PipeDebug
 
   # import UUID
   import Neo4j.Core, only: [exec_query: 2, exec_raw: 1]
@@ -55,15 +56,12 @@ defmodule Trademarks.Models.Nodes.Trademark do
   # end
 
   def create(%Trademark{name: name} = trademark) do
-    %{"tm" => %{properties: %{"name" => name}}} =
-      """
-        MERGE (tm:Trademark {name: UPPER(\"#{name}\"), label: \"#{struct_to_name()}\"})
-        RETURN tm
-      """
-      |> exec_raw()
-      |> List.first()
-
-    find(%Trademark{name: name})
+    """
+      MERGE (tm:Trademark {name: UPPER(\"#{name}\"), label: \"#{struct_to_name()}\"})
+      RETURN tm
+    """
+    |> String.replace("\n", " ")
+    |> exec_query(%Trademark{})
   end
 
   @doc """
