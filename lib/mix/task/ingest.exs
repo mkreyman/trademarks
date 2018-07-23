@@ -1,10 +1,5 @@
 defmodule Neo4j.Tasks.Ingest do
-  alias Trademarks.Util.{
-    Downloader,
-    Parser,
-    Persistor,
-    Search
-  }
+  alias Trademarks.Util.Parser
 
   alias Trademarks.Models.Nodes.{
     Address,
@@ -30,24 +25,31 @@ defmodule Neo4j.Tasks.Ingest do
     PartyTo,
     RepresentedBy,
     Represents,
+    ResidesAt,
     Updates
   }
 
-  def call() do
-    ingest()
+  def run(file \\ "./tmp/seed.zip") do
+    ingest(file)
     Mix.Task.reenable(:run)
   end
 
-  defp ingest(file \\ "./tmp/seed.zip") do
+  defp ingest(file) do
+    Mix.shell().info("Parsing file #{file} ...")
+    started = :os.system_time(:seconds)
+
     {:ok, stream} = Parser.parse(file)
 
-    # stream
-    # |> Enum.map(&process(&1))
-
     stream
-    |> Enum.map(&IO.inspect(&1))
-    |> List.first()
-    |> process()
+    |> Enum.map(&process(&1))
+
+    # stream
+    # |> Enum.map(&IO.inspect(&1))
+    # |> List.first()
+    # |> process()
+
+    finished = :os.system_time(:seconds)
+    Mix.shell().info("Finished in #{finished - started} secs\n")
   end
 
   defp process(%{} = case_file) do
@@ -96,10 +98,12 @@ defmodule Neo4j.Tasks.Ingest do
         })
 
       link(address, Locates, owner)
+      link(owner, ResidesAt, address)
       link(tm, BelongsTo, owner)
       link(owner, Owns, tm)
       link(owner, PartyTo, cf)
       link(owner, RepresentedBy, attorney)
+      link(attorney, Represents, owner)
     end)
 
     Enum.map(case_file.case_file_event_statements, fn params ->
@@ -133,4 +137,4 @@ defmodule Neo4j.Tasks.Ingest do
   end
 end
 
-Neo4j.Tasks.Ingest.call()
+Neo4j.Tasks.Ingest.run()

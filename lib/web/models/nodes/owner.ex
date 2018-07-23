@@ -60,9 +60,13 @@ defmodule Trademarks.Models.Nodes.Owner do
   # end
 
   def create(%Owner{name: name} = owner) do
+    name =
+      name
+      |> String.replace("\"", "'")
+
     """
       MERGE (o:Owner {name: UPPER(\"#{name}\")})
-      ON CREATE SET o.dba = \"#{owner.dba}\",
+      ON CREATE SET o.dba = UPPER(\"#{owner.dba}\"),
                     o.nationality_state = \"#{owner.nationality_state}\",
                     o.nationality_country = \"#{owner.nationality_country}\",
                     o.label = \"#{struct_to_name()}\"

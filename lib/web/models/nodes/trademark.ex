@@ -56,6 +56,10 @@ defmodule Trademarks.Models.Nodes.Trademark do
   # end
 
   def create(%Trademark{name: name} = trademark) do
+    name =
+      name
+      |> String.replace("\"", "'")
+
     """
       MERGE (tm:Trademark {name: UPPER(\"#{name}\"), label: \"#{struct_to_name()}\"})
       RETURN tm

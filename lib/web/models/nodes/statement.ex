@@ -53,12 +53,12 @@ defmodule Trademarks.Models.Nodes.Statement do
   def create(%Statement{description: description} = statement) do
     description =
       description
-      |> String.replace("\n", " ")
+      |> String.replace("\"", "'")
       
     """
       MERGE (s:Statement {hash: apoc.util.md5([\"#{description}\"])})
       ON CREATE SET s.description = \"#{description}\",
-                    s.label = \"#{struct_to_name()}\")
+                    s.label = \"#{struct_to_name()}\"
       RETURN s
     """
     |> String.replace("\n", " ")

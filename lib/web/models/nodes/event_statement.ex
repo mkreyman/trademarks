@@ -55,13 +55,13 @@ defmodule Trademarks.Models.Nodes.EventStatement do
   def create(%EventStatement{date: date, description: description} = event_statement) do
     description =
       description
-      |> String.replace("\n", " ")
+      |> String.replace("\"", "'")
       
     """
-      MERGE (es:EventStatement {hash: apoc.util.md5([\"#{description}\", \"#{date}\"])})
+      MERGE (es:EventStatement {hash: apoc.util.md5([\"#{description}\", toInt(\"#{date}\")])})
       ON CREATE SET es.description = \"#{description}\",
                     es.date = toInt(\"#{date}\"),
-                    es.label = \"#{struct_to_name()}\")
+                    es.label = \"#{struct_to_name()}\"
       RETURN es
     """
     |> String.replace("\n", " ")

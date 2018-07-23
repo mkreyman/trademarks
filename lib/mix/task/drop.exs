@@ -1,5 +1,5 @@
 defmodule Neo4j.Tasks.Drop do
-  def call() do
+  def run() do
     drop()
     Mix.Task.reenable(:run)
   end
@@ -10,4 +10,4 @@ defmodule Neo4j.Tasks.Drop do
   end
 end
 
-Neo4j.Tasks.Drop.call()
+Neo4j.Tasks.Drop.run()

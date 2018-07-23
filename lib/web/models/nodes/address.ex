@@ -35,7 +35,7 @@ defmodule Trademarks.Models.Nodes.Address do
         }
 
   def object_keys() do
-    [:address_1]
+    [:address_1, :hash]
   end
 
   def empty_instance() do
@@ -64,20 +64,24 @@ defmodule Trademarks.Models.Nodes.Address do
   #   |> exec_create()
   # end
 
-  def create(%Address{} = address) do
-      """
-        MERGE (a:Address {hash: apoc.util.md5([UPPER(\"#{address.address_1}\"), UPPER(\"#{address.address_2}\"), UPPER(\"#{address.city}\"), UPPER(\"#{address.state}\"), \"#{address.postcode}\", UPPER(\"#{address.country}\")])})
-        ON CREATE SET a.address_1 = UPPER(\"#{address.address_1}\"),
-                a.address_2 = UPPER(\"#{address.address_2}\"),
-                a.city = UPPER(\"#{address.city}\"),
-                a.state = UPPER(\"#{address.state}\"),
-                a.postcode = \"#{address.postcode}\",
-                a.country = UPPER(\"#{address.country}\"),
-                a.label = \"#{struct_to_name()}\"
-        RETURN a
-      """
-      |> String.replace("\n", " ")
-      |> exec_query(%Address{})
+  def create(%Address{address_1: address_1} = address) do
+    address_1 =
+      address_1
+      |> String.replace("\"", "'")
+
+    """
+      MERGE (a:Address {hash: apoc.util.md5([UPPER(\"#{address_1}\"), UPPER(\"#{address.address_2}\"), UPPER(\"#{address.city}\"), UPPER(\"#{address.state}\"), \"#{address.postcode}\", UPPER(\"#{address.country}\")])})
+      ON CREATE SET a.address_1 = UPPER(\"#{address_1}\"),
+                    a.address_2 = UPPER(\"#{address.address_2}\"),
+                    a.city = UPPER(\"#{address.city}\"),
+                    a.state = UPPER(\"#{address.state}\"),
+                    a.postcode = \"#{address.postcode}\",
+                    a.country = UPPER(\"#{address.country}\"),
+                    a.label = \"#{struct_to_name()}\"
+      RETURN a
+    """
+    |> String.replace("\n", " ")
+    |> exec_query(%Address{})
   end
 
   @doc """

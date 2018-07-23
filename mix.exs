@@ -49,7 +49,9 @@ defmodule Trademarks.Mixfile do
       {:logger_file_backend, "~> 0.0.10"},
       {:scrivener_list, "~> 1.0"},
       {:ja_serializer, "~> 0.12.0"},
-      {:bolt_sips, "~> 0.4.11"}
+      # {:bolt_sips, "~> 0.4.12"}
+      {:bolt_sips, github: "florinpatrascu/bolt_sips"},
+      {:db_connection, github: "elixir-ecto/db_connection", override: true}
     ]
   end
 
