@@ -54,7 +54,7 @@ defmodule Trademarks.Models.Nodes.Attorney do
     name =
       name
       |> String.replace("\"", "'")
-      
+
     """
       MERGE (a:Attorney {name: UPPER(\"#{name}\"), label: \"#{struct_to_name()}\"})
       RETURN a

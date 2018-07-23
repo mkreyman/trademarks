@@ -70,7 +70,9 @@ defmodule Trademarks.Models.Nodes.Address do
       |> String.replace("\"", "'")
 
     """
-      MERGE (a:Address {hash: apoc.util.md5([UPPER(\"#{address_1}\"), UPPER(\"#{address.address_2}\"), UPPER(\"#{address.city}\"), UPPER(\"#{address.state}\"), \"#{address.postcode}\", UPPER(\"#{address.country}\")])})
+      MERGE (a:Address {hash: apoc.util.md5([UPPER(\"#{address_1}\"), UPPER(\"#{address.address_2}\"), UPPER(\"#{
+      address.city
+    }\"), UPPER(\"#{address.state}\"), \"#{address.postcode}\", UPPER(\"#{address.country}\")])})
       ON CREATE SET a.address_1 = UPPER(\"#{address_1}\"),
                     a.address_2 = UPPER(\"#{address.address_2}\"),
                     a.city = UPPER(\"#{address.city}\"),

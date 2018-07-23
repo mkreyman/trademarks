@@ -1,4 +1,6 @@
 defmodule Neo4j.Tasks.Ingest do
+  require Logger
+
   alias Trademarks.Util.Parser
 
   alias Trademarks.Models.Nodes.{
@@ -49,15 +51,18 @@ defmodule Neo4j.Tasks.Ingest do
     # |> process()
 
     finished = :os.system_time(:seconds)
-    Mix.shell().info("Finished in #{finished - started} secs\n")
+
+    Mix.shell().info(
+      "Finished in #{finished - started} secs\n Summary:\n #{inspect(display_count())}\n"
+    )
   end
 
   defp process(%{} = case_file) do
     tm = Trademark.create(%Trademark{name: case_file.trademark_name})
     attorney = Attorney.create(%Attorney{name: case_file.attorney})
 
-    cf = CaseFile.create(
-      %CaseFile{
+    cf =
+      CaseFile.create(%CaseFile{
         serial_number: case_file.serial_number,
         abandonment_date: case_file.abandonment_date,
         filing_date: case_file.filing_date,
@@ -65,18 +70,16 @@ defmodule Neo4j.Tasks.Ingest do
         registration_number: case_file.registration_number,
         renewal_date: case_file.renewal_date,
         status_date: case_file.status_date
-      }
-    )
+      })
 
-    correspondent = Correspondent.create(
-      %Correspondent{
+    correspondent =
+      Correspondent.create(%Correspondent{
         address_1: case_file.correspondent.address_1,
         address_2: case_file.correspondent.address_2,
         address_3: case_file.correspondent.address_3,
         address_4: case_file.correspondent.address_4,
         address_5: case_file.correspondent.address_5
-      }
-    )
+      })
 
     Enum.map(case_file.case_file_owners, fn params ->
       owner =
@@ -86,7 +89,7 @@ defmodule Neo4j.Tasks.Ingest do
           nationality_state: params.nationality_state,
           nationality_country: params.nationality_country
         })
-      
+
       address =
         Address.create(%Address{
           address_1: params.address_1,
@@ -134,6 +137,14 @@ defmodule Neo4j.Tasks.Ingest do
 
   defp link(from, relationship, to) do
     relationship.link(from, to)
+  end
+
+  defp display_count() do
+    """
+    MATCH (n) RETURN DISTINCT count(labels(n)), labels(n);
+    """
+    |> Neo4j.Core.exec_raw()
+    |> Enum.map(fn %{"count(labels(n))" => count, "labels(n)" => [label]} -> %{label => count} end)
   end
 end
 

@@ -56,7 +56,7 @@ defmodule Trademarks.Models.Nodes.EventStatement do
     description =
       description
       |> String.replace("\"", "'")
-      
+
     """
       MERGE (es:EventStatement {hash: apoc.util.md5([\"#{description}\", toInt(\"#{date}\")])})
       ON CREATE SET es.description = \"#{description}\",
