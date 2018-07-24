@@ -1,10 +1,8 @@
-require IEx
-
 defmodule Neo4j.NodeCore do
   import Neo4j.Core
   import Util.StructUtils
   # import Util.PipeDebug
-  import Util.InterfaceBase
+  # import Util.InterfaceBase
 
   alias ApplicationErrors.Validation
   alias Neo4j.UniqueKeyValidator

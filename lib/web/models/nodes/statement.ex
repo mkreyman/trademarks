@@ -50,7 +50,7 @@ defmodule Trademarks.Models.Nodes.Statement do
   #   |> exec_create()
   # end
 
-  def create(%Statement{description: description} = statement) do
+  def create(%Statement{description: description}) do
     description =
       description
       |> String.replace("\"", "'")
@@ -182,7 +182,7 @@ defmodule Trademarks.Models.Nodes.Statement do
     statement
   end
 
-  defp md5(description) do
-    :crypto.hash(:md5, description) |> Base.encode16()
-  end
+  # defp md5(description) do
+  #   :crypto.hash(:md5, description) |> Base.encode16()
+  # end
 end

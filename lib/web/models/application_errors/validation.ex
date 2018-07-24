@@ -9,7 +9,7 @@ defmodule ApplicationErrors.Validation do
 
   alias __MODULE__, warn: false
 
-  import ApplicationErrors
+  # import ApplicationErrors
 
   ## Client API
 
@@ -95,7 +95,7 @@ defmodule ApplicationErrors.Validation do
 
   defp process_validations(validation) do
     #    debug(validation, "does this get called? ")
-    Agent.update(validation, fn {object, errors, validators} = state ->
+    Agent.update(validation, fn {object, errors, validators} = _state ->
       {object,
        Enum.map(validators, fn validator -> process(object, validator) end)
        |> Enum.filter(fn result -> ApplicationErrors.is_errors(result) end)

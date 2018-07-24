@@ -52,7 +52,7 @@ defmodule Trademarks.Models.Nodes.EventStatement do
   #   |> exec_create()
   # end
 
-  def create(%EventStatement{date: date, description: description} = event_statement) do
+  def create(%EventStatement{date: date, description: description}) do
     description =
       description
       |> String.replace("\"", "'")
@@ -185,7 +185,7 @@ defmodule Trademarks.Models.Nodes.EventStatement do
     event_statement
   end
 
-  defp md5(description) do
-    :crypto.hash(:md5, description) |> Base.encode16()
-  end
+  # defp md5(description) do
+  #   :crypto.hash(:md5, description) |> Base.encode16()
+  # end
 end

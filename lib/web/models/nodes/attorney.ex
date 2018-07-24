@@ -50,7 +50,7 @@ defmodule Trademarks.Models.Nodes.Attorney do
   #   |> exec_create()
   # end
 
-  def create(%Attorney{name: name} = attorney) do
+  def create(%Attorney{name: name}) do
     name =
       name
       |> String.replace("\"", "'")

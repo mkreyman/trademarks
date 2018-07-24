@@ -7,7 +7,7 @@ defmodule Trademarks.Models.Nodes.Trademark do
   use Util.PipeDebug
 
   # import UUID
-  import Neo4j.Core, only: [exec_query: 2, exec_raw: 1]
+  import Neo4j.Core, only: [exec_query: 2]
   import Neo4j.NodeCore
 
   alias __MODULE__, warn: false
@@ -55,7 +55,7 @@ defmodule Trademarks.Models.Nodes.Trademark do
   #   |> exec_create()
   # end
 
-  def create(%Trademark{name: name} = trademark) do
+  def create(%Trademark{name: name}) do
     name =
       name
       |> String.replace("\"", "'")

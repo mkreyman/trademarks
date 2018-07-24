@@ -7,7 +7,7 @@ defmodule Validators.ObjectKeyValidator do
   use Util.PipeDebug
 
   import Util.StructUtils
-  import ApplicationErrors.FieldValidator
+  # import ApplicationErrors.FieldValidator
   import ApplicationErrors
 
   alias ApplicationErrors.ApplicationError

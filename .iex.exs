@@ -1,8 +1,13 @@
 alias Trademarks.Util.{
   Downloader,
   Parser,
-  Persistor,
   Search
+}
+
+alias Neo4j.{
+  Core,
+  NodeCore,
+  LinkCore
 }
 
 alias Neo4j.Tasks.{
@@ -10,7 +15,6 @@ alias Neo4j.Tasks.{
   Drop,
   Ingest
 }
-
 
 alias Trademarks.Models.Nodes.{
   Address,
@@ -36,5 +40,6 @@ alias Trademarks.Models.Links.{
   PartyTo,
   RepresentedBy,
   Represents,
+  ResidesAt,
   Updates
 }

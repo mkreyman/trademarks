@@ -6,7 +6,7 @@ defmodule Trademarks.Models.Nodes.Address do
   use Util.StructUtils
 
   # import UUID
-  import Neo4j.Core, only: [exec_query: 2, exec_raw: 1]
+  import Neo4j.Core, only: [exec_query: 2]
   import Neo4j.NodeCore
 
   alias __MODULE__, warn: false

@@ -42,13 +42,14 @@ defmodule Neo4j.Tasks.Ingest do
 
     {:ok, stream} = Parser.parse(file)
 
-    stream
-    |> Enum.map(&process(&1))
-
+    # Process just one record
     # stream
     # |> Enum.map(&IO.inspect(&1))
     # |> List.first()
     # |> process()
+
+    stream
+    |> Enum.map(&process(&1))
 
     finished = :os.system_time(:seconds)
 

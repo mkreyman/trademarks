@@ -1,5 +1,3 @@
-require IEx
-
 defmodule Neo4j.LinkCore do
   import Neo4j.Core
   import Neo4j.NodeCore
