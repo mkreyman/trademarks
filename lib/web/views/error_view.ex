@@ -1,5 +1,5 @@
-defmodule TrademarksWeb.ErrorView do
-  use TrademarksWeb, :view
+defmodule Trademarks.Web.ErrorView do
+  use Trademarks.Web, :view
 
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.

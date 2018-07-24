@@ -1,4 +1,4 @@
-defmodule TrademarksWeb.ChannelCase do
+defmodule Trademarks.Web.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -21,7 +21,7 @@ defmodule TrademarksWeb.ChannelCase do
       use Phoenix.ChannelTest
 
       # The default endpoint for testing
-      @endpoint TrademarksWeb.Endpoint
+      @endpoint Trademarks.Web.Endpoint
     end
   end
 

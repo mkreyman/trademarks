@@ -129,7 +129,7 @@ defmodule Neo4j.Tasks.Ingest do
       link(statement, Describes, cf)
     end)
 
-    link(correspondent, Aka, attorney)
+    link(attorney, Aka, correspondent)
     link(cf, CommunicatesWith, correspondent)
     link(cf, FiledBy, attorney)
     link(cf, FiledFor, tm)

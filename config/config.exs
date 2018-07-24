@@ -6,10 +6,10 @@
 use Mix.Config
 
 # Configures the endpoint
-config :trademarks, TrademarksWeb.Endpoint,
+config :trademarks, Trademarks.Web.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "pL2zrg64jDf5o0OpGHAr25DfnVu3KL0MvSZPI3nJzS1Y6O0zbdvBIo3LTPEt4Xc/",
-  render_errors: [view: TrademarksWeb.ErrorView, accepts: ~w(json)],
+  render_errors: [view: Trademarks.Web.ErrorView, accepts: ~w(json)],
   pubsub: [name: Trademarks.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger

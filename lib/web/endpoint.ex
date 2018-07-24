@@ -1,7 +1,7 @@
-defmodule TrademarksWeb.Endpoint do
+defmodule Trademarks.Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :trademarks
 
-  socket("/socket", TrademarksWeb.UserSocket)
+  socket("/socket", Trademarks.Web.UserSocket)
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -43,7 +43,7 @@ defmodule TrademarksWeb.Endpoint do
     signing_salt: "kNnrf/zx"
   )
 
-  plug(TrademarksWeb.Router)
+  plug(Trademarks.Web.Router)
 
   @doc """
   Callback invoked for dynamically configuring the endpoint.

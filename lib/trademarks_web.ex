@@ -1,12 +1,12 @@
-defmodule TrademarksWeb do
+defmodule Trademarks.Web do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, views, channels and so on.
 
   This can be used in your application as:
 
-      use TrademarksWeb, :controller
-      use TrademarksWeb, :view
+      use Trademarks.Web, :controller
+      use Trademarks.Web, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -19,10 +19,10 @@ defmodule TrademarksWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: TrademarksWeb
+      use Phoenix.Controller, namespace: Trademarks.Web
       import Plug.Conn
-      import TrademarksWeb.Router.Helpers
-      import TrademarksWeb.Gettext
+      import Trademarks.Web.Router.Helpers
+      import Trademarks.Web.Gettext
     end
   end
 
@@ -30,14 +30,14 @@ defmodule TrademarksWeb do
     quote do
       use Phoenix.View,
         root: "lib/trademarks_web/templates",
-        namespace: TrademarksWeb
+        namespace: Trademarks.Web
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
 
-      import TrademarksWeb.Router.Helpers
-      import TrademarksWeb.ErrorHelpers
-      import TrademarksWeb.Gettext
+      import Trademarks.Web.Router.Helpers
+      import Trademarks.Web.ErrorHelpers
+      import Trademarks.Web.Gettext
     end
   end
 
@@ -52,7 +52,7 @@ defmodule TrademarksWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import TrademarksWeb.Gettext
+      import Trademarks.Web.Gettext
     end
   end
 

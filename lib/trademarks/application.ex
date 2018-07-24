@@ -9,7 +9,7 @@ defmodule Trademarks.Application do
     # Define workers and child supervisors to be supervised
     children = [
       # Start the endpoint when the application starts
-      supervisor(TrademarksWeb.Endpoint, []),
+      supervisor(Trademarks.Web.Endpoint, []),
       # Start your own worker by calling: Trademarks.Worker.start_link(arg1, arg2, arg3)
       # worker(Trademarks.Worker, [arg1, arg2, arg3]),
       # {Bolt.Sips, Application.get_env(:bolt_sips, Bolt)}
@@ -25,7 +25,7 @@ defmodule Trademarks.Application do
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
   def config_change(changed, _new, removed) do
-    TrademarksWeb.Endpoint.config_change(changed, removed)
+    Trademarks.Web.Endpoint.config_change(changed, removed)
     :ok
   end
 end

@@ -1,4 +1,4 @@
-defmodule TrademarksWeb.ConnCase do
+defmodule Trademarks.Web.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -19,10 +19,10 @@ defmodule TrademarksWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
-      import TrademarksWeb.Router.Helpers
+      import Trademarks.Web.Router.Helpers
 
       # The default endpoint for testing
-      @endpoint TrademarksWeb.Endpoint
+      @endpoint Trademarks.Web.Endpoint
     end
   end
 
