@@ -168,14 +168,14 @@ defmodule Trademarks.Models.Nodes.EventStatement do
   """
 
   def find_by_case_file(%CaseFile{} = case_file) do
-    "MATCH (es:EventStatement)-[:Updates]->(cf:CaseFile) WHERE cf.serial_number = \"#{
+    "MATCH (es:EventStatement)-[:UPDATES]->(cf:CaseFile) WHERE cf.serial_number = \"#{
       case_file.serial_number
     }\" RETURN es"
     |> exec_query(empty_instance())
   end
 
   def find_by_case_file(%{serial_number: _serial_number} = case_file) do
-    "MATCH (es:EventStatement)-[:Updates]->(cf:CaseFile) WHERE cf.serial_number = \"#{
+    "MATCH (es:EventStatement)-[:UPDATES]->(cf:CaseFile) WHERE cf.serial_number = \"#{
       case_file.serial_number
     }\" RETURN es"
     |> exec_query(empty_instance())

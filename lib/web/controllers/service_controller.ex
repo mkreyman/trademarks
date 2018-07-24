@@ -27,8 +27,8 @@ defmodule Trademarks.Web.ServiceController do
     - 200 and each matching trademark's details: if one or more matching trademarks where found.
     - 404: if no matching trademarks were found.
   """
-  def available_trademarks(conn, %{} = request_data, options \\ @filter_options) do
-    update_request_with_oauth(conn, request_data)
+  def available_trademarks(conn, %{} = request_data, options \\ []) do
+    request_data
     |> get_trademarks(options)
     |> Enum.map(fn o -> Map.from_struct(o) end)
     |> render_result(conn)
@@ -47,9 +47,8 @@ defmodule Trademarks.Web.ServiceController do
   """
   def trademark_details(conn, %{} = request_data) do
     request_data
-    |> RequestData.find_all("/trademarks")
+    |> Trademark.search()
     |> Enum.map(fn name -> %Trademark{name: name} end)
-    |> Trademark.find()
     |> render_result(conn)
   end
 
@@ -66,9 +65,9 @@ defmodule Trademarks.Web.ServiceController do
     - 404: if no matching trademarks were found or the given trademark is not in the set of matching trademarks for the given data.
   """
   def validate_trademarks(conn, %{} = request_data, options \\ []) do
-    trademarks = RequestData.find_all(request_data, "/trademarks")
+    trademarks = Trademark.search(request_data)
 
-    update_request_with_oauth(conn, request_data)
+    request_data
     |> get_trademarks(options)
     |> Enum.filter(fn t -> Enum.member?(trademarks, t.name) end)
     |> render_result(conn)
@@ -78,10 +77,7 @@ defmodule Trademarks.Web.ServiceController do
 
   defp get_trademarks(request_data, options \\ []) do
     request_data
-    |> Trademark.matching_trademarks(options)
-  end
-
-  defp validate(request_data, Trademarks) do
+    |> Trademark.search()
   end
 
   defp render_result(result, conn) when is_nil(result) or result == [] do
@@ -91,31 +87,10 @@ defmodule Trademarks.Web.ServiceController do
   end
 
   defp render_result(result, conn) when is_list(result) do
-    result = Enum.map(result, &SalesCopy.attach(&1))
-    results = Enum.map(result, &Product.attach(&1))
-    render(conn, "index.json", trademarks: results, state: conn.body_params)
+    render(conn, "index.json", trademarks: result, state: conn.body_params)
   end
 
   defp render_result(result, conn) do
-    result = SalesCopy.attach(result)
-    results = Product.attach(result)
-    render(conn, "show.json", trademark: results, state: conn.body_params)
-  end
-
-  defp request_user(conn) do
-  end
-
-  defp update_request_with_oauth(conn, %{} = request_data) do
-    case Enum.into(conn.req_headers, %{}) do
-      %{"authorization" => oauth1} ->
-        Map.merge(request_data, %{"authorization" => oauth1})
-
-      %{"x-jwt-authorization" => oauth2} ->
-        Map.merge(request_data, %{"x-jwt-authorization" => oauth2})
-
-      _ ->
-        # debug(conn.req_headers, "This header did not match anything")
-        request_data
-    end
+    render(conn, "show.json", trademark: result, state: conn.body_params)
   end
 end

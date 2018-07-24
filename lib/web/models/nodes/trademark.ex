@@ -11,8 +11,7 @@ defmodule Trademarks.Models.Nodes.Trademark do
   import Neo4j.NodeCore
 
   alias __MODULE__, warn: false
-  alias Trademarks.Models.Nodes.{CaseFile, Owner}
-  alias Trademarks.Models.Links.{Owns, FiledFor}
+  alias Trademarks.Models.Nodes.CaseFile
 
   defstruct [:name, :label]
 
@@ -168,61 +167,17 @@ defmodule Trademarks.Models.Nodes.Trademark do
   """
 
   def find_by_case_file(%CaseFile{} = case_file) do
-    "MATCH (tm:Trademark)<-[:FiledFor]-(cf:CaseFile) WHERE cf.serial_number = \"#{
+    "MATCH (tm:Trademark)<-[:FILED_FOR]-(cf:CaseFile) WHERE cf.serial_number = \"#{
       case_file.serial_number
     }\" RETURN tm"
     |> exec_query(empty_instance())
   end
 
   def find_by_case_file(%{serial_number: _serial_number} = case_file) do
-    "MATCH (tm:Trademark)<-[:FiledFor]-(cf:CaseFile) WHERE cf.serial_number = \"#{
+    "MATCH (tm:Trademark)<-[:FILED_FOR]-(cf:CaseFile) WHERE cf.serial_number = \"#{
       case_file.serial_number
     }\" RETURN tm"
     |> exec_query(empty_instance())
-  end
-
-  @doc """
-  Adds the given child node to the parent Trademark node.
-
-  ## Parameters
-
-    - parent: the parent Trademark node to add the child to.
-    - child: child node for the Trademark.
-    - link: the link to join the child node to the parent node.
-
-  # Returns
-
-    - The child node added (either passed or new if generated).
-
-  """
-  def add(%Trademark{} = parent, %CaseFile{} = child) do
-    FiledFor.link(parent, child)
-  end
-
-  def add(%Trademark{} = parent, %Owner{} = child) do
-    Owns.link(parent, child)
-  end
-
-  @doc """
-  Removes the specified child node from the Trademark if present
-  Note: No action will be taken if the child node is not currently linked to the parent Trademark node.
-  Note: Trademark will not be removed when the child node is deleted.
-
-  ## Parameters
-
-    - parent: the Trademark node to remove the child node from.
-    - child: key data specifying the child node to unlink from the parent Trademark node.
-
-  # Returns
-
-    The unlinked child node (to confirm the link breakage) or nil if the child node was not found.
-  """
-  def remove(%Trademark{} = parent, %CaseFile{} = child) do
-    FiledFor.unlink(parent, child)
-  end
-
-  def remove(%Trademark{} = parent, %Owner{} = child) do
-    Owns.unlink(parent, child)
   end
 
   def validate(%Trademark{} = trademark) do

@@ -186,12 +186,12 @@ defmodule Trademarks.Models.Nodes.Address do
   """
 
   def find_by_owner(%Owner{} = owner) do
-    "MATCH (addr:Address)-[:Locates]->(o:Owner) WHERE o.name = \"#{owner.name}\" RETURN addr"
+    "MATCH (o:Owner)-[:RESIDES_AT]->(addr:Address) WHERE o.name = \"#{owner.name}\" RETURN addr"
     |> exec_query(empty_instance())
   end
 
   def find_by_owner(%{name: _name} = owner) do
-    "MATCH (addr:Address)-[:Locates]->(o:Owner) WHERE o.name = \"#{owner.name}\" RETURN addr"
+    "MATCH (o:Owner)-[:RESIDES_AT]->(addr:Address) WHERE o.name = \"#{owner.name}\" RETURN addr"
     |> exec_query(empty_instance())
   end
 

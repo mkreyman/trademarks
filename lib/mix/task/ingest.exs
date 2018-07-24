@@ -16,17 +16,13 @@ defmodule Neo4j.Tasks.Ingest do
 
   alias Trademarks.Models.Links.{
     Aka,
-    BelongsTo,
     CommunicatesWith,
     Describes,
     FiledBy,
     FiledFor,
-    Files,
-    Locates,
     Owns,
     PartyTo,
     RepresentedBy,
-    Represents,
     ResidesAt,
     Updates
   }
@@ -101,13 +97,10 @@ defmodule Neo4j.Tasks.Ingest do
           country: params.country
         })
 
-      link(address, Locates, owner)
       link(owner, ResidesAt, address)
-      link(tm, BelongsTo, owner)
       link(owner, Owns, tm)
       link(owner, PartyTo, cf)
       link(owner, RepresentedBy, attorney)
-      link(attorney, Represents, owner)
     end)
 
     Enum.map(case_file.case_file_event_statements, fn params ->
@@ -133,7 +126,6 @@ defmodule Neo4j.Tasks.Ingest do
     link(cf, CommunicatesWith, correspondent)
     link(cf, FiledBy, attorney)
     link(cf, FiledFor, tm)
-    link(attorney, Files, cf)
   end
 
   defp link(from, relationship, to) do

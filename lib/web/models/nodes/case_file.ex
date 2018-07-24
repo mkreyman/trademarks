@@ -12,8 +12,7 @@ defmodule Trademarks.Models.Nodes.CaseFile do
   import Neo4j.NodeCore
 
   alias __MODULE__, warn: false
-  alias Trademarks.Models.Nodes.{Trademark, Attorney, Owner, Statement, EventStatement}
-  alias Trademarks.Models.Links.{Files, PartyTo, Describes, Updates}
+  alias Trademarks.Models.Nodes.Trademark
 
   defstruct [
     :serial_number,
@@ -57,12 +56,12 @@ defmodule Trademarks.Models.Nodes.CaseFile do
     - A collection of case_files for a given Trademark.
   """
   def find_by_trademark(%Trademark{} = trademark) do
-    "MATCH (tm:Trademark)<-[:FiledFor]-(cf:CaseFile) WHERE tm.name = \"#{trademark.name}\" RETURN cf"
+    "MATCH (tm:Trademark)<-[:FILED_FOR]-(cf:CaseFile) WHERE tm.name = \"#{trademark.name}\" RETURN cf"
     |> exec_query(empty_instance())
   end
 
   def find_by_trademark(%{name: _name} = trademark) do
-    "MATCH (tm:Trademark)<-[:FiledFor]-(cf:CaseFile) WHERE tm.name = \"#{trademark.name}\" RETURN cf"
+    "MATCH (tm:Trademark)<-[:FILED_FOR]-(cf:CaseFile) WHERE tm.name = \"#{trademark.name}\" RETURN cf"
     |> exec_query(empty_instance())
   end
 
@@ -191,66 +190,6 @@ defmodule Trademarks.Models.Nodes.CaseFile do
 
   def find(%CaseFile{} = case_file) do
     exec_find(case_file)
-  end
-
-  @doc """
-  Adds the given child node to the parent CaseFile node.
-
-  ## Parameters
-
-    - parent: the CaseFile node to add the child node to as a leaf.
-    - child: child node.
-    - link: the link to join the child node to the parent node.
-
-  # Returns
-
-    - The child node added (either passed or new if generated).
-
-  """
-  def add(%CaseFile{} = parent, %Attorney{} = child) do
-    Files.link(parent, child)
-  end
-
-  def add(%CaseFile{} = parent, %Owner{} = child) do
-    PartyTo.link(parent, child)
-  end
-
-  def add(%CaseFile{} = parent, %Statement{} = child) do
-    Describes.link(parent, child)
-  end
-
-  def add(%CaseFile{} = parent, %EventStatement{} = child) do
-    Updates.link(parent, child)
-  end
-
-  @doc """
-  Removes the specified child node from the set of child nodes attached to the CaseFile if present
-  Note: No action will be taken if the child node is not currently linked to the parent CaseFile node.
-  Note: CaseFile will not be removed when the last child node is deleted.
-
-  ## Parameters
-
-    - parent: the CaseFile node to remove the child node from.
-    - child: key data specifying the child node to unlink from the parent CaseFile node.
-
-  # Returns
-
-    The unlinked child node (to confirm the link breakage) or nil if the child node was not found.
-  """
-  def remove(%CaseFile{} = parent, %Attorney{} = child) do
-    Files.unlink(parent, child)
-  end
-
-  def remove(%CaseFile{} = parent, %Owner{} = child) do
-    PartyTo.unlink(parent, child)
-  end
-
-  def remove(%CaseFile{} = parent, %Statement{} = child) do
-    Describes.unlink(parent, child)
-  end
-
-  def remove(%CaseFile{} = parent, %EventStatement{} = child) do
-    Updates.unlink(parent, child)
   end
 
   def validate(%CaseFile{} = case_file) do

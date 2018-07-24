@@ -29,17 +29,13 @@ alias Trademarks.Models.Nodes.{
 
 alias Trademarks.Models.Links.{
   Aka,
-  BelongsTo,
   CommunicatesWith,
   Describes,
   FiledBy,
   FiledFor,
-  Files,
-  Locates,
   Owns,
   PartyTo,
   RepresentedBy,
-  Represents,
   ResidesAt,
   Updates
 }

@@ -10,8 +10,7 @@ defmodule Trademarks.Models.Nodes.Owner do
   import Neo4j.NodeCore
 
   alias __MODULE__, warn: false
-  alias Trademarks.Models.Nodes.{Address, CaseFile, Trademark, Attorney}
-  alias Trademarks.Models.Links.{Represents, Locates, BelongsTo}
+  alias Trademarks.Models.Nodes.CaseFile
 
   defstruct [
     :name,
@@ -178,69 +177,17 @@ defmodule Trademarks.Models.Nodes.Owner do
   """
 
   def find_by_case_file(%CaseFile{} = case_file) do
-    "MATCH (o:Owner)-[:PartyTo]->(cf:CaseFile) WHERE cf.serial_number = \"#{
+    "MATCH (o:Owner)-[:PARTY_TO]->(cf:CaseFile) WHERE cf.serial_number = \"#{
       case_file.serial_number
     }\" RETURN o"
     |> exec_query(empty_instance())
   end
 
   def find_by_case_file(%{serial_number: _serial_number} = case_file) do
-    "MATCH (o:Owner)-[:PartyTo]->(cf:CaseFile) WHERE cf.serial_number = \"#{
+    "MATCH (o:Owner)-[:PARTY_TO]->(cf:CaseFile) WHERE cf.serial_number = \"#{
       case_file.serial_number
     }\" RETURN o"
     |> exec_query(empty_instance())
-  end
-
-  @doc """
-  Adds the given child node to the parent Owner node.
-
-  ## Parameters
-
-    - parent: the parent Owner node to add the child to.
-    - child: child node for the Owner.
-    - link: the link to join the child node to the parent node.
-
-  # Returns
-
-    - The child node added (either passed or new if generated).
-
-  """
-  def add(%Owner{} = parent, %Attorney{} = child) do
-    Represents.link(parent, child)
-  end
-
-  def add(%Owner{} = parent, %Address{} = child) do
-    Locates.link(parent, child)
-  end
-
-  def add(%Owner{} = parent, %Trademark{} = child) do
-    BelongsTo.link(parent, child)
-  end
-
-  @doc """
-  Removes the specified child node from the Owner if present
-  Note: No action will be taken if the child node is not currently linked to the parent Owner node.
-  Note: Owner will not be removed when the child node is deleted.
-
-  ## Parameters
-
-    - parent: the Owner node to remove the child node from.
-    - child: key data specifying the child node to unlink from the parent Owner node.
-
-  # Returns
-
-    The unlinked child node (to confirm the link breakage) or nil if the child node was not found.
-  """
-  def remove(%Owner{} = parent, %Attorney{} = child) do
-    Represents.unlink(parent, child)
-  end
-
-  def remove(%Owner{} = parent, %Address{} = child) do
-    Locates.unlink(parent, child)
-  end
-
-  def remove(%Owner{} = parent, %Trademark{} = child) do
-    BelongsTo.unlink(parent, child)
   end
 
   def validate(%Owner{} = owner) do

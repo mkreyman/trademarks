@@ -165,14 +165,14 @@ defmodule Trademarks.Models.Nodes.Statement do
   """
 
   def find_by_case_file(%CaseFile{} = case_file) do
-    "MATCH (s:Statement)-[:Describes]->(cf:CaseFile) WHERE cf.serial_number = \"#{
+    "MATCH (s:Statement)-[:DESCRIBES]->(cf:CaseFile) WHERE cf.serial_number = \"#{
       case_file.serial_number
     }\" RETURN s"
     |> exec_query(empty_instance())
   end
 
   def find_by_case_file(%{serial_number: _serial_number} = case_file) do
-    "MATCH (s:Statement)-[:Describes]->(cf:CaseFile) WHERE cf.serial_number = \"#{
+    "MATCH (s:Statement)-[:DESCRIBES]->(cf:CaseFile) WHERE cf.serial_number = \"#{
       case_file.serial_number
     }\" RETURN s"
     |> exec_query(empty_instance())

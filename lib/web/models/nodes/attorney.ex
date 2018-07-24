@@ -10,8 +10,7 @@ defmodule Trademarks.Models.Nodes.Attorney do
   import Neo4j.NodeCore
 
   alias __MODULE__, warn: false
-  alias Trademarks.Models.Nodes.{CaseFile, Owner, Correspondent}
-  alias Trademarks.Models.Links.{FiledBy, RepresentedBy, Aka}
+  alias Trademarks.Models.Nodes.CaseFile
 
   defstruct [:name, :label]
 
@@ -163,69 +162,17 @@ defmodule Trademarks.Models.Nodes.Attorney do
   """
 
   def find_by_case_file(%CaseFile{} = case_file) do
-    "MATCH (cf:CaseFile)-[:FiledBy]->(a:Attorney) WHERE cf.serial_number = \"#{
+    "MATCH (cf:CaseFile)-[:FILED_BY]->(a:Attorney) WHERE cf.serial_number = \"#{
       case_file.serial_number
     }\" RETURN a"
     |> exec_query(empty_instance())
   end
 
   def find_by_case_file(%{serial_number: _serial_number} = case_file) do
-    "MATCH (cf:CaseFile)-[:FiledBy]->(a:Attorney) WHERE cf.serial_number = \"#{
+    "MATCH (cf:CaseFile)-[:FILED_BY]->(a:Attorney) WHERE cf.serial_number = \"#{
       case_file.serial_number
     }\" RETURN a"
     |> exec_query(empty_instance())
-  end
-
-  @doc """
-  Adds the given child node to the parent Attorney node.
-
-  ## Parameters
-
-    - parent: the parent Attorney node to add the child to.
-    - child: child node for the Attorney.
-    - link: the link to join the child node to the parent node.
-
-  # Returns
-
-    - The child node added (either passed or new if generated).
-
-  """
-  def add(%Attorney{} = parent, %CaseFile{} = child) do
-    FiledBy.link(parent, child)
-  end
-
-  def add(%Attorney{} = parent, %Owner{} = child) do
-    RepresentedBy.link(parent, child)
-  end
-
-  def add(%Attorney{} = parent, %Correspondent{} = child) do
-    Aka.link(parent, child)
-  end
-
-  @doc """
-  Removes the specified child node from the Attorney if present
-  Note: No action will be taken if the child node is not currently linked to the parent Attorney node.
-  Note: Attorney will not be removed when the child node is deleted.
-
-  ## Parameters
-
-    - parent: the Attorney node to remove the child node from.
-    - child: key data specifying the child node to unlink from the parent Attorney node.
-
-  # Returns
-
-    The unlinked child node (to confirm the link breakage) or nil if the child node was not found.
-  """
-  def remove(%Attorney{} = parent, %CaseFile{} = child) do
-    FiledBy.unlink(parent, child)
-  end
-
-  def remove(%Attorney{} = parent, %Owner{} = child) do
-    RepresentedBy.unlink(parent, child)
-  end
-
-  def remove(%Attorney{} = parent, %Correspondent{} = child) do
-    Aka.unlink(parent, child)
   end
 
   def validate(%Attorney{} = attorney) do
