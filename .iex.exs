@@ -1,8 +1,9 @@
 alias Trademarks.Util.{
   Downloader,
-  Parser,
-  Search
+  Parser
 }
+
+alias Trademarks.Web.Search
 
 alias Neo4j.{
   Core,
