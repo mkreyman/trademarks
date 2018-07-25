@@ -44,7 +44,7 @@ defmodule Mix.Tasks.Ingest do
     {:ok, stream} = Parser.parse(file)
 
     stream
-    # |> Enum.take(10)
+    |> Enum.take(10)
     |> Enum.map(&process(&1))
 
     finished = :os.system_time(:seconds)
@@ -136,12 +136,6 @@ defmodule Mix.Tasks.Ingest do
   end
 
   defp display_count() do
-    """
-    MATCH (n) RETURN DISTINCT count(labels(n)), labels(n);
-    """
-    |> Neo4j.Core.exec_raw()
-    |> Enum.map(fn %{"count(labels(n))" => count, "labels(n)" => [label]} -> %{label => count} end)
+    Neo4j.NodeCore.exec_display_count()
   end
 end
-
-# Mix.Tasks.Ingest.run()

@@ -151,6 +151,14 @@ defmodule Neo4j.NodeCore do
     struct_to_name(link)
   end
 
+  def exec_display_count() do
+    """
+    MATCH (n) RETURN DISTINCT count(labels(n)), labels(n);
+    """
+    |> exec_raw()
+    |> Enum.map(fn %{"count(labels(n))" => count, "labels(n)" => [label]} -> %{label => count} end)
+  end
+
   # Private
 
   # Run Neo4j validations.
