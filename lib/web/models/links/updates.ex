@@ -5,7 +5,6 @@ defmodule Trademarks.Models.Links.Updates do
 
   use Validators.ObjectKeyValidator
   use ApplicationErrors.Validator
-  use Util.StructUtils
   use Util.InterfaceBase
 
   import UUID
@@ -26,11 +25,13 @@ defmodule Trademarks.Models.Links.Updates do
     [:updates_id, :date]
   end
 
-  def empty_instance() do
-    %Updates{updates_id: uuid1(), date: neo_today()}
+  def empty_instance(date \\ neo_today())
+
+  def empty_instance(date) when is_integer(date) do
+    %Updates{updates_id: uuid1(), date: date}
   end
 
-  def instance_with_date(date) do
+  def empty_instance(date) when is_binary(date) do
     %Updates{updates_id: uuid1(), date: String.to_integer(date)}
   end
 
@@ -56,7 +57,7 @@ defmodule Trademarks.Models.Links.Updates do
   end
 
   def link(%EventStatement{} = event_statement, %CaseFile{} = case_file, date) do
-    make(event_statement, case_file, instance_with_date(date))
+    make(event_statement, case_file, empty_instance(date))
   end
 
   def unlink(%EventStatement{} = event_statement, %CaseFile{} = case_file) do

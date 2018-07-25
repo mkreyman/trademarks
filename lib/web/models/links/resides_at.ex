@@ -5,7 +5,6 @@ defmodule Trademarks.Models.Links.ResidesAt do
 
   use Validators.ObjectKeyValidator
   use ApplicationErrors.Validator
-  use Util.StructUtils
   use Util.InterfaceBase
 
   import UUID
@@ -18,24 +17,22 @@ defmodule Trademarks.Models.Links.ResidesAt do
   defstruct [:date, :resides_at_id]
 
   @type t :: %ResidesAt{
-    date: Integer.t(),
-    resides_at_id: String.t()
-  }
+          date: Integer.t(),
+          resides_at_id: String.t()
+        }
 
   def object_keys() do
     [:date, :resides_at_id]
   end
 
-  def empty_instance() do
-    %ResidesAt{resides_at_id: uuid1(), date: neo_today()}
-  end
+  def empty_instance(date \\ neo_today())
 
-  def instance_with_date(date) when is_binary(date) do
-    %ResidesAt{resides_at_id: uuid1(), date: String.to_integer(date)}
-  end
-
-  def instance_with_date(date) do
+  def empty_instance(date) when is_integer(date) do
     %ResidesAt{resides_at_id: uuid1(), date: date}
+  end
+
+  def empty_instance(date) when is_binary(date) do
+    %ResidesAt{resides_at_id: uuid1(), date: String.to_integer(date)}
   end
 
   @doc """
@@ -60,7 +57,7 @@ defmodule Trademarks.Models.Links.ResidesAt do
   end
 
   def link(%Owner{} = owner, %Address{} = address, date) do
-    make(owner, address, instance_with_date(date))
+    make(owner, address, empty_instance(date))
   end
 
   def unlink(%Owner{} = owner, %Address{} = address) do

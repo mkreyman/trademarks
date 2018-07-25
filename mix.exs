@@ -4,7 +4,7 @@ defmodule Trademarks.Mixfile do
   def project do
     [
       app: :trademarks,
-      version: "0.0.1",
+      version: "0.0.2",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -59,15 +59,11 @@ defmodule Trademarks.Mixfile do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      "init": ["neo4j.init"],
-      "drop": ["neo4j.drop"],
-      "setup": ["init", "ingest"],
-      "reset": ["drop", "setup"],
-      "seed": ["setup"],
-
-      # ingest: ["run lib/mix/task/ingest.exs"]
-      # "neo4j.seed": ["run priv/repo/seeds.exs"],
-      # "neo4j.reset": ["neo4j.drop", "neo4j.seed"]
+      init: ["neo4j.init"],
+      drop: ["neo4j.drop"],
+      setup: ["init", "ingest"],
+      reset: ["drop", "setup"],
+      seed: ["setup"]
     ]
   end
 end

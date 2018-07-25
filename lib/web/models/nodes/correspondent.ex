@@ -73,9 +73,11 @@ defmodule Trademarks.Models.Nodes.Correspondent do
       end
 
     """
-      MERGE (c:Correspondent {hash: apoc.util.md5([UPPER(\"#{address_1}\"), UPPER(\"#{address_2}\"), UPPER(\"#{
-      correspondent.address_3
-    }\"), UPPER(\"#{correspondent.address_4}\"), UPPER(\"#{correspondent.address_5}\")])})
+      MERGE (c:Correspondent {hash: apoc.util.md5([UPPER(\"#{address_1}\"),
+                                                   UPPER(\"#{address_2}\"),
+                                                   UPPER(\"#{correspondent.address_3}\"),
+                                                   UPPER(\"#{correspondent.address_4}\"),
+                                                   UPPER(\"#{correspondent.address_5}\")])})
       ON CREATE SET c.address_1 = UPPER(\"#{address_1}\"),
                     c.address_2 = UPPER(\"#{address_2}\"),
                     c.address_3 = UPPER(\"#{correspondent.address_3}\"),

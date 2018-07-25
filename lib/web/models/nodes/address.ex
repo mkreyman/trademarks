@@ -58,7 +58,8 @@ defmodule Trademarks.Models.Nodes.Address do
     |> exec_create()
   end
 
-  def create(%Address{address_1: "", address_2: address_2} = address) when byte_size(address_2) != 0 do
+  def create(%Address{address_1: "", address_2: address_2} = address)
+      when byte_size(address_2) != 0 do
     %{address | address_1: address_2, address_2: nil}
     |> create()
   end
@@ -69,7 +70,12 @@ defmodule Trademarks.Models.Nodes.Address do
       |> String.replace("\"", "'")
 
     """
-      MERGE (a:Address {hash: apoc.util.md5([UPPER(\"#{address_1}\"), UPPER(\"#{address.address_2}\"), UPPER(\"#{address.city}\"), UPPER(\"#{address.state}\"), \"#{address.postcode}\", UPPER(\"#{address.country}\")])})
+      MERGE (a:Address {hash: apoc.util.md5([UPPER(\"#{address_1}\"),
+                                             UPPER(\"#{address.address_2}\"),
+                                             UPPER(\"#{address.city}\"),
+                                             UPPER(\"#{address.state}\"),
+                                             \"#{address.postcode}\",
+                                             UPPER(\"#{address.country}\")])})
       ON CREATE SET a.address_1 = UPPER(\"#{address_1}\"),
                     a.address_2 = UPPER(\"#{address.address_2}\"),
                     a.city = UPPER(\"#{address.city}\"),
