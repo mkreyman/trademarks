@@ -5,7 +5,6 @@ defmodule Trademarks.Models.Nodes.Statement do
 
   use Util.StructUtils
 
-  # import UUID
   import Neo4j.Core, only: [exec_query: 2]
   import Neo4j.NodeCore
 
@@ -45,11 +44,6 @@ defmodule Trademarks.Models.Nodes.Statement do
     |> exec_create()
   end
 
-  # def create(%Statement{description: description} = statement) do
-  #   %{statement | description: description, hash: md5(description), label: struct_to_name()}
-  #   |> exec_create()
-  # end
-
   def create(%Statement{description: description}) do
     description =
       description
@@ -78,24 +72,6 @@ defmodule Trademarks.Models.Nodes.Statement do
   """
   def search(%Statement{} = statement) do
     exec_search(statement)
-  end
-
-  @doc """
-    Combines find and create operations for Statements
-
-    ## Parameters
-
-      - statement: an Statement instance with key data to use to find the instance in the database.
-
-    ## Returns
-
-      - Statement instance that was found or created.
-  """
-  def find_or_create(%Statement{} = statement) do
-    case search(statement) do
-      %Statement{} = statement -> statement
-      nil -> create(statement)
-    end
   end
 
   @doc """
@@ -181,8 +157,4 @@ defmodule Trademarks.Models.Nodes.Statement do
   def validate(%Statement{} = statement) do
     statement
   end
-
-  # defp md5(description) do
-  #   :crypto.hash(:md5, description) |> Base.encode16()
-  # end
 end

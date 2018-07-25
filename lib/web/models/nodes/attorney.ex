@@ -5,7 +5,6 @@ defmodule Trademarks.Models.Nodes.Attorney do
 
   use Util.StructUtils
 
-  # import UUID
   import Neo4j.Core, only: [exec_query: 2]
   import Neo4j.NodeCore
 
@@ -44,11 +43,6 @@ defmodule Trademarks.Models.Nodes.Attorney do
     |> exec_create()
   end
 
-  # def create(%Attorney{name: name} = attorney) do
-  #   %{attorney | name: String.upcase(name), label: struct_to_name()}
-  #   |> exec_create()
-  # end
-
   def create(%Attorney{name: name}) do
     name =
       name
@@ -75,24 +69,6 @@ defmodule Trademarks.Models.Nodes.Attorney do
   """
   def search(%Attorney{} = attorney) do
     exec_search(attorney)
-  end
-
-  @doc """
-    Combines find and create operations for Attorneys
-
-    ## Parameters
-
-      - attorney: an Attorney instance with key data to use to find the instance in the database.
-
-    ## Returns
-
-      - Attorney instance that was found or created.
-  """
-  def find_or_create(%Attorney{} = attorney) do
-    case search(attorney) do
-      %Attorney{} = attorney -> attorney
-      nil -> create(attorney)
-    end
   end
 
   @doc """

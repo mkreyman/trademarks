@@ -1,7 +1,9 @@
-defmodule Neo4j.Tasks.Init do
-  def run() do
+defmodule Mix.Tasks.Neo4j.Init do
+  use Mix.Task
+  
+  def run(_) do
+    {:ok, _started} = Application.ensure_all_started(:trademarks)
     initialize()
-    Mix.Task.reenable(:run)
   end
 
   defp initialize() do
@@ -19,5 +21,3 @@ defmodule Neo4j.Tasks.Init do
     |> Enum.map(&Neo4j.Core.exec_raw(&1))
   end
 end
-
-Neo4j.Tasks.Init.run()

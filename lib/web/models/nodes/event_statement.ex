@@ -5,24 +5,22 @@ defmodule Trademarks.Models.Nodes.EventStatement do
 
   use Util.StructUtils
 
-  # import UUID
   import Neo4j.Core, only: [exec_query: 2]
   import Neo4j.NodeCore
 
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.CaseFile
 
-  defstruct [:date, :description, :hash, :label]
+  defstruct [:description, :hash, :label]
 
   @type t :: %EventStatement{
-          date: integer,
           description: String.t(),
           hash: String.t(),
           label: String.t()
         }
 
   def object_keys() do
-    [:date, :description, :hash]
+    [:description, :hash]
   end
 
   def empty_instance() do
@@ -47,20 +45,14 @@ defmodule Trademarks.Models.Nodes.EventStatement do
     |> exec_create()
   end
 
-  # def create(%EventStatement{description: description} = event_statement) do
-  #   %{event_statement | description: description, hash: md5(description), label: struct_to_name()}
-  #   |> exec_create()
-  # end
-
-  def create(%EventStatement{date: date, description: description}) do
+  def create(%EventStatement{description: description}) do
     description =
       description
       |> String.replace("\"", "'")
 
     """
-      MERGE (es:EventStatement {hash: apoc.util.md5([\"#{description}\", toInt(\"#{date}\")])})
+      MERGE (es:EventStatement {hash: apoc.util.md5([\"#{description}\"])})
       ON CREATE SET es.description = \"#{description}\",
-                    es.date = toInt(\"#{date}\"),
                     es.label = \"#{struct_to_name()}\"
       RETURN es
     """
@@ -81,24 +73,6 @@ defmodule Trademarks.Models.Nodes.EventStatement do
   """
   def search(%EventStatement{} = event_statement) do
     exec_search(event_statement)
-  end
-
-  @doc """
-    Combines find and create operations for EventStatements
-
-    ## Parameters
-
-      - event_statement: an EventStatement instance with key data to use to find the instance in the database.
-
-    ## Returns
-
-      - EventStatement instance that was found or created.
-  """
-  def find_or_create(%EventStatement{} = event_statement) do
-    case search(event_statement) do
-      %EventStatement{} = event_statement -> event_statement
-      nil -> create(event_statement)
-    end
   end
 
   @doc """
@@ -184,8 +158,4 @@ defmodule Trademarks.Models.Nodes.EventStatement do
   def validate(%EventStatement{} = event_statement) do
     event_statement
   end
-
-  # defp md5(description) do
-  #   :crypto.hash(:md5, description) |> Base.encode16()
-  # end
 end

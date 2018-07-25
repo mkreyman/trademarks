@@ -5,7 +5,6 @@ defmodule Trademarks.Models.Nodes.Address do
 
   use Util.StructUtils
 
-  # import UUID
   import Neo4j.Core, only: [exec_query: 2]
   import Neo4j.NodeCore
 
@@ -53,16 +52,16 @@ defmodule Trademarks.Models.Nodes.Address do
 
     Address instance of the stored value.
   """
-  def create(%Address{address_1: address_1} = address) when is_nil(address_1) do
+  def create(%Address{address_1: nil, address_2: nil} = address) do
     address
     |> struct(label: struct_to_name())
     |> exec_create()
   end
 
-  # def create(%Address{address_1: address_1} = address) do
-  #   %{address | address_1: String.upcase(address_1), label: struct_to_name()}
-  #   |> exec_create()
-  # end
+  def create(%Address{address_1: "", address_2: address_2} = address) when byte_size(address_2) != 0 do
+    %{address | address_1: address_2, address_2: nil}
+    |> create()
+  end
 
   def create(%Address{address_1: address_1} = address) do
     address_1 =
@@ -70,9 +69,7 @@ defmodule Trademarks.Models.Nodes.Address do
       |> String.replace("\"", "'")
 
     """
-      MERGE (a:Address {hash: apoc.util.md5([UPPER(\"#{address_1}\"), UPPER(\"#{address.address_2}\"), UPPER(\"#{
-      address.city
-    }\"), UPPER(\"#{address.state}\"), \"#{address.postcode}\", UPPER(\"#{address.country}\")])})
+      MERGE (a:Address {hash: apoc.util.md5([UPPER(\"#{address_1}\"), UPPER(\"#{address.address_2}\"), UPPER(\"#{address.city}\"), UPPER(\"#{address.state}\"), \"#{address.postcode}\", UPPER(\"#{address.country}\")])})
       ON CREATE SET a.address_1 = UPPER(\"#{address_1}\"),
                     a.address_2 = UPPER(\"#{address.address_2}\"),
                     a.city = UPPER(\"#{address.city}\"),
@@ -99,24 +96,6 @@ defmodule Trademarks.Models.Nodes.Address do
   """
   def search(%Address{} = address) do
     exec_search(address)
-  end
-
-  @doc """
-    Combines find and create operations for Addresses
-
-    ## Parameters
-
-      - address: an Address instance with key data to use to find the instance in the database.
-
-    ## Returns
-
-      - Address instance that was found or created.
-  """
-  def find_or_create(%Address{} = address) do
-    case search(address) do
-      %Address{} = address -> address
-      nil -> create(address)
-    end
   end
 
   @doc """

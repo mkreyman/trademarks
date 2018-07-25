@@ -5,7 +5,6 @@ defmodule Trademarks.Models.Nodes.Owner do
 
   use Util.StructUtils
 
-  # import UUID
   import Neo4j.Core, only: [exec_query: 2]
   import Neo4j.NodeCore
 
@@ -53,11 +52,6 @@ defmodule Trademarks.Models.Nodes.Owner do
     |> exec_create()
   end
 
-  # def create(%Owner{name: name} = owner) do
-  #   %{owner | name: String.upcase(name), label: struct_to_name()}
-  #   |> exec_create()
-  # end
-
   def create(%Owner{name: name} = owner) do
     name =
       name
@@ -88,26 +82,6 @@ defmodule Trademarks.Models.Nodes.Owner do
   """
   def search(%Owner{} = owner) do
     exec_search(owner)
-  end
-
-  @doc """
-    Combines find and create operations for Owners
-
-    ## Parameters
-
-      - owner: an Owner instance with key data to use to find the instance in the database.
-
-    ## Returns
-
-      - Owner instance that was found or created.
-  """
-  def find_or_create(%Owner{name: name} = owner) do
-    owner = %{owner | name: String.upcase(name)}
-
-    case search(owner) do
-      %Owner{} = owner -> owner
-      nil -> create(owner)
-    end
   end
 
   @doc """

@@ -76,16 +76,6 @@ defmodule Trademarks.Models.Nodes.CaseFile do
 
     CaseFile instance of the stored value.
   """
-  # def create(%CaseFile{} = case_file) do
-  #   exec_create(case_file)
-  # end
-
-  # def create(%{} = case_file) do
-  #   case_file
-  #   |> struct_from_map()
-  #   |> exec_create()
-  # end
-
   def create(%CaseFile{serial_number: serial_number} = case_file) do
     """
       MERGE (cf:CaseFile {serial_number: \"#{serial_number}\"})
@@ -115,24 +105,6 @@ defmodule Trademarks.Models.Nodes.CaseFile do
   """
   def search(%CaseFile{} = case_file) do
     exec_search(case_file)
-  end
-
-  @doc """
-    Combines find and create operations for CaseFiles
-
-    ## Parameters
-
-      - case_file: an CaseFile instance with key data to use to find the instance in the database.
-
-    ## Returns
-
-      - CaseFile instance that was found or created.
-  """
-  def find_or_create(%CaseFile{} = case_file) do
-    case search(case_file) do
-      %CaseFile{} = case_file -> case_file
-      nil -> create(case_file)
-    end
   end
 
   @doc """

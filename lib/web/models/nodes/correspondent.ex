@@ -5,7 +5,6 @@ defmodule Trademarks.Models.Nodes.Correspondent do
 
   use Util.StructUtils
 
-  # import UUID
   import Neo4j.Core, only: [exec_query: 2]
   import Neo4j.NodeCore
 
@@ -57,11 +56,6 @@ defmodule Trademarks.Models.Nodes.Correspondent do
     |> exec_create()
   end
 
-  # def create(%Correspondent{address_1: address_1} = correspondent) do
-  #   %{correspondent | address_1: String.upcase(address_1), label: struct_to_name()}
-  #   |> exec_create()
-  # end
-
   def create(%Correspondent{address_1: address_1, address_2: address_2} = correspondent) do
     address_1 =
       address_1 ||
@@ -107,24 +101,6 @@ defmodule Trademarks.Models.Nodes.Correspondent do
   """
   def search(%Correspondent{} = correspondent) do
     exec_search(correspondent)
-  end
-
-  @doc """
-    Combines find and create operations for Correspondents
-
-    ## Parameters
-
-      - correspondent: an Correspondent instance with key data to use to find the instance in the database.
-
-    ## Returns
-
-      - Correspondent instance that was found or created.
-  """
-  def find_or_create(%Correspondent{} = correspondent) do
-    case search(correspondent) do
-      %Correspondent{} = correspondent -> correspondent
-      nil -> create(correspondent)
-    end
   end
 
   @doc """

@@ -6,7 +6,6 @@ defmodule Trademarks.Models.Nodes.Trademark do
   use Util.StructUtils
   use Util.PipeDebug
 
-  # import UUID
   import Neo4j.Core, only: [exec_query: 2]
   import Neo4j.NodeCore
 
@@ -49,11 +48,6 @@ defmodule Trademarks.Models.Nodes.Trademark do
     |> exec_create()
   end
 
-  # def create(%Trademark{name: name} = trademark) do
-  #   %{trademark | name: String.upcase(name), label: struct_to_name()}
-  #   |> exec_create()
-  # end
-
   def create(%Trademark{name: name}) do
     name =
       name
@@ -80,24 +74,6 @@ defmodule Trademarks.Models.Nodes.Trademark do
   """
   def search(%Trademark{} = trademark) do
     exec_search(trademark)
-  end
-
-  @doc """
-    Combines find and create operations for Trademarks
-
-    ## Parameters
-
-      - trademark: an Trademark instance with key data to use to find the instance in the database.
-
-    ## Returns
-
-      - Trademark instance that was found or created.
-  """
-  def find_or_create(%Trademark{} = trademark) do
-    case search(trademark) do
-      %Trademark{} = trademark -> trademark
-      nil -> create(trademark)
-    end
   end
 
   @doc """

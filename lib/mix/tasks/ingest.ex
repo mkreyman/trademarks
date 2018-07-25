@@ -1,5 +1,5 @@
-defmodule Neo4j.Tasks.Ingest do
-  require Logger
+defmodule Mix.Tasks.Ingest do
+  use Mix.Task
 
   alias Trademarks.Util.Parser
 
@@ -27,9 +27,14 @@ defmodule Neo4j.Tasks.Ingest do
     Updates
   }
 
-  def run(file \\ "./tmp/seed.zip") do
+  def run([file]) do
+    {:ok, _started} = Application.ensure_all_started(:trademarks)
     ingest(file)
-    Mix.Task.reenable(:run)
+  end
+
+  def run(_) do
+    {:ok, _started} = Application.ensure_all_started(:trademarks)
+    ingest("./tmp/seed.zip")
   end
 
   defp ingest(file) do
@@ -38,13 +43,8 @@ defmodule Neo4j.Tasks.Ingest do
 
     {:ok, stream} = Parser.parse(file)
 
-    # Process just one record
-    # stream
-    # |> Enum.map(&IO.inspect(&1))
-    # |> List.first()
-    # |> process()
-
     stream
+    |> Enum.take(10)
     |> Enum.map(&process(&1))
 
     finished = :os.system_time(:seconds)
@@ -97,7 +97,7 @@ defmodule Neo4j.Tasks.Ingest do
           country: params.country
         })
 
-      link(owner, ResidesAt, address)
+      link(owner, ResidesAt, address, cf.status_date)
       link(owner, Owns, tm)
       link(owner, PartyTo, cf)
       link(owner, RepresentedBy, attorney)
@@ -106,11 +106,10 @@ defmodule Neo4j.Tasks.Ingest do
     Enum.map(case_file.case_file_event_statements, fn params ->
       event_statement =
         EventStatement.create(%EventStatement{
-          date: params.date,
           description: params.description
         })
 
-      link(event_statement, Updates, cf)
+      link(event_statement, Updates, cf, params.date)
     end)
 
     Enum.map(case_file.case_file_statements, fn params ->
@@ -132,6 +131,10 @@ defmodule Neo4j.Tasks.Ingest do
     relationship.link(from, to)
   end
 
+  defp link(from, relationship, to, date) do
+    relationship.link(from, to, date)
+  end
+
   defp display_count() do
     """
     MATCH (n) RETURN DISTINCT count(labels(n)), labels(n);
@@ -141,4 +144,4 @@ defmodule Neo4j.Tasks.Ingest do
   end
 end
 
-Neo4j.Tasks.Ingest.run()
+# Mix.Tasks.Ingest.run()

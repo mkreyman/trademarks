@@ -9,21 +9,29 @@ defmodule Trademarks.Models.Links.Updates do
   use Util.InterfaceBase
 
   import UUID
+  import Neo4j.Core, only: [neo_today: 0]
   import Neo4j.LinkCore
 
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{EventStatement, CaseFile}
 
-  defstruct [:updates_id]
+  defstruct [:updates_id, :date]
 
-  @type t :: %Updates{updates_id: String.t()}
+  @type t :: %Updates{
+          updates_id: String.t(),
+          date: Integer.t()
+        }
 
   def object_keys() do
-    [:updates_id]
+    [:updates_id, :date]
   end
 
   def empty_instance() do
-    %Updates{updates_id: uuid1()}
+    %Updates{updates_id: uuid1(), date: neo_today()}
+  end
+
+  def instance_with_date(date) do
+    %Updates{updates_id: uuid1(), date: String.to_integer(date)}
   end
 
   @doc """
@@ -45,6 +53,10 @@ defmodule Trademarks.Models.Links.Updates do
 
   def link(%EventStatement{} = event_statement, %CaseFile{} = case_file) do
     make(event_statement, case_file, empty_instance())
+  end
+
+  def link(%EventStatement{} = event_statement, %CaseFile{} = case_file, date) do
+    make(event_statement, case_file, instance_with_date(date))
   end
 
   def unlink(%EventStatement{} = event_statement, %CaseFile{} = case_file) do
