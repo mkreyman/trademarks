@@ -12,11 +12,12 @@ defmodule Trademarks.Models.Nodes.Trademark do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.CaseFile
 
-  defstruct [:name, :label]
+  defstruct [:name, :label, :module]
 
   @type t :: %Trademark{
           name: String.t(),
-          label: String.t()
+          label: String.t(),
+          module: String.t()
         }
 
   def object_keys() do
@@ -28,7 +29,7 @@ defmodule Trademarks.Models.Nodes.Trademark do
   end
 
   def empty_instance() do
-    %Trademark{label: struct_to_name()}
+    %Trademark{label: struct_to_name(), module: to_string(__MODULE__)}
   end
 
   @doc """
@@ -54,7 +55,10 @@ defmodule Trademarks.Models.Nodes.Trademark do
       |> String.replace("\"", "'")
 
     """
-      MERGE (tm:Trademark {name: UPPER(\"#{name}\"), label: \"#{struct_to_name()}\"})
+      MERGE (tm:Trademark {name: UPPER(\"#{name}\"),
+                           label: \"#{struct_to_name()}\",
+                           module: \"#{to_string(__MODULE__)}\"
+                          })
       RETURN tm
     """
     |> String.replace("\n", " ")

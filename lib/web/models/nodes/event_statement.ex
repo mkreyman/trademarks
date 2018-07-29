@@ -11,12 +11,13 @@ defmodule Trademarks.Models.Nodes.EventStatement do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.CaseFile
 
-  defstruct [:description, :hash, :label]
+  defstruct [:description, :hash, :label, :module]
 
   @type t :: %EventStatement{
           description: String.t(),
           hash: String.t(),
-          label: String.t()
+          label: String.t(),
+          module: String.t()
         }
 
   def object_keys() do
@@ -24,7 +25,7 @@ defmodule Trademarks.Models.Nodes.EventStatement do
   end
 
   def empty_instance() do
-    %EventStatement{label: struct_to_name()}
+    %EventStatement{label: struct_to_name(), module: to_string(__MODULE__)}
   end
 
   @doc """
@@ -53,7 +54,8 @@ defmodule Trademarks.Models.Nodes.EventStatement do
     """
       MERGE (es:EventStatement {hash: apoc.util.md5([\"#{description}\"])})
       ON CREATE SET es.description = \"#{description}\",
-                    es.label = \"#{struct_to_name()}\"
+                    es.label = \"#{struct_to_name()}\",
+                    es.module = \"#{to_string(__MODULE__)}\"
       RETURN es
     """
     |> String.replace("\n", " ")

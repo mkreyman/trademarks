@@ -14,16 +14,19 @@ defmodule Trademarks.Models.Links.Describes do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{Statement, CaseFile}
 
-  defstruct [:describes_id]
+  defstruct [:describes_id, :module]
 
-  @type t :: %Describes{describes_id: String.t()}
+  @type t :: %Describes{
+          describes_id: String.t(),
+          module: String.t()
+        }
 
   def object_keys() do
     [:describes_id]
   end
 
   def empty_instance() do
-    %Describes{describes_id: uuid1()}
+    %Describes{describes_id: uuid1(), module: to_string(Describes)}
   end
 
   @doc """

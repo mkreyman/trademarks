@@ -16,7 +16,8 @@ defmodule Trademarks.Models.Nodes.Owner do
     :dba,
     :nationality_state,
     :nationality_country,
-    :label
+    :label,
+    :module
   ]
 
   @type t :: %Owner{
@@ -24,7 +25,8 @@ defmodule Trademarks.Models.Nodes.Owner do
           dba: String.t(),
           nationality_state: String.t(),
           nationality_country: String.t(),
-          label: String.t()
+          label: String.t(),
+          module: String.t()
         }
 
   def object_keys() do
@@ -32,7 +34,7 @@ defmodule Trademarks.Models.Nodes.Owner do
   end
 
   def empty_instance() do
-    %Owner{label: struct_to_name()}
+    %Owner{label: struct_to_name(), module: to_string(__MODULE__)}
   end
 
   @doc """
@@ -62,7 +64,8 @@ defmodule Trademarks.Models.Nodes.Owner do
       ON CREATE SET o.dba = UPPER(\"#{owner.dba}\"),
                     o.nationality_state = \"#{owner.nationality_state}\",
                     o.nationality_country = \"#{owner.nationality_country}\",
-                    o.label = \"#{struct_to_name()}\"
+                    o.label = \"#{struct_to_name()}\",
+                    o.module = \"#{to_string(__MODULE__)}\"
       RETURN o
     """
     |> String.replace("\n", " ")

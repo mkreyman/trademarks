@@ -1,5 +1,9 @@
 defmodule Trademarks.Web.Search do
+  import Util.PipeDebug
+  import Util.StructUtils
   import Neo4j.Core, only: [exec_raw: 1]
+
+  require Logger
 
   alias Trademarks.Models.Nodes.{
     Address,
@@ -16,12 +20,23 @@ defmodule Trademarks.Web.Search do
     term = params[:attorney]
 
     """
-      MATCH (attorney:Attorney)<-[*1..1]-(n)
-      WHERE attorney.name CONTAINS '#{term}'
-      RETURN attorney, n
+      MATCH (att:Attorney)<-[:REPRESENTED_BY]-(o:Owner)
+      WHERE att.name CONTAINS '#{term}'
+      WITH att, o
+      MATCH (tm:Trademark)<-[:OWNS]-(o)-[:RESIDES_AT]->(a:Address)
+      RETURN att, o, a, tm
     """
     |> exec_raw()
-    
+    |> debug("XXX after exec_raw() XXX: ")
+    |> Enum.map(fn %{
+                     "att" => attorney,
+                     "o" => owner,
+                     "a" => address,
+                     "tm" => trademark
+                   } ->
+      {make_struct(attorney), make_struct(owner), make_struct(address), make_struct(trademark)}
+    end)
+    |> debug("XXX by_attorney() XXX:")
   end
 
   # def by_attorney(params) do

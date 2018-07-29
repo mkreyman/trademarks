@@ -11,11 +11,12 @@ defmodule Trademarks.Models.Nodes.Attorney do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.CaseFile
 
-  defstruct [:name, :label]
+  defstruct [:name, :label, :module]
 
   @type t :: %Attorney{
           name: String.t(),
-          label: String.t()
+          label: String.t(),
+          module: String.t()
         }
 
   def object_keys() do
@@ -23,7 +24,7 @@ defmodule Trademarks.Models.Nodes.Attorney do
   end
 
   def empty_instance() do
-    %Attorney{label: struct_to_name()}
+    %Attorney{label: struct_to_name(), module: to_string(__MODULE__)}
   end
 
   @doc """
@@ -49,7 +50,10 @@ defmodule Trademarks.Models.Nodes.Attorney do
       |> String.replace("\"", "'")
 
     """
-      MERGE (a:Attorney {name: UPPER(\"#{name}\"), label: \"#{struct_to_name()}\"})
+      MERGE (a:Attorney {name: UPPER(\"#{name}\"),
+                         label: \"#{struct_to_name()}\",
+                         module: \"#{to_string(__MODULE__)}\"
+                         })
       RETURN a
     """
     |> String.replace("\n", " ")

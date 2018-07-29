@@ -14,11 +14,12 @@ defmodule Trademarks.Models.Links.ResidesAt do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{Address, Owner}
 
-  defstruct [:date, :resides_at_id]
+  defstruct [:date, :resides_at_id, :module]
 
   @type t :: %ResidesAt{
           date: Integer.t(),
-          resides_at_id: String.t()
+          resides_at_id: String.t(),
+          module: String.t()
         }
 
   def object_keys() do
@@ -28,7 +29,7 @@ defmodule Trademarks.Models.Links.ResidesAt do
   def empty_instance(date \\ neo_today())
 
   def empty_instance(date) when is_integer(date) do
-    %ResidesAt{resides_at_id: uuid1(), date: date}
+    %ResidesAt{resides_at_id: uuid1(), date: date, module: to_string(ResidesAt)}
   end
 
   def empty_instance(date) when is_binary(date) do

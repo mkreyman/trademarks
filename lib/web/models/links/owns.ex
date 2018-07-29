@@ -14,16 +14,19 @@ defmodule Trademarks.Models.Links.Owns do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{Owner, Trademark}
 
-  defstruct [:owns_id]
+  defstruct [:owns_id, :module]
 
-  @type t :: %Owns{owns_id: String.t()}
+  @type t :: %Owns{
+          owns_id: String.t(),
+          module: String.t()
+        }
 
   def object_keys() do
     [:owns_id]
   end
 
   def empty_instance() do
-    %Owns{owns_id: uuid1()}
+    %Owns{owns_id: uuid1(), module: to_string(Owns)}
   end
 
   @doc """

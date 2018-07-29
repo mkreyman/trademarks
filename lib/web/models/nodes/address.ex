@@ -19,7 +19,8 @@ defmodule Trademarks.Models.Nodes.Address do
     :postcode,
     :country,
     :label,
-    :hash
+    :hash,
+    :module
   ]
 
   @type t :: %Address{
@@ -30,7 +31,8 @@ defmodule Trademarks.Models.Nodes.Address do
           postcode: String.t(),
           country: String.t(),
           label: String.t(),
-          hash: String.t()
+          hash: String.t(),
+          module: String.t()
         }
 
   def object_keys() do
@@ -38,7 +40,7 @@ defmodule Trademarks.Models.Nodes.Address do
   end
 
   def empty_instance() do
-    %Address{label: struct_to_name()}
+    %Address{label: struct_to_name(), module: to_string(__MODULE__)}
   end
 
   @doc """
@@ -82,7 +84,8 @@ defmodule Trademarks.Models.Nodes.Address do
                     a.state = UPPER(\"#{address.state}\"),
                     a.postcode = \"#{address.postcode}\",
                     a.country = UPPER(\"#{address.country}\"),
-                    a.label = \"#{struct_to_name()}\"
+                    a.label = \"#{struct_to_name()}\",
+                    a.module = \"#{to_string(__MODULE__)}\"
       RETURN a
     """
     |> String.replace("\n", " ")

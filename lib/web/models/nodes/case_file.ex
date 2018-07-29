@@ -22,7 +22,8 @@ defmodule Trademarks.Models.Nodes.CaseFile do
     :registration_number,
     :renewal_date,
     :status_date,
-    :label
+    :label,
+    :module
   ]
 
   @type t :: %CaseFile{
@@ -33,7 +34,8 @@ defmodule Trademarks.Models.Nodes.CaseFile do
           registration_number: String.t(),
           renewal_date: integer,
           status_date: integer,
-          label: String.t()
+          label: String.t(),
+          module: String.t()
         }
 
   def object_keys() do
@@ -41,7 +43,7 @@ defmodule Trademarks.Models.Nodes.CaseFile do
   end
 
   def empty_instance() do
-    %CaseFile{label: struct_to_name()}
+    %CaseFile{label: struct_to_name(), module: to_string(__MODULE__)}
   end
 
   @doc """
@@ -85,7 +87,8 @@ defmodule Trademarks.Models.Nodes.CaseFile do
                     cf.registration_number = \"#{case_file.registration_number}\",
                     cf.renewal_date = toInt(\"#{case_file.renewal_date}\"),
                     cf.status_date = toInt(\"#{case_file.status_date}\"),
-                    cf.label = \"#{struct_to_name()}\"
+                    cf.label = \"#{struct_to_name()}\",
+                    cf.module = \"#{to_string(__MODULE__)}\"
       RETURN cf
     """
     |> String.replace("\n", " ")

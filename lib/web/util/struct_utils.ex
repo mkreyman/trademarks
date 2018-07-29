@@ -108,7 +108,7 @@ defmodule Util.StructUtils do
   Make an instance of a struct from a module spec.
   """
   def make_struct(element) do
-    %{"module" => module_name} = element
+    %{properties: %{"module" => module_name}} = element
     String.to_atom(module_name).structify(element)
   end
 

@@ -40,3 +40,5 @@ alias Trademarks.Models.Links.{
   ResidesAt,
   Updates
 }
+
+# Logger.configure level: :debug, truncate: :infinity

@@ -14,16 +14,19 @@ defmodule Trademarks.Models.Links.FiledBy do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{CaseFile, Attorney}
 
-  defstruct [:filed_by_id]
+  defstruct [:filed_by_id, :module]
 
-  @type t :: %FiledBy{filed_by_id: String.t()}
+  @type t :: %FiledBy{
+          filed_by_id: String.t(),
+          module: String.t()
+        }
 
   def object_keys() do
     [:filed_by_id]
   end
 
   def empty_instance() do
-    %FiledBy{filed_by_id: uuid1()}
+    %FiledBy{filed_by_id: uuid1(), module: to_string(FiledBy)}
   end
 
   @doc """

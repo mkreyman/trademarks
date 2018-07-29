@@ -18,7 +18,8 @@ defmodule Trademarks.Models.Nodes.Correspondent do
     :address_4,
     :address_5,
     :label,
-    :hash
+    :hash,
+    :module
   ]
 
   @type t :: %Correspondent{
@@ -28,7 +29,8 @@ defmodule Trademarks.Models.Nodes.Correspondent do
           address_4: String.t(),
           address_5: String.t(),
           label: String.t(),
-          hash: String.t()
+          hash: String.t(),
+          module: String.t()
         }
 
   def object_keys() do
@@ -36,7 +38,7 @@ defmodule Trademarks.Models.Nodes.Correspondent do
   end
 
   def empty_instance() do
-    %Correspondent{label: struct_to_name()}
+    %Correspondent{label: struct_to_name(), module: to_string(__MODULE__)}
   end
 
   @doc """
@@ -83,7 +85,8 @@ defmodule Trademarks.Models.Nodes.Correspondent do
                     c.address_3 = UPPER(\"#{correspondent.address_3}\"),
                     c.address_4 = UPPER(\"#{correspondent.address_4}\"),
                     c.address_5 = UPPER(\"#{correspondent.address_5}\"),
-                    c.label = \"#{struct_to_name()}\"
+                    c.label = \"#{struct_to_name()}\",
+                    c.module = \"#{to_string(__MODULE__)}\"
       RETURN c
     """
     |> String.replace("\n", " ")

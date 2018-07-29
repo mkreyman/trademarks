@@ -14,11 +14,12 @@ defmodule Trademarks.Models.Links.Updates do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{EventStatement, CaseFile}
 
-  defstruct [:updates_id, :date]
+  defstruct [:updates_id, :date, :module]
 
   @type t :: %Updates{
           updates_id: String.t(),
-          date: Integer.t()
+          date: Integer.t(),
+          module: String.t()
         }
 
   def object_keys() do
@@ -28,11 +29,11 @@ defmodule Trademarks.Models.Links.Updates do
   def empty_instance(date \\ neo_today())
 
   def empty_instance(date) when is_integer(date) do
-    %Updates{updates_id: uuid1(), date: date}
+    %Updates{updates_id: uuid1(), date: date, module: to_string(Address)}
   end
 
   def empty_instance(date) when is_binary(date) do
-    %Updates{updates_id: uuid1(), date: String.to_integer(date)}
+    %Updates{updates_id: uuid1(), date: String.to_integer(date), module: to_string(Updates)}
   end
 
   @doc """

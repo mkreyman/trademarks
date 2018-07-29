@@ -14,16 +14,19 @@ defmodule Trademarks.Models.Links.CommunicatesWith do
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.{CaseFile, Correspondent}
 
-  defstruct [:communicates_with_id]
+  defstruct [:communicates_with_id, :module]
 
-  @type t :: %CommunicatesWith{communicates_with_id: String.t()}
+  @type t :: %CommunicatesWith{
+          communicates_with_id: String.t(),
+          module: String.t()
+        }
 
   def object_keys() do
     [:communicates_with_id]
   end
 
   def empty_instance() do
-    %CommunicatesWith{communicates_with_id: uuid1()}
+    %CommunicatesWith{communicates_with_id: uuid1(), module: to_string(CommunicatesWith)}
   end
 
   @doc """

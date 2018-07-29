@@ -34,6 +34,7 @@ config :logger, :console, format: "[$level] $message\n"
 
 # Enable or disable PipeDebug: true means silencio
 config :logger, :shut_up_pipe_debug, false
+config :logger, :truncate, :infinity
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
