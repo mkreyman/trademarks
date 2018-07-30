@@ -181,15 +181,8 @@ defmodule Neo4j.Core do
   """
   @spec to_neo_date(Date.t() | DateTime.t()) :: integer()
   def to_neo_date(date) do
-    "#{date.year}#{
-      date.month
-      |> Integer.to_string()
-      |> String.rjust(2, ?0)
-    }#{
-      date.day
-      |> Integer.to_string()
-      |> String.rjust(2, ?0)
-    }"
+    date
+    |> Date.to_iso8601(:basic)
     |> String.to_integer()
   end
 

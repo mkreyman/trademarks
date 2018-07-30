@@ -44,7 +44,7 @@ defmodule Mix.Tasks.Ingest do
     {:ok, stream} = Parser.parse(file)
 
     stream
-    |> Enum.take(10)
+    |> Enum.take(1)
     |> Enum.map(&process(&1))
 
     finished = :os.system_time(:seconds)

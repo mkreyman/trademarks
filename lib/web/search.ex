@@ -17,11 +17,13 @@ defmodule Trademarks.Web.Search do
   }
 
   def by_attorney(params) do
-    term = params[:attorney]
+    term =
+      params[:attorney]
+      |> String.upcase()
 
     """
       MATCH (att:Attorney)<-[:REPRESENTED_BY]-(o:Owner)
-      WHERE att.name CONTAINS '#{term}'
+      WHERE att.name CONTAINS 'SALTER'
       WITH att, o
       MATCH (tm:Trademark)<-[:OWNS]-(o)-[:RESIDES_AT]->(a:Address)
       RETURN att, o, a, tm
@@ -38,6 +40,33 @@ defmodule Trademarks.Web.Search do
     end)
     |> debug("XXX by_attorney() XXX:")
   end
+
+  # #{term}
+  # (s:Statement)-[:DESCRIBES]->(cf:CaseFile)-[:FILED_FOR]->(tm:Trademark)<-[:OWNS]-(o:Owner)-[:RESIDES_AT]->(a:Address)
+
+  # # Search by TM name
+  # MATCH (tm:Trademark)<-[:OWNS]-(o:Owner)-[:RESIDES_AT]->(a:Address)
+  # WHERE tm.name CONTAINS 'TUSIMPLE'
+  # RETURN tm, o, a
+
+  # # Search by attorney name
+  # MATCH (att:Attorney)<-[:REPRESENTED_BY]-(o:Owner)
+  # WHERE att.name CONTAINS 'SALTER'
+  # WITH att, o
+  # MATCH (tm:Trademark)<-[:OWNS]-(o)-[:RESIDES_AT]->(a:Address)
+  # RETURN att, o, a, tm
+
+  # # Search by owner name
+  # MATCH (a:Address)<-[:RESIDES_AT]-(o:Owner)-[:OWNS]->(tm:Trademark)
+  # WHERE o.name CONTAINS 'TUSIMPLE'
+  # RETURN o, a, tm
+
+  # # Search for all owners of a TM
+  # MATCH (tm:Trademark)<-[:FILED_FOR]-(cf:CaseFile)<-[:PARTY_TO]-(o:Owner)-[:RESIDES_AT]->(a:Address)
+  # WHERE tm.name CONTAINS 'TUSIMPLE'
+  # RETURN tm, cf, o, a
+
+
 
   # def by_attorney(params) do
   #   term = params[:attorney]
