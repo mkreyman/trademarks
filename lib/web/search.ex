@@ -23,22 +23,25 @@ defmodule Trademarks.Web.Search do
 
     """
       MATCH (att:Attorney)<-[:REPRESENTED_BY]-(o:Owner)
-      WHERE att.name CONTAINS 'SALTER'
+      WHERE att.name CONTAINS '#{term}'
       WITH att, o
       MATCH (tm:Trademark)<-[:OWNS]-(o)-[:RESIDES_AT]->(a:Address)
       RETURN att, o, a, tm
     """
     |> exec_raw()
-    |> debug("XXX after exec_raw() XXX: ")
     |> Enum.map(fn %{
                      "att" => attorney,
                      "o" => owner,
                      "a" => address,
                      "tm" => trademark
                    } ->
-      {make_struct(attorney), make_struct(owner), make_struct(address), make_struct(trademark)}
+      %{
+        attorney: make_struct(attorney),
+        owner: make_struct(owner),
+        address: make_struct(address),
+        tm: make_struct(trademark)
+      }
     end)
-    |> debug("XXX by_attorney() XXX:")
   end
 
   # #{term}

@@ -8,7 +8,7 @@ defmodule Trademarks.Models.Nodes.CaseFile do
   use Util.StructUtils
   use Util.PipeDebug
 
-  import Neo4j.Core, only: [exec_query: 2]
+  import Neo4j.Core, only: [exec_query: 2, make_map: 1]
   import Neo4j.NodeCore
 
   alias __MODULE__, warn: false
@@ -44,6 +44,10 @@ defmodule Trademarks.Models.Nodes.CaseFile do
 
   def empty_instance() do
     %CaseFile{label: struct_to_name(), module: to_string(__MODULE__)}
+  end
+
+  def list() do
+    exec_list(__MODULE__.__struct__)
   end
 
   @doc """

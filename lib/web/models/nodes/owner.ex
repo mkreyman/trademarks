@@ -4,8 +4,9 @@ defmodule Trademarks.Models.Nodes.Owner do
   """
 
   use Util.StructUtils
+  use Util.PipeDebug
 
-  import Neo4j.Core, only: [exec_query: 2]
+  import Neo4j.Core, only: [exec_raw: 1, exec_query: 2, make_map: 1]
   import Neo4j.NodeCore
 
   alias __MODULE__, warn: false
@@ -35,6 +36,10 @@ defmodule Trademarks.Models.Nodes.Owner do
 
   def empty_instance() do
     %Owner{label: struct_to_name(), module: to_string(__MODULE__)}
+  end
+
+  def list() do
+    exec_list(__MODULE__.__struct__)
   end
 
   @doc """
@@ -85,6 +90,26 @@ defmodule Trademarks.Models.Nodes.Owner do
   """
   def search(%Owner{} = owner) do
     exec_search(owner)
+  end
+
+  def search(%{name: name}) do
+    name = String.upcase(name)
+
+    """
+      MATCH (o:Owner)-[:RESIDES_AT]-(a:Address)
+      WHERE o.name CONTAINS '#{name}'
+      RETURN o, a
+    """
+    |> exec_raw()
+    |> Enum.map(fn %{
+                     "o" => owner_set,
+                     "a" => address_set
+                   } ->
+      owner = make_map(owner_set)
+      address = make_map(address_set)
+
+      Map.put(owner, :address, address)
+    end)
   end
 
   @doc """

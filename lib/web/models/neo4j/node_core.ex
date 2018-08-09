@@ -136,6 +136,14 @@ defmodule Neo4j.NodeCore do
     node
   end
 
+  def exec_list(struct) do
+    """
+      MATCH (x:#{node_label(struct)})
+      RETURN x
+    """
+    |> exec_query(struct)
+  end
+
   @doc """
   Given a node structure instance, returns the label associated with the node.
 

@@ -51,7 +51,10 @@ defmodule Trademarks.Mixfile do
       {:ja_serializer, "~> 0.12.0"},
       # {:bolt_sips, "~> 0.4.12"}
       {:bolt_sips, github: "florinpatrascu/bolt_sips"},
-      {:db_connection, github: "elixir-ecto/db_connection", override: true}
+      {:db_connection, github: "elixir-ecto/db_connection", override: true},
+      {:absinthe_plug, "~> 1.4.0"},
+      {:absinthe, "~> 1.4.0"},
+      # {:absinthe, github: "absinthe-graphql/absinthe"}
     ]
   end
 
@@ -63,7 +66,8 @@ defmodule Trademarks.Mixfile do
       drop: ["neo4j.drop"],
       setup: ["init", "ingest"],
       reset: ["drop", "setup"],
-      seed: ["setup"]
+      seed: ["setup"],
+      "graphql.schema": ["loadpaths", "absinthe.schema.json"]
     ]
   end
 end

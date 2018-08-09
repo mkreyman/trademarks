@@ -1,4 +1,6 @@
 %{
+  "absinthe": {:hex, :absinthe, "1.4.13", "81eb2ff41f1b62cd6e992955f62c22c042d1079b7936c27f5f7c2c806b8fc436", [:mix], [{:dataloader, "~> 1.0.0", [hex: :dataloader, repo: "hexpm", optional: true]}, {:decimal, "~> 1.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm"},
+  "absinthe_plug": {:hex, :absinthe_plug, "1.4.5", "f63d52a76c870cd5f11d4bed8f61351ab5c5f572c5eb0479a0137f9f730ba33d", [:mix], [{:absinthe, "~> 1.4.11", [hex: :absinthe, repo: "hexpm", optional: false]}, {:plug, "~> 1.3.2 or ~> 1.4", [hex: :plug, repo: "hexpm", optional: false]}], "hexpm"},
   "bolt_sips": {:git, "https://github.com/florinpatrascu/bolt_sips.git", "e80616fc785d7a8e0a5e42381008d8ee27f07e0e", []},
   "boltex": {:hex, :boltex, "0.4.1", "49de302ebb59d92419532f1953fbfea0acc312503306be57b493b56d6b7a3fb7", [:hex], [], "hexpm"},
   "certifi": {:hex, :certifi, "2.0.0", "a0c0e475107135f76b8c1d5bc7efb33cd3815cb3cf3dea7aefdd174dabead064", [:rebar3], [], "hexpm"},

@@ -106,6 +106,10 @@ defmodule Neo4j.Core do
     |> to_result_set(structure, format)
   end
 
+  def make_map(neo_results) do
+    to_map(neo_results)
+  end
+
   @doc """
   Execute a Neo4j query and allow the caller to interpret the resulting raw data.
 
@@ -241,6 +245,20 @@ defmodule Neo4j.Core do
 
   defp to_record(_neo_set, _structure) do
     nil
+  end
+
+  defp to_map(neo_set) when is_nil(neo_set) do
+    nil
+  end
+
+  defp to_map(%{properties: properties} = neo_set) when is_map(neo_set) do
+    properties
+    |> Map.new(fn {k, v} -> {(is_binary(k) && String.to_atom(to_string(k))) || k, v} end)
+    |> Map.drop([:hash, :label, :module])
+  end
+
+  defp to_map(neo_set) do
+    neo_set
   end
 
   # Query construction...
