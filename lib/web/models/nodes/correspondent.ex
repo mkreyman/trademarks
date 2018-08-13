@@ -179,14 +179,14 @@ defmodule Trademarks.Models.Nodes.Correspondent do
   """
 
   def find_by_case_file(%CaseFile{} = case_file) do
-    "MATCH (cf:CaseFile)-[:CommunicatesWith]->(c:Correspondent) WHERE cf.serial_number = \"#{
+    "MATCH (cf:CaseFile)-[:COMMUNICATES_WITH]->(c:Correspondent) WHERE cf.serial_number = \"#{
       case_file.serial_number
     }\" RETURN c"
     |> exec_query(empty_instance())
   end
 
   def find_by_case_file(%{serial_number: _serial_number} = case_file) do
-    "MATCH (cf:CaseFile)-[:CommunicatesWith]->(c:Correspondent) WHERE cf.serial_number = \"#{
+    "MATCH (cf:CaseFile)-[:COMMUNICATES_WITH]->(c:Correspondent) WHERE cf.serial_number = \"#{
       case_file.serial_number
     }\" RETURN c"
     |> exec_query(empty_instance())

@@ -4,17 +4,19 @@ defmodule Trademarks.Models.Nodes.EventStatement do
   """
 
   use Util.StructUtils
+  # use Util.PipeDebug
 
-  import Neo4j.Core, only: [exec_query: 2, make_map: 1]
+  import Neo4j.Core, only: [exec_query: 2, exec_raw: 1, make_map: 1]
   import Neo4j.NodeCore
 
   alias __MODULE__, warn: false
   alias Trademarks.Models.Nodes.CaseFile
 
-  defstruct [:description, :hash, :label, :module]
+  defstruct [:description, :date, :hash, :label, :module]
 
   @type t :: %EventStatement{
           description: String.t(),
+          date: Integer.t(),
           hash: String.t(),
           label: String.t(),
           module: String.t()
@@ -147,18 +149,19 @@ defmodule Trademarks.Models.Nodes.EventStatement do
     EventStatement instance of the matching value or nil if doesn't exist.
   """
 
-  def find_by_case_file(%CaseFile{} = case_file) do
-    "MATCH (es:EventStatement)-[:UPDATES]->(cf:CaseFile) WHERE cf.serial_number = \"#{
-      case_file.serial_number
-    }\" RETURN es"
-    |> exec_query(empty_instance())
-  end
+  # def find_by_case_file(%CaseFile{} = case_file) do
+  #   "MATCH (es:EventStatement)-[:UPDATES]->(cf:CaseFile) WHERE cf.serial_number = \"#{
+  #     case_file.serial_number
+  #   }\" RETURN es"
+  #   |> exec_query(empty_instance())
+  # end
 
   def find_by_case_file(%{serial_number: _serial_number} = case_file) do
-    "MATCH (es:EventStatement)-[:UPDATES]->(cf:CaseFile) WHERE cf.serial_number = \"#{
+    "MATCH (es:EventStatement)-[u:UPDATES]->(cf:CaseFile) WHERE cf.serial_number = \"#{
       case_file.serial_number
-    }\" RETURN es"
-    |> exec_query(empty_instance())
+    }\" WITH es, u.date AS date RETURN es{.*, date: date}"
+    |> exec_raw()
+    |> Enum.map(fn %{"es" => map} -> make_struct(%{properties: map}) end)
   end
 
   def validate(%EventStatement{} = event_statement) do

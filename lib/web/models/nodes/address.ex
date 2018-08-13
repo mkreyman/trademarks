@@ -4,8 +4,9 @@ defmodule Trademarks.Models.Nodes.Address do
   """
 
   use Util.StructUtils
+  use Util.PipeDebug
 
-  import Neo4j.Core, only: [exec_query: 2, make_map: 1]
+  import Neo4j.Core, only: [exec_query: 2]
   import Neo4j.NodeCore
 
   alias __MODULE__, warn: false
@@ -178,12 +179,12 @@ defmodule Trademarks.Models.Nodes.Address do
   """
 
   def find_by_owner(%Owner{} = owner) do
-    "MATCH (o:Owner)-[:RESIDES_AT]->(addr:Address) WHERE o.name = \"#{owner.name}\" RETURN addr"
+    "MATCH (o:Owner)-[:RESIDES_AT]->(a:Address) WHERE o.name = \"#{owner.name}\" RETURN a"
     |> exec_query(empty_instance())
   end
 
   def find_by_owner(%{name: _name} = owner) do
-    "MATCH (o:Owner)-[:RESIDES_AT]->(addr:Address) WHERE o.name = \"#{owner.name}\" RETURN addr"
+    "MATCH (o:Owner)-[:RESIDES_AT]->(a:Address) WHERE o.name = \"#{owner.name}\" RETURN a"
     |> exec_query(empty_instance())
   end
 
